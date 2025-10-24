@@ -51,13 +51,13 @@ export class ClimbingEnvironment {
       
       // Reward weights
       rewardWeights: {
-        heightGain: config.rewardWeights?.heightGain || 1.0,
+        heightGain: config.rewardWeights?.heightGain || 2.0,  // Increased from 1.0 to encourage climbing
         goalReached: config.rewardWeights?.goalReached || 100.0,
         survival: config.rewardWeights?.survival || 0.1,
-        fall: config.rewardWeights?.fall || -50.0,
-        timePenalty: config.rewardWeights?.timePenalty || -0.01,
-        ledgeGrab: config.rewardWeights?.ledgeGrab || 5.0,
-        outOfBounds: config.rewardWeights?.outOfBounds || -100.0  // Severe penalty for leaving platform
+        fall: config.rewardWeights?.fall || -20.0,  // Reduced from -50 to make learning easier
+        timePenalty: config.rewardWeights?.timePenalty || -0.005,  // Reduced from -0.01
+        ledgeGrab: config.rewardWeights?.ledgeGrab || 8.0,  // Increased from 5.0 to encourage ledge use
+        outOfBounds: config.rewardWeights?.outOfBounds || -50.0  // Reduced from -100 to make learning easier
       },
       
       // Environment dimensions
@@ -423,22 +423,27 @@ export class ClimbingEnvironment {
     const agentPos = this.physicsEngine.getBodyPosition(this.agentBody);
     
     // Calculate height gain reward: (newY - prevY) * heightGainWeight
-    // Only reward height gain if agent is grounded or grabbing a ledge
     if (prevState && newState) {
       // Previous Y is normalized by dividing by 15.0, so multiply to denormalize
       const prevY = prevState[1] * 15.0;
       const newY = agentPos.y;
       const heightGain = newY - prevY;
       
-      // Only reward positive height gain when grounded (prevents flying exploit)
-      if (heightGain > 0 && this.isGrounded()) {
-        totalReward += heightGain * this.config.rewardWeights.heightGain;
+      // Reward positive height gain (but less if not grounded to prevent exploit)
+      if (heightGain > 0) {
+        if (this.isGrounded() || this.isTouchingLedge()) {
+          // Full reward when on ground or ledge
+          totalReward += heightGain * this.config.rewardWeights.heightGain;
+        } else {
+          // Reduced reward when airborne (prevents infinite jumping exploit)
+          totalReward += heightGain * this.config.rewardWeights.heightGain * 0.3;
+        }
       }
     }
     
-    // Penalize failed jump attempts (trying to jump while airborne)
+    // Small penalty for failed jump attempts (trying to jump while airborne)
     if (action === this.ACTION_SPACE.JUMP && !this.isGrounded()) {
-      totalReward -= 0.5; // Small penalty for wasted jump
+      totalReward -= 0.1; // Reduced from 0.5 to not discourage jumping too much
     }
     
     // Add survival reward: +0.1 per step
@@ -465,11 +470,27 @@ export class ClimbingEnvironment {
     // Reward ledge contact (being on a ledge)
     if (this.isTouchingLedge()) {
       totalReward += this.config.rewardWeights.ledgeGrab;
+      
+      // Extra reward for successful grab action on a ledge
+      if (action === this.ACTION_SPACE.GRAB) {
+        totalReward += 3.0; // Bonus for using grab correctly
+      }
     }
     
-    // Extra reward for successful grab action on a ledge
-    if (action === this.ACTION_SPACE.GRAB && this.isTouchingLedge()) {
-      totalReward += 2.0; // Bonus for using grab correctly
+    // Reward for being close to the wall (encourages approaching ledges)
+    if (agentPos.z < -3 && agentPos.z > -7) {
+      totalReward += 0.5; // Small bonus for being near the climbing wall
+    }
+    
+    // Penalty for being too close to boundaries (encourages staying in safe zone)
+    const distanceToEdgeX = this.config.boundaryX - Math.abs(agentPos.x);
+    const distanceToEdgeZ = this.config.boundaryZ - Math.abs(agentPos.z);
+    const minDistanceToEdge = Math.min(distanceToEdgeX, distanceToEdgeZ);
+    
+    if (minDistanceToEdge < 2.0) {
+      // Penalty increases as agent gets closer to edge
+      const edgePenalty = (2.0 - minDistanceToEdge) * -2.0;
+      totalReward += edgePenalty;
     }
     
     return totalReward;

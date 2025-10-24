@@ -18,6 +18,7 @@ import * as tf from '@tensorflow/tfjs';
 import './diagnostics.js';
 import './test-jump-fix.js';
 import './test-movement.js';
+import './reset-and-train.js';
 
 /**
  * Main application class that coordinates all components
@@ -64,7 +65,7 @@ class ClimbingGameApp {
                 ],
                 agentStart: { x: 0, y: 1, z: 0 },
                 actionForces: {
-                    move: 50.0,  // Increased from 5.0 for visible movement
+                    move: 15.0,  // Reduced from 50.0 - more controllable
                     jump: 8.0,   // Original value - works well
                     grab: 20.0   // Increased from 2.0 proportionally
                 }

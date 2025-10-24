@@ -254,8 +254,8 @@ export class PhysicsEngine {
     });
     
     // Configure linear and angular damping to prevent excessive spinning
-    agentBody.linearDamping = 0.1;
-    agentBody.angularDamping = 0.1;
+    agentBody.linearDamping = 0.3;  // Increased from 0.1 for better control
+    agentBody.angularDamping = 0.5;  // Increased from 0.1 to prevent spinning
     
     // Add to world and track
     this.addBody(agentBody, 'agent');
