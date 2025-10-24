@@ -9,8 +9,8 @@
   - Set up basic directory structure: src/, src/rendering/, src/physics/, src/rl/, src/training/, src/ui/
   - _Requirements: 9.1, 9.2, 9.3, 9.4, 9.5_
 
-- [ ] 2. Implement basic rendering engine with Three.js
-  - [ ] 2.1 Create RenderingEngine class with scene initialization
+- [x] 2. Implement basic rendering engine with Three.js
+  - [x] 2.1 Create RenderingEngine class with scene initialization
     - Write RenderingEngine constructor that accepts canvas element
     - Implement init() method to create Three.js scene, camera, and WebGL renderer
     - Add perspective camera at position (0, 5, 10) looking at origin
@@ -19,7 +19,7 @@
     - Implement resize() method for responsive canvas
     - _Requirements: 1.1, 1.2_
   
-  - [ ] 2.2 Implement environment geometry creation methods
+  - [x] 2.2 Implement environment geometry creation methods
     - Write createGround() method to generate dark gray plane mesh (#333333)
     - Write createClimbingWall() method to create wall with brown ledges (#8B4513)
     - Write createGoal() method to create goal platform at top
@@ -27,7 +27,7 @@
     - Add all created meshes to scene
     - _Requirements: 1.4, 1.5, 1.6, 2.1_
   
-  - [ ] 2.3 Implement camera following and update logic
+  - [x] 2.3 Implement camera following and update logic
     - Write updateAgentPosition() method to sync agent mesh with physics position
     - Write updateCamera() method to smoothly follow agent
     - Implement camera lerp for smooth following behavior
