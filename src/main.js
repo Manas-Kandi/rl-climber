@@ -17,6 +17,7 @@ import { LivePlayMode } from './interaction/LivePlayMode.js';
 import * as tf from '@tensorflow/tfjs';
 import './diagnostics.js';
 import './test-jump-fix.js';
+import './test-movement.js';
 
 /**
  * Main application class that coordinates all components
@@ -63,9 +64,9 @@ class ClimbingGameApp {
                 ],
                 agentStart: { x: 0, y: 1, z: 0 },
                 actionForces: {
-                    move: 5.0,
-                    jump: 8.0,
-                    grab: 2.0
+                    move: 50.0,  // Increased from 5.0 for visible movement
+                    jump: 8.0,   // Original value - works well
+                    grab: 20.0   // Increased from 2.0 proportionally
                 }
             },
             

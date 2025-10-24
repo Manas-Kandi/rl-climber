@@ -17,7 +17,7 @@ export class LivePlayMode {
         // Manual control state
         this.keysPressed = new Set();
         this.lastActionTime = 0;
-        this.actionCooldown = 100; // ms between actions
+        this.actionCooldown = 16; // ms between actions (~60 FPS)
         
         // Statistics
         this.sessionStats = {
