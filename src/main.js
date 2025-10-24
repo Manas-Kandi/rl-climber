@@ -164,6 +164,10 @@ class ClimbingGameApp {
             
             // 4. Create agent (DQNAgent or PPOAgent) with configuration
             console.log(`🤖 Initializing ${this.config.agentType} agent...`);
+            
+            // Optimize TensorFlow.js backend
+            await this.optimizeTensorFlowBackend();
+            
             try {
                 if (this.config.agentType === 'DQN') {
                     this.agent = new DQNAgent(9, 6, this.config.dqn);
@@ -201,11 +205,17 @@ class ClimbingGameApp {
             console.log('🔧 Setting up environment...');
             this.setupEnvironment();
             
-            // 8. Start memory monitoring
+            // 8. Optimize performance
+            console.log('🚀 Optimizing performance...');
+            this.optimizeBatchSizes();
+            this.optimizeRenderingPerformance();
+            await this.testInferenceSpeed();
+            
+            // 9. Start memory monitoring
             console.log('🧠 Starting memory monitoring...');
             this.startMemoryMonitoring();
             
-            // 9. Start the rendering loop
+            // 10. Start the rendering loop
             console.log('🎬 Starting rendering loop...');
             this.startRenderingLoop();
             
@@ -386,6 +396,13 @@ class ClimbingGameApp {
         let fpsUpdateTime = 0;
         let currentFPS = 0;
         
+        // Detailed performance tracking
+        let renderTime = 0;
+        let physicsTime = 0;
+        let updateTime = 0;
+        let frameTimeHistory = [];
+        let adaptiveRenderingEnabled = false;
+        
         // Target 60 FPS (16.67ms per frame)
         const targetFrameTime = 1000 / 60;
         let accumulator = 0;
@@ -394,6 +411,8 @@ class ClimbingGameApp {
             if (!this.isRunning) return;
             
             try {
+                const frameStartTime = performance.now();
+                
                 // Calculate delta time
                 const deltaTime = currentTime - lastTime;
                 lastTime = currentTime;
@@ -402,7 +421,7 @@ class ClimbingGameApp {
                 accumulator += deltaTime;
                 
                 // Step physics simulation with fixed timestep
-                // Run multiple physics steps if we're behind
+                const physicsStartTime = performance.now();
                 try {
                     while (accumulator >= targetFrameTime) {
                         this.physicsEngine.step(this.config.physics.timeStep);
@@ -412,8 +431,10 @@ class ClimbingGameApp {
                     console.error('❌ Physics simulation error:', error);
                     // Continue with rendering even if physics fails
                 }
+                physicsTime = performance.now() - physicsStartTime;
                 
                 // Update agent position in rendering engine from physics
+                const updateStartTime = performance.now();
                 try {
                     const agentBody = this.physicsEngine.getBody('agent');
                     if (agentBody) {
@@ -427,19 +448,36 @@ class ClimbingGameApp {
                     console.error('❌ Agent position update error:', error);
                     // Continue with rendering
                 }
+                updateTime = performance.now() - updateStartTime;
                 
-                // Render the frame
-                try {
-                    this.renderingEngine.render();
-                } catch (error) {
-                    console.error('❌ Rendering error:', error);
-                    // If rendering fails repeatedly, stop the loop
-                    if (this.renderingErrorCount > 10) {
-                        console.error('❌ Too many rendering errors, stopping application');
-                        this.stop();
-                        return;
+                // Adaptive rendering - skip frames if performance is poor
+                const shouldRender = !adaptiveRenderingEnabled || frameCount % this.getRenderSkipFactor() === 0;
+                
+                if (shouldRender) {
+                    // Render the frame
+                    const renderStartTime = performance.now();
+                    try {
+                        this.renderingEngine.render();
+                    } catch (error) {
+                        console.error('❌ Rendering error:', error);
+                        // If rendering fails repeatedly, stop the loop
+                        if (this.renderingErrorCount > 10) {
+                            console.error('❌ Too many rendering errors, stopping application');
+                            this.stop();
+                            return;
+                        }
+                        this.renderingErrorCount = (this.renderingErrorCount || 0) + 1;
                     }
-                    this.renderingErrorCount = (this.renderingErrorCount || 0) + 1;
+                    renderTime = performance.now() - renderStartTime;
+                } else {
+                    renderTime = 0; // Skipped rendering
+                }
+                
+                // Track frame time
+                const totalFrameTime = performance.now() - frameStartTime;
+                frameTimeHistory.push(totalFrameTime);
+                if (frameTimeHistory.length > 60) {
+                    frameTimeHistory.shift(); // Keep last 60 frames
                 }
                 
                 // FPS monitoring (update every second)
@@ -510,7 +548,105 @@ class ClimbingGameApp {
             isInitialized: this.isInitialized,
             agentType: this.config.agentType,
             memory: this.getMemoryStats(),
+            fps: this.getCurrentFPS(),
+            frameTime: this.getAverageFrameTime(),
+            renderTime: this.getAverageRenderTime(),
+            physicsTime: this.getAveragePhysicsTime(),
+            adaptiveRendering: this.isAdaptiveRenderingEnabled()
         };
+    }
+    
+    /**
+     * Get current FPS
+     */
+    getCurrentFPS() {
+        // This will be set by the rendering loop
+        return this.currentFPS || 0;
+    }
+    
+    /**
+     * Get average frame time over recent frames
+     */
+    getAverageFrameTime() {
+        if (!this.frameTimeHistory || this.frameTimeHistory.length === 0) {
+            return 0;
+        }
+        const sum = this.frameTimeHistory.reduce((a, b) => a + b, 0);
+        return sum / this.frameTimeHistory.length;
+    }
+    
+    /**
+     * Get average render time
+     */
+    getAverageRenderTime() {
+        return this.renderTime || 0;
+    }
+    
+    /**
+     * Get average physics time
+     */
+    getAveragePhysicsTime() {
+        return this.physicsTime || 0;
+    }
+    
+    /**
+     * Check if adaptive rendering is enabled
+     */
+    isAdaptiveRenderingEnabled() {
+        return this.adaptiveRenderingEnabled || false;
+    }
+    
+    /**
+     * Enable or disable adaptive rendering
+     */
+    setAdaptiveRendering(enabled) {
+        this.adaptiveRenderingEnabled = enabled;
+        console.log(`🎬 Adaptive rendering ${enabled ? 'enabled' : 'disabled'}`);
+    }
+    
+    /**
+     * Get render skip factor based on performance
+     */
+    getRenderSkipFactor() {
+        const avgFrameTime = this.getAverageFrameTime();
+        const targetFrameTime = 1000 / 60; // 16.67ms for 60 FPS
+        
+        if (avgFrameTime > targetFrameTime * 2) {
+            return 3; // Skip 2 out of 3 frames
+        } else if (avgFrameTime > targetFrameTime * 1.5) {
+            return 2; // Skip every other frame
+        } else {
+            return 1; // Render every frame
+        }
+    }
+    
+    /**
+     * Optimize rendering performance
+     */
+    optimizeRenderingPerformance() {
+        console.log('🚀 Optimizing rendering performance...');
+        
+        const stats = this.getPerformanceStats();
+        console.log('Current performance stats:', stats);
+        
+        // Enable adaptive rendering if FPS is low
+        if (stats.fps < 30) {
+            console.log('⚡ Low FPS detected, enabling adaptive rendering');
+            this.setAdaptiveRendering(true);
+        }
+        
+        // Merge static geometry to reduce draw calls
+        if (this.renderingEngine && this.renderingEngine.optimizeStaticGeometry) {
+            this.renderingEngine.optimizeStaticGeometry();
+        }
+        
+        // Adjust physics timestep if needed
+        if (stats.physicsTime > 5) { // More than 5ms per frame
+            console.log('⚡ High physics time detected, adjusting timestep');
+            this.config.physics.timeStep = Math.min(this.config.physics.timeStep * 1.2, 1/30);
+        }
+        
+        console.log('🚀 Performance optimization complete');
     }
     
     /**
@@ -598,6 +734,129 @@ class ClimbingGameApp {
         console.log('  Before:', beforeMemory);
         console.log('  After:', afterMemory);
         console.log('  Freed:', beforeMemory.numTensors - afterMemory.numTensors, 'tensors');
+    }
+    
+    /**
+     * Optimize TensorFlow.js backend for best performance
+     */
+    async optimizeTensorFlowBackend() {
+        console.log('🧠 Optimizing TensorFlow.js backend...');
+        
+        // Check current backend
+        const currentBackend = tf.getBackend();
+        console.log('Current TensorFlow.js backend:', currentBackend);
+        
+        // Try to use WebGL backend for GPU acceleration
+        if (currentBackend !== 'webgl') {
+            try {
+                await tf.setBackend('webgl');
+                await tf.ready();
+                console.log('✅ Switched to WebGL backend for GPU acceleration');
+            } catch (error) {
+                console.warn('⚠️ Failed to switch to WebGL backend:', error.message);
+                console.log('Falling back to CPU backend');
+            }
+        } else {
+            console.log('✅ Already using WebGL backend');
+        }
+        
+        // Log backend capabilities
+        const backend = tf.getBackend();
+        console.log('Final backend:', backend);
+        
+        // Set memory growth to prevent OOM
+        if (backend === 'webgl') {
+            tf.env().set('WEBGL_DELETE_TEXTURE_THRESHOLD', 0);
+            tf.env().set('WEBGL_FLUSH_THRESHOLD', -1);
+        }
+        
+        // Profile tensor memory usage
+        this.profileTensorMemory();
+    }
+    
+    /**
+     * Profile tensor memory usage
+     */
+    profileTensorMemory() {
+        const memory = tf.memory();
+        console.log('📊 TensorFlow.js Memory Profile:');
+        console.log('  Tensors:', memory.numTensors);
+        console.log('  Data Buffers:', memory.numDataBuffers);
+        console.log('  Bytes:', memory.numBytes, `(${(memory.numBytes / 1024 / 1024).toFixed(2)} MB)`);
+        console.log('  Unreliable:', memory.unreliable || false);
+        
+        // Set up periodic memory monitoring
+        if (!this.tensorMemoryInterval) {
+            this.tensorMemoryInterval = setInterval(() => {
+                const currentMemory = tf.memory();
+                if (currentMemory.numTensors > 1000) {
+                    console.warn('⚠️ High tensor count:', currentMemory.numTensors);
+                }
+                if (currentMemory.numBytes > 100 * 1024 * 1024) { // 100MB
+                    console.warn('⚠️ High memory usage:', (currentMemory.numBytes / 1024 / 1024).toFixed(2), 'MB');
+                }
+            }, 10000); // Check every 10 seconds
+        }
+    }
+    
+    /**
+     * Optimize batch sizes for GPU utilization
+     */
+    optimizeBatchSizes() {
+        console.log('⚡ Optimizing batch sizes for GPU utilization...');
+        
+        const backend = tf.getBackend();
+        
+        if (backend === 'webgl') {
+            // Increase batch sizes for GPU
+            if (this.config.dqn) {
+                this.config.dqn.batchSize = Math.min(64, this.config.dqn.batchSize * 2);
+                console.log('🚀 Increased DQN batch size to:', this.config.dqn.batchSize);
+            }
+            
+            if (this.config.ppo) {
+                // PPO doesn't use batch size in the same way, but we can optimize trajectory length
+                console.log('🚀 PPO batch optimization: using GPU-optimized settings');
+            }
+        } else {
+            // Smaller batch sizes for CPU
+            if (this.config.dqn) {
+                this.config.dqn.batchSize = Math.max(16, Math.floor(this.config.dqn.batchSize / 2));
+                console.log('🐌 Reduced DQN batch size for CPU to:', this.config.dqn.batchSize);
+            }
+        }
+    }
+    
+    /**
+     * Test inference speed with different network sizes
+     */
+    async testInferenceSpeed() {
+        console.log('🏃 Testing neural network inference speed...');
+        
+        const testState = new Float32Array([0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]);
+        const iterations = 100;
+        
+        if (this.agent && this.agent.selectAction) {
+            const startTime = performance.now();
+            
+            for (let i = 0; i < iterations; i++) {
+                this.agent.selectAction(testState, false); // Evaluation mode
+            }
+            
+            const endTime = performance.now();
+            const totalTime = endTime - startTime;
+            const avgTime = totalTime / iterations;
+            
+            console.log(`📊 Inference Performance:`);
+            console.log(`  ${iterations} inferences in ${totalTime.toFixed(2)}ms`);
+            console.log(`  Average: ${avgTime.toFixed(2)}ms per inference`);
+            console.log(`  Throughput: ${(1000 / avgTime).toFixed(0)} inferences/second`);
+            
+            // Warn if inference is too slow
+            if (avgTime > 10) {
+                console.warn('⚠️ Slow inference detected. Consider optimizing network size or batch size.');
+            }
+        }
     }
     
     /**
@@ -767,6 +1026,217 @@ class ClimbingGameApp {
         this.uiController.agent = this.agent;
         
         console.log(`✅ Switched to ${agentType} agent`);
+    }
+    
+    /**
+     * Test different hyperparameter configurations
+     */
+    async tuneHyperparameters() {
+        console.log('🎛️ Starting hyperparameter tuning...');
+        
+        const results = [];
+        
+        // Test different learning rates
+        const learningRates = [0.0001, 0.0003, 0.001];
+        
+        // Test different network sizes
+        const networkSizes = [32, 64, 128];
+        
+        // Test different exploration strategies (for DQN)
+        const epsilonDecayRates = [0.99, 0.995, 0.999];
+        
+        console.log('🧪 Testing learning rates:', learningRates);
+        console.log('🧪 Testing network sizes:', networkSizes);
+        console.log('🧪 Testing epsilon decay rates:', epsilonDecayRates);
+        
+        // For demonstration, we'll test a subset of configurations
+        // In practice, you'd want to run longer tests
+        
+        for (const lr of learningRates.slice(0, 2)) { // Test first 2 learning rates
+            console.log(`\n🔬 Testing learning rate: ${lr}`);
+            
+            const testConfig = {
+                ...this.config.dqn,
+                learningRate: lr
+            };
+            
+            const result = await this.testConfiguration('DQN', testConfig, 50); // Short test
+            results.push({
+                type: 'learningRate',
+                value: lr,
+                ...result
+            });
+        }
+        
+        // Test network sizes (simplified - would need to modify agent architecture)
+        console.log('\n🔬 Testing network architectures...');
+        console.log('ℹ️ Network size testing would require modifying agent architecture');
+        console.log('ℹ️ Current implementation uses fixed 64-unit hidden layers');
+        
+        // Test epsilon decay rates
+        for (const decay of epsilonDecayRates.slice(0, 2)) { // Test first 2 decay rates
+            console.log(`\n🔬 Testing epsilon decay rate: ${decay}`);
+            
+            const testConfig = {
+                ...this.config.dqn,
+                epsilonDecay: decay
+            };
+            
+            const result = await this.testConfiguration('DQN', testConfig, 50); // Short test
+            results.push({
+                type: 'epsilonDecay',
+                value: decay,
+                ...result
+            });
+        }
+        
+        // Analyze results
+        this.analyzeHyperparameterResults(results);
+        
+        return results;
+    }
+    
+    /**
+     * Test a specific configuration
+     */
+    async testConfiguration(agentType, config, episodes = 100) {
+        console.log(`🧪 Testing ${agentType} configuration for ${episodes} episodes...`);
+        
+        try {
+            // Create test agent
+            let testAgent;
+            if (agentType === 'DQN') {
+                testAgent = new DQNAgent(9, 6, config);
+            } else if (agentType === 'PPO') {
+                testAgent = new PPOAgent(9, 6, config);
+            }
+            
+            // Create test orchestrator
+            const testOrchestrator = new TrainingOrchestrator(
+                this.environment,
+                testAgent,
+                { numEpisodes: episodes, renderInterval: 10 }
+            );
+            
+            // Track results
+            const rewards = [];
+            const successes = [];
+            let startTime = performance.now();
+            
+            testOrchestrator.onEpisodeComplete((stats, result) => {
+                rewards.push(result.episodeReward);
+                successes.push(result.success);
+            });
+            
+            // Run training
+            await testOrchestrator.startTraining(episodes);
+            
+            const endTime = performance.now();
+            const trainingTime = endTime - startTime;
+            
+            // Calculate metrics
+            const avgReward = rewards.reduce((a, b) => a + b, 0) / rewards.length;
+            const successRate = successes.filter(s => s).length / successes.length;
+            const finalRewards = rewards.slice(-10); // Last 10 episodes
+            const finalAvgReward = finalRewards.reduce((a, b) => a + b, 0) / finalRewards.length;
+            
+            // Clean up
+            testAgent.dispose();
+            
+            const result = {
+                avgReward,
+                successRate,
+                finalAvgReward,
+                trainingTime,
+                convergenceSpeed: this.calculateConvergenceSpeed(rewards)
+            };
+            
+            console.log(`📊 Configuration results:`, result);
+            
+            return result;
+            
+        } catch (error) {
+            console.error('❌ Configuration test failed:', error);
+            return {
+                avgReward: -Infinity,
+                successRate: 0,
+                finalAvgReward: -Infinity,
+                trainingTime: Infinity,
+                convergenceSpeed: 0,
+                error: error.message
+            };
+        }
+    }
+    
+    /**
+     * Calculate convergence speed (how quickly rewards improve)
+     */
+    calculateConvergenceSpeed(rewards) {
+        if (rewards.length < 20) return 0;
+        
+        const firstHalf = rewards.slice(0, Math.floor(rewards.length / 2));
+        const secondHalf = rewards.slice(Math.floor(rewards.length / 2));
+        
+        const firstAvg = firstHalf.reduce((a, b) => a + b, 0) / firstHalf.length;
+        const secondAvg = secondHalf.reduce((a, b) => a + b, 0) / secondHalf.length;
+        
+        return secondAvg - firstAvg; // Improvement from first half to second half
+    }
+    
+    /**
+     * Analyze hyperparameter tuning results
+     */
+    analyzeHyperparameterResults(results) {
+        console.log('\n📊 Hyperparameter Tuning Results Analysis:');
+        console.log('=' .repeat(50));
+        
+        // Group results by type
+        const byType = {};
+        results.forEach(result => {
+            if (!byType[result.type]) byType[result.type] = [];
+            byType[result.type].push(result);
+        });
+        
+        // Analyze each type
+        Object.keys(byType).forEach(type => {
+            console.log(`\n🔍 ${type} Results:`);
+            
+            const typeResults = byType[type];
+            typeResults.sort((a, b) => b.finalAvgReward - a.finalAvgReward);
+            
+            typeResults.forEach((result, index) => {
+                const rank = index + 1;
+                console.log(`  ${rank}. ${type}=${result.value}:`);
+                console.log(`     Final Avg Reward: ${result.finalAvgReward.toFixed(2)}`);
+                console.log(`     Success Rate: ${(result.successRate * 100).toFixed(1)}%`);
+                console.log(`     Convergence Speed: ${result.convergenceSpeed.toFixed(2)}`);
+                console.log(`     Training Time: ${(result.trainingTime / 1000).toFixed(1)}s`);
+            });
+            
+            // Recommend best configuration
+            const best = typeResults[0];
+            console.log(`\n🏆 Best ${type}: ${best.value}`);
+        });
+        
+        // Overall best configuration
+        const allResults = results.filter(r => !r.error);
+        if (allResults.length > 0) {
+            allResults.sort((a, b) => {
+                // Score based on final reward and success rate
+                const scoreA = a.finalAvgReward + (a.successRate * 50);
+                const scoreB = b.finalAvgReward + (b.successRate * 50);
+                return scoreB - scoreA;
+            });
+            
+            const overall = allResults[0];
+            console.log(`\n🎯 Overall Best Configuration:`);
+            console.log(`   Type: ${overall.type}`);
+            console.log(`   Value: ${overall.value}`);
+            console.log(`   Final Avg Reward: ${overall.finalAvgReward.toFixed(2)}`);
+            console.log(`   Success Rate: ${(overall.successRate * 100).toFixed(1)}%`);
+        }
+        
+        console.log('\n✅ Hyperparameter analysis complete!');
     }
 }
 
