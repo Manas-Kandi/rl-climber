@@ -34,8 +34,8 @@
     - Test camera tracking with manual position updates
     - _Requirements: 1.8, 6.6_
 
-- [ ] 3. Implement physics engine with Cannon-es
-  - [ ] 3.1 Create PhysicsEngine class with world initialization
+- [x] 3. Implement physics engine with Cannon-es
+  - [x] 3.1 Create PhysicsEngine class with world initialization
     - Write PhysicsEngine constructor accepting gravity parameter
     - Implement init() method to create CANNON.World with gravity
     - Configure world solver and broadphase (SAPBroadphase)
@@ -43,7 +43,7 @@
     - Write reset() method to clear and reinitialize world
     - _Requirements: 1.3, 1.7_
   
-  - [ ] 3.2 Implement rigid body creation methods
+  - [x] 3.2 Implement rigid body creation methods
     - Write createGroundBody() to create static ground plane
     - Write createWallBody() to create static wall collision
     - Write createLedgeBody() to create static ledge bodies
@@ -52,7 +52,7 @@
     - Add all bodies to physics world
     - _Requirements: 1.7, 2.2_
   
-  - [ ] 3.3 Implement force application and query methods
+  - [x] 3.3 Implement force application and query methods
     - Write applyForce() method to apply continuous forces to bodies
     - Write applyImpulse() method to apply instant impulses (for jumping)
     - Write getBodyPosition() to query body position as {x, y, z}
