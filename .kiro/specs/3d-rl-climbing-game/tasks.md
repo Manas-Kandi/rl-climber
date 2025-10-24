@@ -424,8 +424,8 @@
     - Select best hyperparameters based on convergence speed and final performance
     - _Requirements: 5.7, 5.8, 5.9, 5.10_
 
-- [ ] 12. Create documentation and examples
-  - [ ] 12.1 Write README with setup instructions
+- [x] 12. Create documentation and examples
+  - [x] 12.1 Write README with setup instructions
     - Document project overview and features
     - List prerequisites (Node.js, modern browser)
     - Provide installation steps (npm install)
@@ -434,14 +434,14 @@
     - Add screenshots or GIFs of training
     - _Requirements: 9.1, 9.2, 9.3, 9.4_
   
-  - [ ] 12.2 Add code comments and JSDoc
+  - [x] 12.2 Add code comments and JSDoc
     - Add JSDoc comments to all public methods
     - Document parameter types and return values
     - Add inline comments for complex algorithms (GAE, PPO loss)
     - Document configuration options
     - _Requirements: All requirements_
   
-  - [ ] 12.3 Create usage examples
+  - [x] 12.3 Create usage examples
     - Write example of loading pre-trained model
     - Write example of adjusting hyperparameters
     - Write example of modifying environment (adding ledges)
