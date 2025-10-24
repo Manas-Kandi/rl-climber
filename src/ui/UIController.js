@@ -66,6 +66,12 @@ export class UIController {
       // Camera button
       btnToggleCamera: document.getElementById('btn-toggle-camera'),
       
+      // View button
+      btnToggleCharts: document.getElementById('btn-toggle-charts'),
+      
+      // Charts container
+      chartsContainer: document.getElementById('charts-container'),
+      
       // Stats display
       statEpisode: document.getElementById('stat-episode'),
       statReward: document.getElementById('stat-reward'),
@@ -99,14 +105,21 @@ export class UIController {
    */
   setupKeyboardShortcuts() {
     document.addEventListener('keydown', (event) => {
+      // Don't trigger if user is typing in an input field
+      if (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA') {
+        return;
+      }
+      
       // C key to toggle camera
       if (event.code === 'KeyC' && !event.ctrlKey && !event.metaKey) {
-        // Don't trigger if user is typing in an input field
-        if (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA') {
-          return;
-        }
         event.preventDefault();
         this.onToggleCamera();
+      }
+      
+      // H key to toggle charts
+      if (event.code === 'KeyH' && !event.ctrlKey && !event.metaKey) {
+        event.preventDefault();
+        this.onToggleCharts();
       }
     });
   }
@@ -142,6 +155,9 @@ export class UIController {
     
     // Camera button
     this.elements.btnToggleCamera?.addEventListener('click', () => this.onToggleCamera());
+    
+    // Charts toggle button
+    this.elements.btnToggleCharts?.addEventListener('click', () => this.onToggleCharts());
   }
 
   /**
@@ -804,6 +820,31 @@ export class UIController {
     }
     
     this.showNotification(`Camera mode: ${newMode}`, 'success');
+  }
+  
+  /**
+   * Handle toggle charts button click
+   */
+  onToggleCharts() {
+    if (!this.elements.chartsContainer) return;
+    
+    const isVisible = this.elements.chartsContainer.style.display !== 'none';
+    
+    if (isVisible) {
+      // Hide charts
+      this.elements.chartsContainer.style.display = 'none';
+      if (this.elements.btnToggleCharts) {
+        this.elements.btnToggleCharts.textContent = 'Show Charts';
+      }
+      this.showNotification('Charts hidden', 'success');
+    } else {
+      // Show charts
+      this.elements.chartsContainer.style.display = 'flex';
+      if (this.elements.btnToggleCharts) {
+        this.elements.btnToggleCharts.textContent = 'Hide Charts';
+      }
+      this.showNotification('Charts visible', 'success');
+    }
   }
   
   /**

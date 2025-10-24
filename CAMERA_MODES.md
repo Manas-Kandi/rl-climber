@@ -78,6 +78,7 @@ Behavior: Smoothly follows agent position
 | Key | Action |
 |-----|--------|
 | `C` | Toggle camera mode |
+| `H` | Toggle charts visibility |
 | `W/↑` | Move forward |
 | `S/↓` | Move backward |
 | `A/←` | Move left |
