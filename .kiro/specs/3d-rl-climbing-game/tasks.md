@@ -113,8 +113,8 @@
     - Return {state, reward, done, info} object
     - _Requirements: 3.2, 3.8_
 
-- [ ] 5. Implement neural network models with TensorFlow.js
-  - [ ] 5.1 Create DQN agent class with Q-network architecture
+- [x] 5. Implement neural network models with TensorFlow.js
+  - [x] 5.1 Create DQN agent class with Q-network architecture
     - Write DQNAgent constructor accepting state size (9), action size (6), config
     - Implement buildQNetwork() to create Q-network: Input(9) → Dense(64, ReLU) → Dense(64, ReLU) → Dense(6, Linear)
     - Implement buildTargetNetwork() with same architecture as Q-network
@@ -123,7 +123,7 @@
     - Store hyperparameters: gamma, epsilon, buffer size
     - _Requirements: 4.3, 4.4, 5.7, 5.8_
   
-  - [ ] 5.2 Implement DQN action selection and exploration
+  - [x] 5.2 Implement DQN action selection and exploration
     - Write selectAction(state, epsilon) method for epsilon-greedy policy
     - Generate random number and compare with epsilon
     - If exploring: return random action from [0, 5]
@@ -132,7 +132,7 @@
     - Write unit tests for action selection
     - _Requirements: 5.5_
   
-  - [ ] 5.3 Implement experience replay buffer for DQN
+  - [x] 5.3 Implement experience replay buffer for DQN
     - Create experience buffer as array with max capacity 10,000
     - Write remember(state, action, reward, nextState, done) to store experience
     - Implement circular buffer logic (overwrite oldest when full)
@@ -141,7 +141,7 @@
     - Return batch as arrays of states, actions, rewards, nextStates, dones
     - _Requirements: 5.4_
   
-  - [ ] 5.4 Implement DQN training logic
+  - [x] 5.4 Implement DQN training logic
     - Write train() method within replay() that performs gradient descent
     - Compute target Q-values: reward + gamma * max(targetNetwork(nextState)) for non-terminal states
     - Compute current Q-values: qNetwork(state)[action]
@@ -151,14 +151,14 @@
     - Wrap all tensor operations in tf.tidy()
     - _Requirements: 5.11_
   
-  - [ ] 5.5 Implement target network update for DQN
+  - [x] 5.5 Implement target network update for DQN
     - Write updateTargetNetwork() method to copy Q-network weights to target network
     - Use tf.tidy() to manage tensor memory
     - Iterate through Q-network layers and copy weights to target network layers
     - Call this method every N episodes (e.g., 100)
     - _Requirements: 5.6_
   
-  - [ ] 5.6 Implement model save and load for DQN
+  - [x] 5.6 Implement model save and load for DQN
     - Write async saveModel(path) to save Q-network weights
     - Use tf.LayersModel.save() with 'localstorage://' or 'downloads://' scheme
     - Write async loadModel(path) to load Q-network weights
