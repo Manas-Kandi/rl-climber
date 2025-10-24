@@ -56,12 +56,17 @@ export class ClimbingEnvironment {
         survival: config.rewardWeights?.survival || 0.1,
         fall: config.rewardWeights?.fall || -50.0,
         timePenalty: config.rewardWeights?.timePenalty || -0.01,
-        ledgeGrab: config.rewardWeights?.ledgeGrab || 5.0
+        ledgeGrab: config.rewardWeights?.ledgeGrab || 5.0,
+        outOfBounds: config.rewardWeights?.outOfBounds || -100.0  // Severe penalty for leaving platform
       },
       
       // Environment dimensions
       goalHeight: config.goalHeight || 14.0,
       fallThreshold: config.fallThreshold || -2.0,
+      
+      // Boundary limits (platform size)
+      boundaryX: config.boundaryX || 10.0,  // ±10 units in X
+      boundaryZ: config.boundaryZ || 10.0,  // ±10 units in Z
       
       // Agent configuration
       agent: {
@@ -336,6 +341,24 @@ export class ClimbingEnvironment {
   }
   
   /**
+   * Check if agent is out of bounds (off the platform)
+   * @returns {boolean} True if agent is outside boundary limits
+   */
+  isOutOfBounds() {
+    if (!this.agentBody) return false;
+    
+    const agentPos = this.physicsEngine.getBodyPosition(this.agentBody);
+    
+    // Check if agent is outside X or Z boundaries
+    if (Math.abs(agentPos.x) > this.config.boundaryX || 
+        Math.abs(agentPos.z) > this.config.boundaryZ) {
+      return true;
+    }
+    
+    return false;
+  }
+
+  /**
    * Check if agent is touching a ledge
    * @returns {boolean} True if agent is in contact with a ledge
    */
@@ -434,6 +457,11 @@ export class ClimbingEnvironment {
       totalReward += this.config.rewardWeights.fall;
     }
     
+    // Check if out of bounds: add -100 if agent left the platform
+    if (this.isOutOfBounds()) {
+      totalReward += this.config.rewardWeights.outOfBounds;
+    }
+    
     // Reward ledge contact (being on a ledge)
     if (this.isTouchingLedge()) {
       totalReward += this.config.rewardWeights.ledgeGrab;
@@ -476,6 +504,11 @@ export class ClimbingEnvironment {
     
     // Episode ends if agent falls below threshold
     if (agentPos.y < this.config.fallThreshold) {
+      return true;
+    }
+    
+    // Episode ends if agent goes out of bounds
+    if (this.isOutOfBounds()) {
       return true;
     }
     
@@ -627,7 +660,9 @@ export class ClimbingEnvironment {
     
     // Add termination reason to info if episode is done
     if (done) {
-      if (agentPos.y < this.config.fallThreshold) {
+      if (this.isOutOfBounds()) {
+        info.terminationReason = 'out_of_bounds';
+      } else if (agentPos.y < this.config.fallThreshold) {
         info.terminationReason = 'fallen';
       } else if (agentPos.y >= this.config.goalHeight) {
         info.terminationReason = 'goal_reached';

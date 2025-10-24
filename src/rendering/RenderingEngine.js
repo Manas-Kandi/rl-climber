@@ -125,6 +125,44 @@ export class RenderingEngine {
   }
 
   /**
+   * Create boundary markers to show platform edges
+   * @param {number} boundaryX - X boundary limit
+   * @param {number} boundaryZ - Z boundary limit
+   */
+  createBoundaryMarkers(boundaryX = 10, boundaryZ = 10) {
+    const boundaryGroup = new THREE.Group();
+    
+    // Create thin red lines at the boundaries
+    const lineMaterial = new THREE.LineBasicMaterial({ 
+      color: 0xff0000,
+      linewidth: 2,
+      opacity: 0.5,
+      transparent: true
+    });
+    
+    // Create boundary lines
+    const boundaries = [
+      // Front edge (positive Z)
+      [new THREE.Vector3(-boundaryX, 0, boundaryZ), new THREE.Vector3(boundaryX, 0, boundaryZ)],
+      // Back edge (negative Z)
+      [new THREE.Vector3(-boundaryX, 0, -boundaryZ), new THREE.Vector3(boundaryX, 0, -boundaryZ)],
+      // Left edge (negative X)
+      [new THREE.Vector3(-boundaryX, 0, -boundaryZ), new THREE.Vector3(-boundaryX, 0, boundaryZ)],
+      // Right edge (positive X)
+      [new THREE.Vector3(boundaryX, 0, -boundaryZ), new THREE.Vector3(boundaryX, 0, boundaryZ)]
+    ];
+    
+    boundaries.forEach(([start, end]) => {
+      const geometry = new THREE.BufferGeometry().setFromPoints([start, end]);
+      const line = new THREE.Line(geometry, lineMaterial);
+      boundaryGroup.add(line);
+    });
+    
+    this.scene.add(boundaryGroup);
+    console.log('Boundary markers created at ±', boundaryX, '(X) and ±', boundaryZ, '(Z)');
+  }
+
+  /**
    * Create climbing wall with brown ledges (#8B4513)
    * @param {Array} ledgePositions - Array of ledge configurations
    * @returns {THREE.Group} Wall group containing all ledges

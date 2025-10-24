@@ -404,6 +404,9 @@ class ClimbingGameApp {
             this.config.environment.groundSize.depth
         );
         
+        // Create boundary markers (red lines showing platform edges)
+        this.renderingEngine.createBoundaryMarkers(10, 10);
+        
         // Create climbing wall with ledges
         const wallGroup = this.renderingEngine.createClimbingWall(this.config.environment.ledges);
         
