@@ -69,6 +69,10 @@ export class UIController {
       // View button
       btnToggleCharts: document.getElementById('btn-toggle-charts'),
       
+      // Scene buttons
+      btnSceneStaircase: document.getElementById('btn-scene-staircase'),
+      btnSceneWall: document.getElementById('btn-scene-wall'),
+      
       // Charts container
       chartsContainer: document.getElementById('charts-container'),
       
@@ -158,6 +162,10 @@ export class UIController {
     
     // Charts toggle button
     this.elements.btnToggleCharts?.addEventListener('click', () => this.onToggleCharts());
+    
+    // Scene buttons
+    this.elements.btnSceneStaircase?.addEventListener('click', () => this.onLoadScene('staircase'));
+    this.elements.btnSceneWall?.addEventListener('click', () => this.onLoadScene('wall'));
   }
 
   /**
@@ -822,6 +830,34 @@ export class UIController {
     this.showNotification(`Camera mode: ${newMode}`, 'success');
   }
   
+  /**
+   * Handle scene loading
+   */
+  onLoadScene(sceneName) {
+    const app = window.climbingGame;
+    if (!app || !app.sceneManager || !app.sceneBuilder) return;
+    
+    // Stop training if running
+    if (this.orchestrator.isTraining) {
+      this.orchestrator.stopTraining();
+    }
+    
+    // Load and build scene
+    const scene = app.sceneManager.loadScene(sceneName);
+    if (scene) {
+      app.sceneBuilder.buildScene(scene);
+      
+      // Update environment config
+      app.environment.config.goalHeight = scene.goalHeight;
+      Object.assign(app.environment.config.rewardWeights, scene.rewardConfig);
+      
+      // Reset environment
+      app.environment.reset();
+      
+      this.showNotification(`Scene loaded: ${sceneName}`, 'success');
+    }
+  }
+
   /**
    * Handle toggle charts button click
    */

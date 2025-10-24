@@ -265,6 +265,19 @@ export class PhysicsEngine {
   }
 
   /**
+   * Remove a body from the physics world
+   * @param {string} id - Body ID to remove
+   */
+  removeBody(id) {
+    const body = this.bodies.get(id);
+    if (body) {
+      this.world.removeBody(body);
+      this.bodies.delete(id);
+      console.log('Removed body:', id);
+    }
+  }
+
+  /**
    * Apply a continuous force to a body
    * @param {CANNON.Body} body - The body to apply force to
    * @param {Object} force - Force vector {x, y, z}

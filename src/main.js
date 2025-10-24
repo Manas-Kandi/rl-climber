@@ -14,6 +14,7 @@ import { ModelManager } from './training/ModelManager.js';
 import { UIController } from './ui/UIController.js';
 import { TrajectoryVisualizer } from './visualization/TrajectoryVisualizer.js';
 import { LivePlayMode } from './interaction/LivePlayMode.js';
+import { SceneManager, SceneBuilder } from './scenes/index.js';
 import * as tf from '@tensorflow/tfjs';
 import './diagnostics.js';
 import './test-jump-fix.js';
@@ -37,6 +38,8 @@ class ClimbingGameApp {
         // New features
         this.trajectoryVisualizer = null;
         this.livePlayMode = null;
+        this.sceneManager = null;
+        this.sceneBuilder = null;
         
         // Configuration
         this.config = {
@@ -239,6 +242,20 @@ class ClimbingGameApp {
             
             console.log('🎮 Initializing live play mode...');
             this.livePlayMode = new LivePlayMode(this.environment, this.agent, this.renderingEngine);
+            
+            console.log('🎬 Initializing scene system...');
+            this.sceneManager = new SceneManager(this.physicsEngine, this.renderingEngine);
+            this.sceneBuilder = new SceneBuilder(this.physicsEngine, this.renderingEngine);
+            
+            // Load staircase scene by default
+            const staircaseScene = this.sceneManager.loadScene('staircase');
+            if (staircaseScene) {
+                this.sceneBuilder.buildScene(staircaseScene);
+                // Update environment config with scene settings
+                this.environment.config.goalHeight = staircaseScene.goalHeight;
+                Object.assign(this.environment.config.rewardWeights, staircaseScene.rewardConfig);
+                console.log('✅ Staircase scene loaded and configured');
+            }
             
             // 8. Optimize performance
             console.log('🚀 Optimizing performance...');
