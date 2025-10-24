@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>3D RL Climbing Game</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Courier New', monospace;
+      background-color: #1a1a1a;
+      color: #ffffff;
+      overflow: hidden;
+    }
+
+    #canvas-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    #ui-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    #control-panel {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background-color: rgba(26, 26, 26, 0.9);
+      border: 1px solid #333;
+      padding: 15px;
+      pointer-events: auto;
+    }
+
+    #stats-panel {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background-color: rgba(26, 26, 26, 0.9);
+      border: 1px solid #333;
+      padding: 15px;
+      min-width: 200px;
+      pointer-events: auto;
+    }
+
+    #charts-container {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      right: 20px;
+      display: flex;
+      gap: 20px;
+      pointer-events: auto;
+    }
+
+    .chart-wrapper {
+      flex: 1;
+      background-color: rgba(26, 26, 26, 0.9);
+      border: 1px solid #333;
+      padding: 15px;
+      max-width: 500px;
+    }
+
+    button {
+      background-color: #333;
+      color: #fff;
+      border: 1px solid #555;
+      padding: 8px 16px;
+      margin: 5px;
+      cursor: pointer;
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+    }
+
+    button:hover {
+      background-color: #444;
+    }
+
+    button:disabled {
+      background-color: #222;
+      color: #666;
+      cursor: not-allowed;
+    }
+
+    .stat-item {
+      margin: 8px 0;
+      font-size: 14px;
+    }
+
+    .stat-label {
+      color: #888;
+    }
+
+    .stat-value {
+      color: #00ff00;
+      font-weight: bold;
+    }
+
+    #notification {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: rgba(0, 0, 0, 0.9);
+      border: 2px solid #00ff00;
+      padding: 20px 40px;
+      font-size: 18px;
+      display: none;
+      pointer-events: none;
+    }
+
+    #notification.error {
+      border-color: #ff0000;
+      color: #ff0000;
+    }
+
+    #notification.success {
+      border-color: #00ff00;
+      color: #00ff00;
+    }
+  </style>
+</head>
+<body>
+  <div id="canvas-container"></div>
+  
+  <div id="ui-overlay">
+    <div id="control-panel">
+      <h3>Controls</h3>
+      <div>
+        <button id="btn-start">Start Training</button>
+        <button id="btn-stop" disabled>Stop Training</button>
+      </div>
+      <div>
+        <button id="btn-save">Save Model</button>
+        <button id="btn-load">Load Model</button>
+      </div>
+    </div>
+
+    <div id="stats-panel">
+      <h3>Statistics</h3>
+      <div class="stat-item">
+        <span class="stat-label">Episode:</span>
+        <span class="stat-value" id="stat-episode">0</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">Avg Reward:</span>
+        <span class="stat-value" id="stat-reward">0.00</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">Success Rate:</span>
+        <span class="stat-value" id="stat-success">0.00%</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">Status:</span>
+        <span class="stat-value" id="stat-status">Ready</span>
+      </div>
+    </div>
+
+    <div id="charts-container">
+      <div class="chart-wrapper">
+        <canvas id="reward-chart"></canvas>
+      </div>
+      <div class="chart-wrapper">
+        <canvas id="success-chart"></canvas>
+      </div>
+    </div>
+
+    <div id="notification"></div>
+  </div>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>

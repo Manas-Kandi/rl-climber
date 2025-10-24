@@ -1,0 +1,30 @@
+{
+  "name": "3d-rl-climbing-game",
+  "version": "1.0.0",
+  "description": "A minimalist web-based 3D climbing game where an AI agent learns to climb using reinforcement learning",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "keywords": [
+    "reinforcement-learning",
+    "3d",
+    "climbing",
+    "ai",
+    "tensorflow",
+    "threejs"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "three": "^0.160.0",
+    "cannon-es": "^0.20.0",
+    "@tensorflow/tfjs": "^4.15.0",
+    "chart.js": "^4.4.1"
+  },
+  "devDependencies": {
+    "vite": "^5.0.11"
+  }
+}
