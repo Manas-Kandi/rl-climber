@@ -26,6 +26,11 @@ export class RenderingEngine {
     // Camera following
     this.cameraTarget = new THREE.Vector3(0, 5, 10);
     this.cameraLerpSpeed = 0.05;
+    
+    // Camera modes: 'fixed' or 'follow'
+    this.cameraMode = 'fixed';
+    this.fixedCameraPosition = new THREE.Vector3(0, 10, 20);
+    this.fixedCameraLookAt = new THREE.Vector3(0, 7, 0);
   }
 
   /**
@@ -43,8 +48,9 @@ export class RenderingEngine {
       0.1, // near clipping plane
       1000 // far clipping plane
     );
-    this.camera.position.set(0, 5, 10);
-    this.camera.lookAt(0, 0, 0);
+    // Set initial camera position (fixed mode by default)
+    this.camera.position.copy(this.fixedCameraPosition);
+    this.camera.lookAt(this.fixedCameraLookAt);
 
     // Create WebGL renderer
     this.renderer = new THREE.WebGLRenderer({
@@ -222,27 +228,65 @@ export class RenderingEngine {
   }
 
   /**
-   * Update camera to smoothly follow the agent
+   * Update camera based on current mode
    * @param {Object} agentPosition - Agent position {x, y, z}
    */
   updateCamera(agentPosition) {
     if (!this.camera || !agentPosition) return;
 
-    // Calculate desired camera position relative to agent
-    const offset = new THREE.Vector3(0, 5, 10);
-    const desiredPosition = new THREE.Vector3(
-      agentPosition.x + offset.x,
-      agentPosition.y + offset.y,
-      agentPosition.z + offset.z
-    );
+    if (this.cameraMode === 'follow') {
+      // Follow mode: camera follows agent
+      const offset = new THREE.Vector3(0, 5, 10);
+      const desiredPosition = new THREE.Vector3(
+        agentPosition.x + offset.x,
+        agentPosition.y + offset.y,
+        agentPosition.z + offset.z
+      );
 
-    // Smoothly interpolate camera position using lerp
-    this.camera.position.lerp(desiredPosition, this.cameraLerpSpeed);
+      // Smoothly interpolate camera position using lerp
+      this.camera.position.lerp(desiredPosition, this.cameraLerpSpeed);
 
-    // Make camera look at agent position
-    const lookAtTarget = new THREE.Vector3(agentPosition.x, agentPosition.y, agentPosition.z);
-    this.cameraTarget.lerp(lookAtTarget, this.cameraLerpSpeed);
-    this.camera.lookAt(this.cameraTarget);
+      // Make camera look at agent position
+      const lookAtTarget = new THREE.Vector3(agentPosition.x, agentPosition.y, agentPosition.z);
+      this.cameraTarget.lerp(lookAtTarget, this.cameraLerpSpeed);
+      this.camera.lookAt(this.cameraTarget);
+    } else {
+      // Fixed mode: camera stays in fixed position
+      this.camera.position.copy(this.fixedCameraPosition);
+      this.camera.lookAt(this.fixedCameraLookAt);
+    }
+  }
+  
+  /**
+   * Set camera mode
+   * @param {string} mode - 'fixed' or 'follow'
+   */
+  setCameraMode(mode) {
+    if (mode !== 'fixed' && mode !== 'follow') {
+      console.warn('Invalid camera mode:', mode);
+      return;
+    }
+    
+    this.cameraMode = mode;
+    console.log('Camera mode set to:', mode);
+  }
+  
+  /**
+   * Toggle between camera modes
+   * @returns {string} New camera mode
+   */
+  toggleCameraMode() {
+    this.cameraMode = this.cameraMode === 'fixed' ? 'follow' : 'fixed';
+    console.log('Camera mode toggled to:', this.cameraMode);
+    return this.cameraMode;
+  }
+  
+  /**
+   * Get current camera mode
+   * @returns {string} Current camera mode
+   */
+  getCameraMode() {
+    return this.cameraMode;
   }
 
   /**

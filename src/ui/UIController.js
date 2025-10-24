@@ -35,6 +35,7 @@ export class UIController {
     this.setupDOMReferences();
     this.setupEventListeners();
     this.setupOrchestatorCallbacks();
+    this.setupKeyboardShortcuts();
     await this.initializeCharts();
     this.updateModelInfo();
     console.log('UIController initialized');
@@ -61,6 +62,9 @@ export class UIController {
       btnLiveAuto: document.getElementById('btn-live-auto'),
       btnLiveManual: document.getElementById('btn-live-manual'),
       btnStopLive: document.getElementById('btn-stop-live'),
+      
+      // Camera button
+      btnToggleCamera: document.getElementById('btn-toggle-camera'),
       
       // Stats display
       statEpisode: document.getElementById('stat-episode'),
@@ -91,6 +95,23 @@ export class UIController {
   }
 
   /**
+   * Set up keyboard shortcuts
+   */
+  setupKeyboardShortcuts() {
+    document.addEventListener('keydown', (event) => {
+      // C key to toggle camera
+      if (event.code === 'KeyC' && !event.ctrlKey && !event.metaKey) {
+        // Don't trigger if user is typing in an input field
+        if (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA') {
+          return;
+        }
+        event.preventDefault();
+        this.onToggleCamera();
+      }
+    });
+  }
+
+  /**
    * Set up event listeners for UI interactions
    */
   setupEventListeners() {
@@ -118,6 +139,9 @@ export class UIController {
     this.elements.btnLiveAuto?.addEventListener('click', () => this.onStartLivePlay('autonomous'));
     this.elements.btnLiveManual?.addEventListener('click', () => this.onStartLivePlay('manual'));
     this.elements.btnStopLive?.addEventListener('click', () => this.onStopLivePlay());
+    
+    // Camera button
+    this.elements.btnToggleCamera?.addEventListener('click', () => this.onToggleCamera());
   }
 
   /**
@@ -762,6 +786,24 @@ export class UIController {
     this.setLivePlayState(false);
     
     this.showNotification('Live play stopped', 'success');
+  }
+  
+  /**
+   * Handle toggle camera button click
+   */
+  onToggleCamera() {
+    const app = window.climbingGame;
+    if (!app || !app.renderingEngine) return;
+    
+    const newMode = app.renderingEngine.toggleCameraMode();
+    
+    // Update button text
+    if (this.elements.btnToggleCamera) {
+      const modeText = newMode === 'fixed' ? 'Fixed' : 'Follow';
+      this.elements.btnToggleCamera.textContent = `Toggle Camera (${modeText})`;
+    }
+    
+    this.showNotification(`Camera mode: ${newMode}`, 'success');
   }
   
   /**
