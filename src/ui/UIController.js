@@ -4,9 +4,10 @@
  * and the training orchestrator.
  */
 export class UIController {
-  constructor(orchestrator, agent) {
+  constructor(orchestrator, agent, modelManager = null) {
     this.orchestrator = orchestrator;
     this.agent = agent;
+    this.modelManager = modelManager;
     
     // DOM element references
     this.elements = {};
@@ -18,6 +19,14 @@ export class UIController {
     this.rewardChart = null;
     this.successChart = null;
   }
+  
+  /**
+   * Set the model manager (can be called after construction)
+   */
+  setModelManager(modelManager) {
+    this.modelManager = modelManager;
+    this.updateModelInfo();
+  }
 
   /**
    * Initialize the UI controller by setting up DOM references and event listeners
@@ -27,6 +36,7 @@ export class UIController {
     this.setupEventListeners();
     this.setupOrchestatorCallbacks();
     await this.initializeCharts();
+    this.updateModelInfo();
     console.log('UIController initialized');
   }
 
@@ -58,6 +68,12 @@ export class UIController {
       statSuccess: document.getElementById('stat-success'),
       statStatus: document.getElementById('stat-status'),
       
+      // Model info display
+      modelInfo: document.getElementById('model-info'),
+      modelVersion: document.getElementById('model-version'),
+      modelEpisodes: document.getElementById('model-episodes'),
+      modelBestReward: document.getElementById('model-best-reward'),
+      
       // Charts
       rewardChart: document.getElementById('reward-chart'),
       successChart: document.getElementById('success-chart'),
@@ -85,6 +101,12 @@ export class UIController {
     // Model management buttons
     this.elements.btnSave.addEventListener('click', () => this.onSaveModel());
     this.elements.btnLoad.addEventListener('click', () => this.onLoadModel());
+    
+    // Add reset button handler if it exists
+    const btnReset = document.getElementById('btn-reset');
+    if (btnReset) {
+      btnReset.addEventListener('click', () => this.onResetModel());
+    }
     
     // Visualization buttons
     this.elements.btnRecord?.addEventListener('click', () => this.onToggleRecording());
@@ -164,7 +186,22 @@ export class UIController {
   async onSaveModel() {
     try {
       this.showNotification('Saving model...', 'success');
-      await this.agent.saveModel('localstorage://climbing-model');
+      
+      if (this.modelManager) {
+        // Use model manager for saving with metadata
+        const stats = this.orchestrator.getTrainingStats();
+        await this.modelManager.saveModel({
+          episodeCount: stats.totalEpisodes,
+          totalSteps: stats.totalSteps,
+          avgReward: stats.avgReward,
+          successRate: stats.successRate
+        });
+        this.updateModelInfo();
+      } else {
+        // Fallback to direct agent save
+        await this.agent.saveModel('localstorage://climbing-model');
+      }
+      
       this.showNotification('Model saved successfully!', 'success');
       
     } catch (error) {
@@ -179,12 +216,74 @@ export class UIController {
   async onLoadModel() {
     try {
       this.showNotification('Loading model...', 'success');
-      await this.agent.loadModel('localstorage://climbing-model');
+      
+      if (this.modelManager) {
+        // Use model manager for loading
+        await this.modelManager.loadLatestModel();
+        this.updateModelInfo();
+      } else {
+        // Fallback to direct agent load
+        await this.agent.loadModel('localstorage://climbing-model');
+      }
+      
       this.showNotification('Model loaded successfully!', 'success');
       
     } catch (error) {
       console.error('Error loading model:', error);
       this.showNotification('Error loading model: ' + error.message, 'error');
+    }
+  }
+  
+  /**
+   * Handle reset model button click
+   */
+  async onResetModel() {
+    try {
+      const confirmed = confirm('Are you sure you want to reset all saved models? This cannot be undone.');
+      if (!confirmed) return;
+      
+      this.showNotification('Resetting models...', 'success');
+      
+      if (this.modelManager) {
+        await this.modelManager.reset();
+        this.updateModelInfo();
+      } else {
+        // Fallback to direct agent delete
+        if (this.agent.deleteModel) {
+          await this.agent.deleteModel('localstorage://climbing-model');
+        }
+      }
+      
+      // Reset training stats
+      this.orchestrator.resetStats();
+      
+      this.showNotification('All models reset successfully!', 'success');
+      
+    } catch (error) {
+      console.error('Error resetting models:', error);
+      this.showNotification('Error resetting models: ' + error.message, 'error');
+    }
+  }
+  
+  /**
+   * Update model information display
+   */
+  updateModelInfo() {
+    if (!this.modelManager) return;
+    
+    const metadata = this.modelManager.getMetadata();
+    
+    if (this.elements.modelVersion) {
+      this.elements.modelVersion.textContent = `v${metadata.version}`;
+    }
+    
+    if (this.elements.modelEpisodes) {
+      this.elements.modelEpisodes.textContent = metadata.totalEpisodes;
+    }
+    
+    if (this.elements.modelBestReward) {
+      const bestReward = metadata.bestReward === -Infinity ? 0 : metadata.bestReward;
+      this.elements.modelBestReward.textContent = bestReward.toFixed(2);
     }
   }
 
@@ -232,6 +331,11 @@ export class UIController {
 
     if (stats.episodeSteps !== undefined && this.elements.statSteps) {
       this.elements.statSteps.textContent = stats.episodeSteps;
+    }
+    
+    // Update model info periodically
+    if (this.modelManager && stats.currentEpisode % 10 === 0) {
+      this.updateModelInfo();
     }
 
     // Log stats update for debugging

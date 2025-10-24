@@ -29,12 +29,16 @@ export class TrainingOrchestrator {
             statsUpdateInterval: 10, // Update stats every N episodes
             batchSize: 32,
             targetUpdateFreq: 100, // For DQN
+            autoSaveInterval: 10, // Auto-save every N episodes
             ...config
         };
         
         // Callback arrays for events
         this.episodeCompleteCallbacks = [];
         this.trainingCompleteCallbacks = [];
+        
+        // Model manager will be set externally
+        this.modelManager = null;
     }
 
     /**
@@ -189,6 +193,14 @@ export class TrainingOrchestrator {
     }
 
     /**
+     * Set the model manager for persistent training
+     * @param {ModelManager} modelManager - The model manager instance
+     */
+    setModelManager(modelManager) {
+        this.modelManager = modelManager;
+    }
+
+    /**
      * Start the main training loop
      * @param {number} numEpisodes - Number of episodes to train for
      * @returns {Promise<void>}
@@ -273,13 +285,49 @@ export class TrainingOrchestrator {
                 console.log(`Episode ${episode}: Avg Reward: ${avgReward.toFixed(2)}, Success Rate: ${(successRate * 100).toFixed(1)}%`);
             }
             
+            // Auto-save model periodically if model manager is available
+            if (this.modelManager && episode > 0 && episode % this.config.autoSaveInterval === 0) {
+                try {
+                    const avgReward = this.getAverageReward(Math.min(100, this.rewardHistory.length));
+                    const successRate = this.getSuccessRate(Math.min(100, this.successHistory.length));
+                    
+                    await this.modelManager.saveModel({
+                        episodeCount: episode,
+                        totalSteps: episode * (this.environment.maxSteps || 500),
+                        avgReward: avgReward,
+                        successRate: successRate
+                    });
+                } catch (error) {
+                    console.error('Error auto-saving model:', error);
+                }
+            }
+            
             // Allow other tasks to run
             await this.sleep(1);
         }
         
-        // Training complete
+        // Training complete - save final model
         this.isTraining = false;
         console.log('Training completed!');
+        
+        // Save final model if model manager is available
+        if (this.modelManager) {
+            try {
+                const avgReward = this.getAverageReward(Math.min(100, this.rewardHistory.length));
+                const successRate = this.getSuccessRate(Math.min(100, this.successHistory.length));
+                
+                await this.modelManager.saveModel({
+                    episodeCount: totalEpisodes,
+                    totalSteps: totalEpisodes * (this.environment.maxSteps || 500),
+                    avgReward: avgReward,
+                    successRate: successRate
+                });
+                
+                console.log('✅ Final model saved');
+            } catch (error) {
+                console.error('Error saving final model:', error);
+            }
+        }
         
         // Call training complete callbacks
         const finalStats = this.getTrainingStats();

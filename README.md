@@ -11,7 +11,9 @@ A minimalist web-based 3D climbing game where an AI agent learns to climb obstac
 - **⚡ Physics Simulation** - Realistic climbing physics with Cannon-es
 - **🤖 Reinforcement Learning** - Choose between PPO and DQN algorithms (TensorFlow.js)
 - **📊 Live Statistics** - Real-time training charts and performance metrics
-- **💾 Model Persistence** - Save and load trained models in browser storage
+- **💾 Progressive Learning** - Models automatically save and improve over multiple sessions
+- **🔄 Auto-Load Latest Model** - Automatically loads the most recent trained model on startup
+- **📈 Training History** - Track cumulative progress across all training sessions
 - **🌐 Browser-based** - No backend required, runs entirely client-side
 - **🎯 Performance Optimized** - Adaptive rendering and memory management
 - **🧪 Hyperparameter Tuning** - Built-in tools for optimization
@@ -85,10 +87,29 @@ The built files will be in the `dist/` directory, ready for deployment to any st
 
 | Button | Action |
 |--------|--------|
-| Start Training | Begin the RL training loop |
+| Start Training | Begin the RL training loop (continues from last saved model) |
 | Stop Training | Pause/stop the current training |
-| Save Model | Save the current model to browser storage |
-| Load Model | Load a previously saved model |
+| Save Model | Manually save the current model with metadata |
+| Load Model | Reload the latest saved model |
+| Reset All | Delete all saved models and start fresh |
+
+### Progressive Learning System
+
+The game now features **persistent model training** that builds on previous sessions:
+
+- **Automatic Model Loading**: When you start the app, it automatically loads the most recent trained model
+- **Cumulative Training**: Each training session builds on top of the previous one, not starting from scratch
+- **Version Tracking**: Models are versioned and tracked with metadata (episodes trained, best reward, etc.)
+- **Auto-Save**: Models automatically save every 10 episodes during training
+- **Training History**: View total episodes trained across all sessions in the Model Info panel
+
+**How it works:**
+1. First time: Start training with a fresh model
+2. Model auto-saves every 10 episodes
+3. Close the browser and come back later
+4. Model automatically loads on startup
+5. Hit "Start Training" to continue improving from where you left off
+6. Over time, the model gets progressively better!
 
 ## 🏗️ Project Structure
 

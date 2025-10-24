@@ -10,6 +10,7 @@ import { ClimbingEnvironment } from './rl/ClimbingEnvironment.js';
 import { DQNAgent } from './rl/DQNAgent.js';
 import { PPOAgent } from './rl/PPOAgent.js';
 import { TrainingOrchestrator } from './training/TrainingOrchestrator.js';
+import { ModelManager } from './training/ModelManager.js';
 import { UIController } from './ui/UIController.js';
 import { TrajectoryVisualizer } from './visualization/TrajectoryVisualizer.js';
 import { LivePlayMode } from './interaction/LivePlayMode.js';
@@ -26,6 +27,7 @@ class ClimbingGameApp {
         this.environment = null;
         this.agent = null;
         this.orchestrator = null;
+        this.modelManager = null;
         this.uiController = null;
         
         // New features
@@ -198,10 +200,26 @@ class ClimbingGameApp {
                 throw new Error(`Failed to initialize training orchestrator: ${error.message}`);
             }
             
+            // 5.5. Create ModelManager and load latest model
+            console.log('📦 Initializing model manager...');
+            try {
+                this.modelManager = new ModelManager(this.agent, {
+                    autoSave: true,
+                    saveInterval: 10
+                });
+                await this.modelManager.init();
+                
+                // Connect model manager to orchestrator
+                this.orchestrator.setModelManager(this.modelManager);
+            } catch (error) {
+                console.error('Failed to initialize model manager:', error);
+                console.log('⚠️ Continuing without persistent model management');
+            }
+            
             // 6. Create UIController with orchestrator
             console.log('🖥️ Initializing UI controller...');
             try {
-                this.uiController = new UIController(this.orchestrator, this.agent);
+                this.uiController = new UIController(this.orchestrator, this.agent, this.modelManager);
                 await this.uiController.init();
             } catch (error) {
                 throw new Error(`Failed to initialize UI controller: ${error.message}`);
