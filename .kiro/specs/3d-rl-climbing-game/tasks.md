@@ -61,8 +61,8 @@
     - Test force application with simple scenarios
     - _Requirements: 2.3_
 
-- [ ] 4. Implement RL environment interface
-  - [ ] 4.1 Create ClimbingEnvironment class with basic structure
+- [x] 4. Implement RL environment interface
+  - [x] 4.1 Create ClimbingEnvironment class with basic structure
     - Write ClimbingEnvironment constructor accepting physics, rendering engines, and config
     - Store references to physics engine, rendering engine, and agent body
     - Initialize episode tracking variables (step count, total reward)
@@ -70,7 +70,7 @@
     - Store environment configuration (max steps, reward weights, ledge positions)
     - _Requirements: 3.1, 2.3, 2.4_
   
-  - [ ] 4.2 Implement state space representation
+  - [x] 4.2 Implement state space representation
     - Write getState() method to return 9D Float32Array
     - Extract agent position (x, y, z) from physics engine
     - Extract agent velocity (vx, vy, vz) from physics engine
@@ -81,7 +81,7 @@
     - Write unit tests for state calculation
     - _Requirements: 2.4, 3.9_
   
-  - [ ] 4.3 Implement reset() method
+  - [x] 4.3 Implement reset() method
     - Write reset() method to initialize new episode
     - Reset agent body position to start position (0, 1, 0)
     - Reset agent body velocity to zero
@@ -90,7 +90,7 @@
     - Return initial state as Float32Array
     - _Requirements: 3.1_
   
-  - [ ] 4.4 Implement reward calculation logic
+  - [x] 4.4 Implement reward calculation logic
     - Write calculateReward() method accepting previous state, action, new state
     - Calculate height gain reward: (newY - prevY) * heightGainWeight
     - Add survival reward: +0.1 per step
@@ -101,7 +101,7 @@
     - Return total reward as number
     - _Requirements: 3.3, 3.4, 3.5, 3.6, 3.7_
   
-  - [ ] 4.5 Implement step() method
+  - [x] 4.5 Implement step() method
     - Write step(action) method to execute one environment step
     - Map action integer to force vector based on action constants
     - Apply force or impulse to agent body via physics engine
