@@ -1,0 +1,16 @@
+{
+  "enabled": true,
+  "name": "Task Completion Auto-Commit",
+  "description": "Monitors the tasks.md file for task completions, automatically commits and pushes changes with appropriate commit messages, then starts the next task",
+  "version": "1",
+  "when": {
+    "type": "fileEdited",
+    "patterns": [
+      "tasks.md"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "A task has been completed in tasks.md. Please review the completed task, commit and push the file with an appropriate commit message that describes what was accomplished, then identify and start working on the next task in the list."
+  }
+}
