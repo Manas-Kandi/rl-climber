@@ -166,8 +166,8 @@
     - Handle errors gracefully with try-catch
     - _Requirements: 4.6, 4.7_
 
-- [ ] 6. Implement PPO agent as alternative algorithm
-  - [ ] 6.1 Create PPO agent class with actor-critic architecture
+- [x] 6. Implement PPO agent as alternative algorithm
+  - [x] 6.1 Create PPO agent class with actor-critic architecture
     - Write PPOAgent constructor accepting state size (9), action size (6), config
     - Implement buildActorNetwork(): Input(9) → Dense(64, ReLU) → Dense(64, ReLU) → Dense(6, Softmax)
     - Implement buildCriticNetwork(): Input(9) → Dense(64, ReLU) → Dense(64, ReLU) → Dense(1, Linear)
@@ -176,7 +176,7 @@
     - Store hyperparameters: gamma, lambda, clipEpsilon, entropyCoef, valueCoef
     - _Requirements: 4.1, 4.2, 5.7, 5.8_
   
-  - [ ] 6.2 Implement PPO action selection with policy sampling
+  - [x] 6.2 Implement PPO action selection with policy sampling
     - Write selectAction(state, training) method
     - Run forward pass through actor network to get action probabilities
     - Run forward pass through critic network to get state value
@@ -187,7 +187,7 @@
     - Wrap tensor operations in tf.tidy()
     - _Requirements: 5.11_
   
-  - [ ] 6.3 Implement Generalized Advantage Estimation (GAE)
+  - [x] 6.3 Implement Generalized Advantage Estimation (GAE)
     - Write computeAdvantages(rewards, values, dones) method
     - Initialize advantages array with same length as rewards
     - Iterate backwards through trajectory
@@ -197,7 +197,7 @@
     - Normalize advantages (subtract mean, divide by std)
     - _Requirements: 5.1_
   
-  - [ ] 6.4 Implement PPO training logic with clipped objective
+  - [x] 6.4 Implement PPO training logic with clipped objective
     - Write train(trajectories) method accepting batch of experiences
     - Extract states, actions, oldLogProbs, advantages, returns from trajectories
     - Perform K epochs of minibatch updates (K=10)
@@ -210,7 +210,7 @@
     - Return {actorLoss, criticLoss, entropy}
     - _Requirements: 5.2, 5.3, 5.11_
   
-  - [ ] 6.5 Implement model save and load for PPO
+  - [x] 6.5 Implement model save and load for PPO
     - Write async saveModel(path) to save both actor and critic networks
     - Save actor to path + '-actor' and critic to path + '-critic'
     - Write async loadModel(path) to load both networks
