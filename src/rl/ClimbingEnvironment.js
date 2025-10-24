@@ -23,6 +23,11 @@ export class ClimbingEnvironment {
     this.totalReward = 0;
     this.episodeStartTime = 0;
     
+    // Jump mechanics
+    this.canJump = true;
+    this.jumpCooldown = 0;
+    this.jumpCooldownSteps = 5; // Must wait 5 steps between jumps
+    
     // Trajectory recording
     this.recordTrajectories = false;
     this.currentTrajectory = [];
@@ -82,6 +87,9 @@ export class ClimbingEnvironment {
         grab: config.actionForces?.grab || 2.0
       }
     };
+    
+    // Expose maxSteps for easier access
+    this.maxSteps = this.config.maxSteps;
     
     // Initialize agent body if physics engine is available
     if (this.physicsEngine) {
@@ -303,6 +311,10 @@ export class ClimbingEnvironment {
     // Record episode start time
     this.episodeStartTime = Date.now();
     
+    // Reset jump mechanics
+    this.canJump = true;
+    this.jumpCooldown = 0;
+    
     // Start new trajectory recording if enabled
     if (this.recordTrajectories) {
       this.currentTrajectory = [];
@@ -324,6 +336,54 @@ export class ClimbingEnvironment {
   }
   
   /**
+   * Check if agent is touching a ledge
+   * @returns {boolean} True if agent is in contact with a ledge
+   */
+  isTouchingLedge() {
+    if (!this.agentBody) return false;
+    
+    const collidingBodies = this.physicsEngine.getCollidingBodies(this.agentBody);
+    
+    for (const body of collidingBodies) {
+      const bodyId = this.getBodyId(body);
+      if (bodyId && bodyId.includes('ledge')) {
+        return true;
+      }
+    }
+    
+    return false;
+  }
+
+  /**
+   * Check if agent is grounded (touching ground or ledge)
+   * @returns {boolean} True if agent is on ground or ledge
+   */
+  isGrounded() {
+    if (!this.agentBody) return false;
+    
+    const agentPos = this.physicsEngine.getBodyPosition(this.agentBody);
+    const agentVel = this.physicsEngine.getBodyVelocity(this.agentBody);
+    
+    // Check if agent has low vertical velocity (not falling fast)
+    if (Math.abs(agentVel.y) > 2.0) {
+      return false;
+    }
+    
+    // Check if agent is in contact with ground or ledges
+    const collidingBodies = this.physicsEngine.getCollidingBodies(this.agentBody);
+    
+    for (const body of collidingBodies) {
+      const bodyId = this.getBodyId(body);
+      // Agent is grounded if touching ground or any ledge
+      if (bodyId && (bodyId === 'ground' || bodyId.includes('ledge'))) {
+        return true;
+      }
+    }
+    
+    return false;
+  }
+
+  /**
    * Calculate reward for the current step
    * @param {Float32Array} prevState - Previous state vector
    * @param {number} action - Action taken
@@ -340,15 +400,22 @@ export class ClimbingEnvironment {
     const agentPos = this.physicsEngine.getBodyPosition(this.agentBody);
     
     // Calculate height gain reward: (newY - prevY) * heightGainWeight
+    // Only reward height gain if agent is grounded or grabbing a ledge
     if (prevState && newState) {
       // Previous Y is normalized by dividing by 15.0, so multiply to denormalize
       const prevY = prevState[1] * 15.0;
       const newY = agentPos.y;
       const heightGain = newY - prevY;
       
-      if (heightGain > 0) {
+      // Only reward positive height gain when grounded (prevents flying exploit)
+      if (heightGain > 0 && this.isGrounded()) {
         totalReward += heightGain * this.config.rewardWeights.heightGain;
       }
+    }
+    
+    // Penalize failed jump attempts (trying to jump while airborne)
+    if (action === this.ACTION_SPACE.JUMP && !this.isGrounded()) {
+      totalReward -= 0.5; // Small penalty for wasted jump
     }
     
     // Add survival reward: +0.1 per step
@@ -367,15 +434,14 @@ export class ClimbingEnvironment {
       totalReward += this.config.rewardWeights.fall;
     }
     
-    // Check if ledge grabbed: add +5 if collision with ledge detected
-    const collidingBodies = this.physicsEngine.getCollidingBodies(this.agentBody);
-    for (const body of collidingBodies) {
-      // Check if colliding body is a ledge (bodies with 'ledge' in their ID)
-      const bodyId = this.getBodyId(body);
-      if (bodyId && bodyId.includes('ledge')) {
-        totalReward += this.config.rewardWeights.ledgeGrab;
-        break; // Only reward once per step even if touching multiple ledges
-      }
+    // Reward ledge contact (being on a ledge)
+    if (this.isTouchingLedge()) {
+      totalReward += this.config.rewardWeights.ledgeGrab;
+    }
+    
+    // Extra reward for successful grab action on a ledge
+    if (action === this.ACTION_SPACE.GRAB && this.isTouchingLedge()) {
+      totalReward += 2.0; // Bonus for using grab correctly
     }
     
     return totalReward;
@@ -464,12 +530,25 @@ export class ClimbingEnvironment {
         forceVector = { x: actionForces.move, y: 0, z: 0 };
         break;
       case this.ACTION_SPACE.JUMP:
-        forceVector = { x: 0, y: actionForces.jump, z: 0 };
-        useImpulse = true; // Jump uses impulse for instant effect
+        // Only allow jump if grounded and cooldown expired
+        if (this.isGrounded() && this.jumpCooldown === 0) {
+          forceVector = { x: 0, y: actionForces.jump, z: 0 };
+          useImpulse = true; // Jump uses impulse for instant effect
+          this.jumpCooldown = this.jumpCooldownSteps; // Start cooldown
+        } else {
+          // Jump failed - no force applied
+          forceVector = { x: 0, y: 0, z: 0 };
+        }
         break;
       case this.ACTION_SPACE.GRAB:
-        // Grab applies a small upward force to help with ledge grabbing
-        forceVector = { x: 0, y: actionForces.grab, z: 0 };
+        // Grab only works when touching a ledge
+        const touchingLedge = this.isTouchingLedge();
+        if (touchingLedge) {
+          forceVector = { x: 0, y: actionForces.grab, z: 0 };
+        } else {
+          // Grab failed - no force applied
+          forceVector = { x: 0, y: 0, z: 0 };
+        }
         break;
       default:
         console.warn('Invalid action:', action);
@@ -500,6 +579,11 @@ export class ClimbingEnvironment {
     
     // Update total reward
     this.totalReward += reward;
+    
+    // Decrement jump cooldown
+    if (this.jumpCooldown > 0) {
+      this.jumpCooldown--;
+    }
     
     // Create info object with additional debug information
     const agentPos = this.physicsEngine.getBodyPosition(this.agentBody);

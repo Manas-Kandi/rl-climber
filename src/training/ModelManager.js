@@ -142,7 +142,9 @@ export class ModelManager {
             
             console.log(`✅ Model saved (v${this.metadata.version})`);
             console.log(`   Total episodes: ${this.metadata.totalEpisodes}`);
+            console.log(`   Avg reward: ${this.metadata.avgReward.toFixed(2)}`);
             console.log(`   Best reward: ${this.metadata.bestReward.toFixed(2)}`);
+            console.log(`   Success rate: ${(this.metadata.successRate * 100).toFixed(1)}%`);
             
             return true;
         } catch (error) {

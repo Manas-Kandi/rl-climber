@@ -15,6 +15,8 @@ import { UIController } from './ui/UIController.js';
 import { TrajectoryVisualizer } from './visualization/TrajectoryVisualizer.js';
 import { LivePlayMode } from './interaction/LivePlayMode.js';
 import * as tf from '@tensorflow/tfjs';
+import './diagnostics.js';
+import './test-jump-fix.js';
 
 /**
  * Main application class that coordinates all components

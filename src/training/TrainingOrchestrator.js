@@ -55,7 +55,8 @@ export class TrainingOrchestrator {
         let done = false;
         
         // Episode loop
-        while (!done && steps < this.environment.maxSteps) {
+        const maxSteps = this.environment.config?.maxSteps || this.environment.maxSteps || 500;
+        while (!done && steps < maxSteps) {
             // Select action using epsilon-greedy policy
             const epsilon = this.agent.epsilon;
             const action = this.agent.selectAction(state, epsilon);
@@ -68,11 +69,11 @@ export class TrainingOrchestrator {
             this.agent.remember(state, action, reward, nextState, isDone);
             
             // Train if buffer has enough samples
-            if (this.agent.memory.length >= this.config.batchSize) {
-                const loss = this.agent.replay(this.config.batchSize);
+            if (this.agent.canTrain && this.agent.canTrain(this.config.batchSize)) {
+                const trainResult = this.agent.train(this.config.batchSize);
                 // Store loss for monitoring if needed
-                if (info && loss !== undefined) {
-                    info.loss = loss;
+                if (info && trainResult && trainResult.loss !== undefined) {
+                    info.loss = trainResult.loss;
                 }
             }
             
@@ -93,6 +94,11 @@ export class TrainingOrchestrator {
         
         // Determine if episode was successful
         const success = this.environment.isGoalReached ? this.environment.isGoalReached() : totalReward > 50;
+        
+        // Debug: Log if reward is exactly 0
+        if (totalReward === 0) {
+            console.warn(`⚠️ DQN Episode ended with exactly 0 reward! Steps: ${steps}, Done: ${done}`);
+        }
         
         return {
             episodeReward: totalReward,
@@ -123,7 +129,8 @@ export class TrainingOrchestrator {
         let done = false;
         
         // Episode loop
-        while (!done && steps < this.environment.maxSteps) {
+        const maxSteps = this.environment.config?.maxSteps || this.environment.maxSteps || 500;
+        while (!done && steps < maxSteps) {
             // Select action using policy (training=true for exploration)
             const actionResult = this.agent.selectAction(state, true);
             const { action, logProb, value } = actionResult;
@@ -251,6 +258,11 @@ export class TrainingOrchestrator {
             // Store episode results in history arrays
             this.rewardHistory.push(episodeResult.episodeReward);
             this.successHistory.push(episodeResult.success);
+            
+            // Debug: Log rewards occasionally
+            if (episode % 100 === 0) {
+                console.log(`📊 Episode ${episode}: Reward=${episodeResult.episodeReward.toFixed(2)}, Steps=${episodeResult.episodeSteps}, Success=${episodeResult.success}`);
+            }
             
             // Update hyperparameters if needed
             if (this.agent.constructor.name === 'DQNAgent' || this.agent.memory) {
