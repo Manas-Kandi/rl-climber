@@ -35,11 +35,22 @@ export class UIController {
    */
   setupDOMReferences() {
     this.elements = {
-      // Buttons
+      // Training buttons
       btnStart: document.getElementById('btn-start'),
       btnStop: document.getElementById('btn-stop'),
       btnSave: document.getElementById('btn-save'),
       btnLoad: document.getElementById('btn-load'),
+      
+      // Visualization buttons
+      btnRecord: document.getElementById('btn-record'),
+      btnVisualize: document.getElementById('btn-visualize'),
+      btnReplay: document.getElementById('btn-replay'),
+      btnClearHistory: document.getElementById('btn-clear-history'),
+      
+      // Live play buttons
+      btnLiveAuto: document.getElementById('btn-live-auto'),
+      btnLiveManual: document.getElementById('btn-live-manual'),
+      btnStopLive: document.getElementById('btn-stop-live'),
       
       // Stats display
       statEpisode: document.getElementById('stat-episode'),
@@ -74,6 +85,17 @@ export class UIController {
     // Model management buttons
     this.elements.btnSave.addEventListener('click', () => this.onSaveModel());
     this.elements.btnLoad.addEventListener('click', () => this.onLoadModel());
+    
+    // Visualization buttons
+    this.elements.btnRecord?.addEventListener('click', () => this.onToggleRecording());
+    this.elements.btnVisualize?.addEventListener('click', () => this.onVisualizeTrajectories());
+    this.elements.btnReplay?.addEventListener('click', () => this.onReplayTrajectory());
+    this.elements.btnClearHistory?.addEventListener('click', () => this.onClearHistory());
+    
+    // Live play buttons
+    this.elements.btnLiveAuto?.addEventListener('click', () => this.onStartLivePlay('autonomous'));
+    this.elements.btnLiveManual?.addEventListener('click', () => this.onStartLivePlay('manual'));
+    this.elements.btnStopLive?.addEventListener('click', () => this.onStopLivePlay());
   }
 
   /**
@@ -530,6 +552,132 @@ export class UIController {
     
     // Update the chart
     this.successChart.update('none'); // 'none' mode for better performance
+  }
+
+  /**
+   * Handle toggle recording button click
+   */
+  onToggleRecording() {
+    const app = window.climbingGame;
+    if (!app) return;
+    
+    const isRecording = app.environment?.recordTrajectories;
+    app.enableTrajectoryRecording(!isRecording);
+    
+    // Update button text
+    if (this.elements.btnRecord) {
+      this.elements.btnRecord.textContent = isRecording ? 'Enable Recording' : 'Disable Recording';
+    }
+    
+    this.showNotification(
+      isRecording ? 'Trajectory recording disabled' : 'Trajectory recording enabled',
+      'success'
+    );
+  }
+  
+  /**
+   * Handle visualize trajectories button click
+   */
+  onVisualizeTrajectories() {
+    const app = window.climbingGame;
+    if (!app) return;
+    
+    try {
+      app.visualizeTrajectories({
+        showSuccessful: true,
+        showFailed: true,
+        maxTrajectories: 10,
+        fadeOlder: true
+      });
+      
+      const stats = app.getTrajectoryStats();
+      this.showNotification(
+        `Visualized ${stats.totalEpisodes} trajectories (${stats.successfulEpisodes} successful)`,
+        'success'
+      );
+    } catch (error) {
+      this.showNotification('Error visualizing trajectories: ' + error.message, 'error');
+    }
+  }
+  
+  /**
+   * Handle replay trajectory button click
+   */
+  onReplayTrajectory() {
+    const app = window.climbingGame;
+    if (!app) return;
+    
+    try {
+      app.replayTrajectory(0, { speed: 2.0 }); // Replay most recent episode
+      this.showNotification('Replaying most recent trajectory', 'success');
+    } catch (error) {
+      this.showNotification('Error replaying trajectory: ' + error.message, 'error');
+    }
+  }
+  
+  /**
+   * Handle clear history button click
+   */
+  onClearHistory() {
+    const app = window.climbingGame;
+    if (!app) return;
+    
+    app.clearTrajectoryHistory();
+    this.showNotification('Trajectory history cleared', 'success');
+  }
+  
+  /**
+   * Handle start live play button click
+   */
+  async onStartLivePlay(mode) {
+    const app = window.climbingGame;
+    if (!app) return;
+    
+    try {
+      await app.startLivePlay(mode);
+      
+      // Update button states
+      this.setLivePlayState(true);
+      
+      this.showNotification(`Live play started in ${mode} mode`, 'success');
+    } catch (error) {
+      this.showNotification('Error starting live play: ' + error.message, 'error');
+    }
+  }
+  
+  /**
+   * Handle stop live play button click
+   */
+  onStopLivePlay() {
+    const app = window.climbingGame;
+    if (!app) return;
+    
+    app.stopLivePlay();
+    
+    // Update button states
+    this.setLivePlayState(false);
+    
+    this.showNotification('Live play stopped', 'success');
+  }
+  
+  /**
+   * Update button states for live play mode
+   */
+  setLivePlayState(isActive) {
+    if (this.elements.btnLiveAuto) {
+      this.elements.btnLiveAuto.disabled = isActive;
+    }
+    if (this.elements.btnLiveManual) {
+      this.elements.btnLiveManual.disabled = isActive;
+    }
+    if (this.elements.btnStopLive) {
+      this.elements.btnStopLive.disabled = !isActive;
+    }
+    
+    // Disable training buttons during live play
+    if (this.elements.btnStart) {
+      this.elements.btnStart.disabled = isActive || this.isTraining;
+    }
   }
 
   /**

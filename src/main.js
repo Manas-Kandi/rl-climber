@@ -11,6 +11,8 @@ import { DQNAgent } from './rl/DQNAgent.js';
 import { PPOAgent } from './rl/PPOAgent.js';
 import { TrainingOrchestrator } from './training/TrainingOrchestrator.js';
 import { UIController } from './ui/UIController.js';
+import { TrajectoryVisualizer } from './visualization/TrajectoryVisualizer.js';
+import { LivePlayMode } from './interaction/LivePlayMode.js';
 import * as tf from '@tensorflow/tfjs';
 
 /**
@@ -25,6 +27,10 @@ class ClimbingGameApp {
         this.agent = null;
         this.orchestrator = null;
         this.uiController = null;
+        
+        // New features
+        this.trajectoryVisualizer = null;
+        this.livePlayMode = null;
         
         // Configuration
         this.config = {
@@ -204,6 +210,13 @@ class ClimbingGameApp {
             // 7. Initialize all components in correct order
             console.log('🔧 Setting up environment...');
             this.setupEnvironment();
+            
+            // 7.5. Initialize new features
+            console.log('📹 Initializing trajectory visualizer...');
+            this.trajectoryVisualizer = new TrajectoryVisualizer(this.renderingEngine);
+            
+            console.log('🎮 Initializing live play mode...');
+            this.livePlayMode = new LivePlayMode(this.environment, this.agent, this.renderingEngine);
             
             // 8. Optimize performance
             console.log('🚀 Optimizing performance...');
@@ -903,6 +916,16 @@ class ClimbingGameApp {
             this.physicsEngine = null;
         }
         
+        if (this.livePlayMode) {
+            this.livePlayMode.dispose();
+            this.livePlayMode = null;
+        }
+        
+        if (this.trajectoryVisualizer) {
+            this.trajectoryVisualizer.dispose();
+            this.trajectoryVisualizer = null;
+        }
+        
         if (this.renderingEngine) {
             this.renderingEngine.dispose();
             this.renderingEngine = null;
@@ -1181,6 +1204,155 @@ class ClimbingGameApp {
         const secondAvg = secondHalf.reduce((a, b) => a + b, 0) / secondHalf.length;
         
         return secondAvg - firstAvg; // Improvement from first half to second half
+    }
+    
+    /**
+     * Enable trajectory recording and visualization
+     * @param {boolean} enabled - Whether to enable trajectory recording
+     */
+    enableTrajectoryRecording(enabled = true) {
+        if (this.environment) {
+            this.environment.setTrajectoryRecording(enabled);
+            console.log(`📹 Trajectory recording ${enabled ? 'enabled' : 'disabled'}`);
+        }
+    }
+    
+    /**
+     * Visualize all recorded trajectories
+     * @param {Object} options - Visualization options
+     */
+    visualizeTrajectories(options = {}) {
+        if (!this.trajectoryVisualizer || !this.environment) {
+            console.warn('📹 Trajectory visualizer or environment not available');
+            return;
+        }
+        
+        const trajectories = this.environment.getTrajectoryHistory();
+        if (trajectories.length === 0) {
+            console.log('📹 No trajectories to visualize');
+            return;
+        }
+        
+        console.log(`📹 Visualizing ${trajectories.length} trajectories`);
+        this.trajectoryVisualizer.visualizeTrajectories(trajectories, options);
+    }
+    
+    /**
+     * Replay a specific trajectory
+     * @param {number} episodeIndex - Index of episode to replay (0 = most recent)
+     * @param {Object} options - Replay options
+     */
+    replayTrajectory(episodeIndex = 0, options = {}) {
+        if (!this.trajectoryVisualizer || !this.environment) {
+            console.warn('📹 Trajectory visualizer or environment not available');
+            return;
+        }
+        
+        const trajectories = this.environment.getTrajectoryHistory();
+        if (trajectories.length === 0) {
+            console.log('📹 No trajectories to replay');
+            return;
+        }
+        
+        // Get trajectory (0 = most recent, negative indices work from end)
+        const trajectory = trajectories[trajectories.length - 1 - episodeIndex];
+        if (!trajectory) {
+            console.warn(`📹 Trajectory at index ${episodeIndex} not found`);
+            return;
+        }
+        
+        console.log(`📹 Replaying episode ${trajectory.episode}`);
+        this.trajectoryVisualizer.startTrajectoryReplay(trajectory, {
+            speed: 2.0,
+            showTrail: true,
+            onStep: (step, index, traj) => {
+                console.log(`📹 Replay step ${index}: ${step.actionName} at (${step.position.x.toFixed(2)}, ${step.position.y.toFixed(2)}, ${step.position.z.toFixed(2)})`);
+            },
+            onComplete: (traj) => {
+                console.log(`📹 Replay complete for episode ${traj.episode}`);
+            },
+            ...options
+        });
+    }
+    
+    /**
+     * Start live play mode
+     * @param {string} mode - 'autonomous' or 'manual'
+     */
+    async startLivePlay(mode = 'autonomous') {
+        if (!this.livePlayMode) {
+            console.warn('🎮 Live play mode not available');
+            return;
+        }
+        
+        // Stop training if running
+        if (this.orchestrator && this.orchestrator.isTraining) {
+            console.log('🎮 Stopping training to start live play');
+            this.orchestrator.stopTraining();
+        }
+        
+        await this.livePlayMode.startLivePlay(mode);
+        
+        // Set up live play callbacks
+        this.livePlayMode.onStep((action, result, stats) => {
+            // Update UI with live play stats
+            if (this.uiController) {
+                this.uiController.updateStatsPanel({
+                    currentEpisode: 'Live Play',
+                    avgReward: stats.totalReward,
+                    successRate: stats.highestPoint / this.config.environment.goalHeight
+                });
+            }
+        });
+        
+        this.livePlayMode.onReset((episodeStats) => {
+            console.log('🎮 Live play episode completed:', episodeStats);
+        });
+        
+        console.log(`🎮 Live play started in ${mode} mode`);
+    }
+    
+    /**
+     * Stop live play mode
+     */
+    stopLivePlay() {
+        if (this.livePlayMode) {
+            this.livePlayMode.stopLivePlay();
+            console.log('🎮 Live play stopped');
+        }
+    }
+    
+    /**
+     * Switch live play mode
+     * @param {string} mode - 'autonomous' or 'manual'
+     */
+    switchLivePlayMode(mode) {
+        if (this.livePlayMode) {
+            this.livePlayMode.switchMode(mode);
+            console.log(`🎮 Switched to ${mode} mode`);
+        }
+    }
+    
+    /**
+     * Get trajectory statistics
+     * @returns {Object} Trajectory statistics
+     */
+    getTrajectoryStats() {
+        if (!this.environment) return null;
+        return this.environment.getTrajectoryStats();
+    }
+    
+    /**
+     * Clear all trajectory history
+     */
+    clearTrajectoryHistory() {
+        if (this.environment) {
+            this.environment.clearTrajectoryHistory();
+        }
+        if (this.trajectoryVisualizer) {
+            this.trajectoryVisualizer.clearTrajectories();
+        }
+        console.log('📹 Trajectory history cleared');
     }
     
     /**

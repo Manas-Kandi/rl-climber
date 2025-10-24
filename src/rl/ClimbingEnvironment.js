@@ -23,6 +23,12 @@ export class ClimbingEnvironment {
     this.totalReward = 0;
     this.episodeStartTime = 0;
     
+    // Trajectory recording
+    this.recordTrajectories = false;
+    this.currentTrajectory = [];
+    this.trajectoryHistory = [];
+    this.maxTrajectories = 100; // Keep last 100 episodes
+    
     // Action space constants
     this.ACTION_SPACE = {
       FORWARD: 0,
@@ -152,6 +158,63 @@ export class ClimbingEnvironment {
   }
   
   /**
+   * Enable or disable trajectory recording
+   * @param {boolean} enabled - Whether to record trajectories
+   */
+  setTrajectoryRecording(enabled) {
+    this.recordTrajectories = enabled;
+    if (enabled) {
+      console.log('📹 Trajectory recording enabled');
+    } else {
+      console.log('📹 Trajectory recording disabled');
+    }
+  }
+  
+  /**
+   * Get all recorded trajectories
+   * @returns {Array} Array of trajectory objects
+   */
+  getTrajectoryHistory() {
+    return this.trajectoryHistory;
+  }
+  
+  /**
+   * Get the current trajectory (in progress)
+   * @returns {Array} Current trajectory steps
+   */
+  getCurrentTrajectory() {
+    return this.currentTrajectory;
+  }
+  
+  /**
+   * Clear trajectory history
+   */
+  clearTrajectoryHistory() {
+    this.trajectoryHistory = [];
+    this.currentTrajectory = [];
+    console.log('📹 Trajectory history cleared');
+  }
+  
+  /**
+   * Get trajectory statistics
+   * @returns {Object} Statistics about recorded trajectories
+   */
+  getTrajectoryStats() {
+    if (this.trajectoryHistory.length === 0) {
+      return { totalEpisodes: 0, successfulEpisodes: 0, successRate: 0 };
+    }
+    
+    const successful = this.trajectoryHistory.filter(t => t.success).length;
+    return {
+      totalEpisodes: this.trajectoryHistory.length,
+      successfulEpisodes: successful,
+      successRate: successful / this.trajectoryHistory.length,
+      avgSteps: this.trajectoryHistory.reduce((sum, t) => sum + t.steps, 0) / this.trajectoryHistory.length,
+      avgReward: this.trajectoryHistory.reduce((sum, t) => sum + t.totalReward, 0) / this.trajectoryHistory.length
+    };
+  }
+  
+  /**
    * Get current state representation as 9D Float32Array
    * State vector: [x, y, z, vx, vy, vz, distGoal, distLedge, progress]
    * @returns {Float32Array} Normalized state vector
@@ -239,6 +302,19 @@ export class ClimbingEnvironment {
     
     // Record episode start time
     this.episodeStartTime = Date.now();
+    
+    // Start new trajectory recording if enabled
+    if (this.recordTrajectories) {
+      this.currentTrajectory = [];
+      const initialPos = this.physicsEngine.getBodyPosition(this.agentBody);
+      this.currentTrajectory.push({
+        step: 0,
+        position: { ...initialPos },
+        action: null,
+        reward: 0,
+        timestamp: Date.now()
+      });
+    }
     
     // Return initial state as Float32Array
     const initialState = this.getState();
@@ -434,6 +510,36 @@ export class ClimbingEnvironment {
       action: action,
       actionName: Object.keys(this.ACTION_SPACE)[action] || 'UNKNOWN'
     };
+    
+    // Record trajectory step if enabled
+    if (this.recordTrajectories) {
+      this.currentTrajectory.push({
+        step: this.currentStep,
+        position: { ...agentPos },
+        action: action,
+        actionName: info.actionName,
+        reward: reward,
+        totalReward: this.totalReward,
+        timestamp: Date.now()
+      });
+      
+      // If episode is done, save the trajectory
+      if (done) {
+        this.trajectoryHistory.push({
+          episode: this.trajectoryHistory.length + 1,
+          trajectory: [...this.currentTrajectory],
+          success: agentPos.y >= this.config.goalHeight,
+          totalReward: this.totalReward,
+          steps: this.currentStep,
+          duration: Date.now() - this.episodeStartTime
+        });
+        
+        // Keep only the last N trajectories
+        if (this.trajectoryHistory.length > this.maxTrajectories) {
+          this.trajectoryHistory.shift();
+        }
+      }
+    }
     
     // Add termination reason to info if episode is done
     if (done) {
