@@ -19,7 +19,7 @@ testRewards(window.climbingGame)
 - ✅ Start position: (0, 1, 3)
 - ✅ Step detection working at all heights
 - ✅ Rewards increase when climbing
-- ✅ BACKWARD action moves toward stairs
+- ✅ FORWARD action (0) moves toward stairs (negative Z)
 
 ### 2. Start Training
 1. Click "Start Training" button

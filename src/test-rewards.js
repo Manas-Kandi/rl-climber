@@ -97,10 +97,10 @@ window.testRewards = function(game) {
     env.reset();
     console.log('Start position:', physics.getBodyPosition(env.agentBody));
     
-    // Try moving backward (toward stairs)
-    console.log('Taking BACKWARD action (toward stairs)...');
+    // Try moving forward (toward stairs - negative Z direction)
+    console.log('Taking FORWARD action (toward stairs)...');
     for (let i = 0; i < 10; i++) {
-        const result = env.step(1); // BACKWARD
+        const result = env.step(0); // FORWARD (negative Z)
         if (i % 3 === 0) {
             const pos = physics.getBodyPosition(env.agentBody);
             console.log(`  Step ${i}: z=${pos.z.toFixed(2)}, reward=${result.reward.toFixed(2)}`);
@@ -109,13 +109,14 @@ window.testRewards = function(game) {
     
     const finalPos = physics.getBodyPosition(env.agentBody);
     console.log('Final position:', finalPos);
-    console.log('Movement:', finalPos.z < 3 ? '✅ Moving toward stairs' : '❌ Not moving correctly');
+    console.log('Movement:', finalPos.z < 3 ? '✅ Moving toward stairs (negative Z)' : '❌ Not moving correctly');
     console.log('');
     
     console.log('✅ Reward system test complete!');
     console.log('\nKey Findings:');
     console.log('- Agent should start at z=3 (in front of stairs)');
-    console.log('- BACKWARD action should move agent toward stairs (negative Z)');
+    console.log('- FORWARD action (0) moves toward stairs (negative Z direction)');
+    console.log('- BACKWARD action (1) moves away from stairs (positive Z direction)');
     console.log('- Reaching new steps should give large rewards (20, 40, 60, etc.)');
     console.log('- Height and proximity should give continuous rewards');
 };

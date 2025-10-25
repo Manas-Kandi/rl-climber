@@ -382,11 +382,14 @@ export class ClimbingEnvironment {
     }
     
     // Detect step by position (more reliable than collision detection)
-    // Steps are at z positions: 0, -1.5, -3, -4.5, -6, -7.5, -9, -10.5, -12, -13.5
-    // Each step is 2 units deep (z range)
+    // Steps are positioned at:
+    // Step 0: center z=0, ranges from z=-1 to z=+1
+    // Step 1: center z=-2, ranges from z=-3 to z=-1
+    // Step 2: center z=-4, ranges from z=-5 to z=-3
+    // Step i: center z=-2*i, ranges from z=(-2*i-1) to z=(-2*i+1)
     
     // Must be in staircase Z range
-    if (agentPos.z > 1 || agentPos.z < -15) {
+    if (agentPos.z > 2 || agentPos.z < -20) {
       return -1; // Not on stairs
     }
     
@@ -396,20 +399,15 @@ export class ClimbingEnvironment {
     }
     
     // Determine step by Z position
-    // Step 0: z = 0 to -2
-    // Step 1: z = -1 to -3
-    // Step 2: z = -2 to -4
-    // etc.
-    
     for (let i = 0; i < 10; i++) {
-      const stepCenterZ = -1.5 * i;
-      const stepMinZ = stepCenterZ - 1.5;
-      const stepMaxZ = stepCenterZ + 1.5;
+      const stepCenterZ = -2.0 * i;  // Steps at 0, -2, -4, -6, -8, -10, -12, -14, -16, -18
+      const stepMinZ = stepCenterZ - 1.0;  // Each step is 2 units deep
+      const stepMaxZ = stepCenterZ + 1.0;
       
       // Check if agent is within this step's Z range
       if (agentPos.z >= stepMinZ && agentPos.z <= stepMaxZ) {
         // Also check if agent is at approximately the right height
-        const expectedHeight = (i + 1) * 1.0;
+        const expectedHeight = (i + 1) * 1.0;  // Step 0 at y=1, Step 1 at y=2, etc.
         const heightDiff = Math.abs(agentPos.y - expectedHeight);
         
         // Allow some tolerance (agent can be slightly above/below step)
@@ -529,8 +527,8 @@ export class ClimbingEnvironment {
     // === DISTANCE TO NEXT STEP REWARD ===
     // Reward for getting closer to the next step
     if (currentStep >= 0 && currentStep < 9) {
-      const nextStepZ = -1.5 * (currentStep + 1);
-      const nextStepY = (currentStep + 2) * 1.0;
+      const nextStepZ = -2.0 * (currentStep + 1);  // Steps at 0, -2, -4, -6, etc.
+      const nextStepY = (currentStep + 2) * 1.0;   // Heights at 1, 2, 3, 4, etc.
       
       // Distance to next step
       const distToNextStep = Math.sqrt(
@@ -539,7 +537,7 @@ export class ClimbingEnvironment {
       );
       
       // Reward for being close to next step (inverse distance)
-      const proximityReward = Math.max(0, 2.0 - distToNextStep) * 0.5;
+      const proximityReward = Math.max(0, 3.0 - distToNextStep) * 0.5;
       totalReward += proximityReward;
     }
     

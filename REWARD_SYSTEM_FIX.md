@@ -89,10 +89,18 @@ This will verify:
 
 With these changes, the agent should:
 1. **Start at (0, 1, 3)** - in front of the stairs
-2. **Learn to move backward** (positive Z → negative Z) toward stairs
+2. **Learn to move forward** (FORWARD action = negative Z direction) toward stairs
 3. **Get immediate feedback** when reaching each step
 4. **Follow the reward gradient** between steps
 5. **Progressively climb** all 10 steps to reach the goal
+
+## Action Space
+- **FORWARD (0)**: Move in negative Z direction (toward stairs from start position)
+- **BACKWARD (1)**: Move in positive Z direction (away from stairs)
+- **LEFT (2)**: Move in negative X direction
+- **RIGHT (3)**: Move in positive X direction
+- **JUMP (4)**: Jump upward
+- **GRAB (5)**: Grab ledge (when touching one)
 
 ## Key Metrics to Watch
 
