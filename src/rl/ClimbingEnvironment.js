@@ -42,6 +42,11 @@ export class ClimbingEnvironment {
     this.trajectoryHistory = [];
     this.maxTrajectories = 100; // Keep last 100 episodes
     
+    // Curriculum learning
+    this.curriculumMode = false;
+    this.curriculumLevel = 0;
+    this.curriculumGoalStep = 10; // Default: full goal
+    
     // Reward system tracking
     this.lastPosition = null;
     this.stagnationTimer = 0;
@@ -218,6 +223,69 @@ export class ClimbingEnvironment {
     this.trajectoryHistory = [];
     this.currentTrajectory = [];
     console.log('📹 Trajectory history cleared');
+  }
+  
+  /**
+   * Enable curriculum learning mode
+   * Makes the task easier by setting intermediate goals
+   * @param {number} level - Curriculum level (0=disabled, 1=easiest, 4=full task)
+   */
+  enableCurriculumLearning(level) {
+    this.curriculumLevel = level;
+    
+    switch(level) {
+      case 0: // Disabled - full task
+        this.curriculumMode = false;
+        this.curriculumGoalStep = 10;
+        this.config.maxSteps = 500;
+        console.log('🎓 Curriculum learning DISABLED - Full task');
+        break;
+        
+      case 1: // Level 1: Just reach Step 0
+        this.curriculumMode = true;
+        this.curriculumGoalStep = 0;
+        this.config.maxSteps = 200;
+        console.log('🎓 Curriculum Level 1: Reach Step 0 (200 steps max)');
+        break;
+        
+      case 2: // Level 2: Reach Step 2
+        this.curriculumMode = true;
+        this.curriculumGoalStep = 2;
+        this.config.maxSteps = 300;
+        console.log('🎓 Curriculum Level 2: Reach Step 2 (300 steps max)');
+        break;
+        
+      case 3: // Level 3: Reach Step 5
+        this.curriculumMode = true;
+        this.curriculumGoalStep = 5;
+        this.config.maxSteps = 400;
+        console.log('🎓 Curriculum Level 3: Reach Step 5 (400 steps max)');
+        break;
+        
+      case 4: // Level 4: Full task
+        this.curriculumMode = false;
+        this.curriculumGoalStep = 10;
+        this.config.maxSteps = 500;
+        console.log('🎓 Curriculum Level 4: Full task (500 steps max)');
+        break;
+        
+      default:
+        console.warn('Invalid curriculum level:', level);
+        break;
+    }
+  }
+  
+  /**
+   * Get current curriculum status
+   * @returns {Object} Curriculum info
+   */
+  getCurriculumStatus() {
+    return {
+      enabled: this.curriculumMode,
+      level: this.curriculumLevel,
+      goalStep: this.curriculumGoalStep,
+      maxSteps: this.config.maxSteps
+    };
   }
   
   /**
@@ -572,9 +640,18 @@ export class ClimbingEnvironment {
     totalReward -= 0.5; // Every step costs -0.5 by default
     
     // === 2. GOAL REACHED: MAXIMUM REWARD ===
-    if (agentPos.y >= this.config.goalHeight) {
+    // Check curriculum goal if enabled
+    const goalReached = this.curriculumMode ? 
+      (currentStep >= this.curriculumGoalStep) : 
+      (agentPos.y >= this.config.goalHeight);
+    
+    if (goalReached) {
       totalReward += 100.0; // ONLY way to get +100
-      console.log('🏆 GOAL REACHED! +100 (MAXIMUM REWARD)');
+      if (this.curriculumMode) {
+        console.log(`🎓 CURRICULUM GOAL REACHED! Step ${currentStep} >= ${this.curriculumGoalStep}! +100`);
+      } else {
+        console.log('🏆 GOAL REACHED! +100 (MAXIMUM REWARD)');
+      }
       return totalReward; // Return immediately, no other rewards matter
     }
     

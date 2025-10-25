@@ -9,13 +9,14 @@ export class PPOAgent {
         this.stateSize = stateSize;
         this.actionSize = actionSize;
         
-        // Hyperparameters
+        // Hyperparameters - BOOSTED for faster learning
         this.gamma = config.gamma || 0.99;
         this.lambda = config.lambda || 0.95;
-        this.clipEpsilon = config.clipEpsilon || 0.2;
-        this.entropyCoef = config.entropyCoef || 0.01;
+        this.clipEpsilon = config.clipEpsilon || 0.3;  // INCREASED from 0.2
+        this.entropyCoef = config.entropyCoef || 0.05;  // INCREASED from 0.01
         this.valueCoef = config.valueCoef || 0.5;
-        this.learningRate = config.learningRate || 0.0003;
+        this.learningRate = config.learningRate || 0.003;  // INCREASED from 0.0003
+        this.epochs = config.epochs || 20;  // INCREASED from 10
         
         // Build networks
         this.actorNetwork = this.buildActorNetwork();
@@ -25,7 +26,11 @@ export class PPOAgent {
         this.actorOptimizer = tf.train.adam(this.learningRate);
         this.criticOptimizer = tf.train.adam(this.learningRate);
         
-        console.log('PPO Agent initialized with state size:', stateSize, 'action size:', actionSize);
+        console.log('PPO Agent initialized with BOOSTED hyperparameters:');
+        console.log('  Learning Rate:', this.learningRate, '(10x faster)');
+        console.log('  Entropy Coef:', this.entropyCoef, '(5x more exploration)');
+        console.log('  Clip Epsilon:', this.clipEpsilon, '(larger updates allowed)');
+        console.log('  Training Epochs:', this.epochs, '(2x more learning per episode)');
     }
     
     /**
@@ -231,7 +236,7 @@ export class PPOAgent {
     train(trajectories) {
         const { states, actions, oldLogProbs, advantages, returns } = trajectories;
         const batchSize = states.length;
-        const epochs = 10; // K epochs for PPO
+        const epochs = this.epochs; // K epochs for PPO (configurable)
         
         let totalActorLoss = 0;
         let totalCriticLoss = 0;
@@ -410,6 +415,73 @@ export class PPOAgent {
             
             throw error;
         }
+    }
+    
+    /**
+     * Update hyperparameters without resetting the model
+     * Useful for adaptive learning and curriculum training
+     * @param {Object} config - New hyperparameter values
+     */
+    updateHyperparameters(config) {
+        let updated = [];
+        
+        if (config.learningRate !== undefined && config.learningRate !== this.learningRate) {
+            this.learningRate = config.learningRate;
+            // Recreate optimizers with new learning rate
+            if (this.actorOptimizer) this.actorOptimizer.dispose();
+            if (this.criticOptimizer) this.criticOptimizer.dispose();
+            this.actorOptimizer = tf.train.adam(this.learningRate);
+            this.criticOptimizer = tf.train.adam(this.learningRate);
+            updated.push(`Learning Rate: ${this.learningRate}`);
+        }
+        
+        if (config.entropyCoef !== undefined && config.entropyCoef !== this.entropyCoef) {
+            this.entropyCoef = config.entropyCoef;
+            updated.push(`Entropy Coef: ${this.entropyCoef}`);
+        }
+        
+        if (config.clipEpsilon !== undefined && config.clipEpsilon !== this.clipEpsilon) {
+            this.clipEpsilon = config.clipEpsilon;
+            updated.push(`Clip Epsilon: ${this.clipEpsilon}`);
+        }
+        
+        if (config.epochs !== undefined && config.epochs !== this.epochs) {
+            this.epochs = config.epochs;
+            updated.push(`Training Epochs: ${this.epochs}`);
+        }
+        
+        if (config.gamma !== undefined && config.gamma !== this.gamma) {
+            this.gamma = config.gamma;
+            updated.push(`Gamma: ${this.gamma}`);
+        }
+        
+        if (config.lambda !== undefined && config.lambda !== this.lambda) {
+            this.lambda = config.lambda;
+            updated.push(`Lambda: ${this.lambda}`);
+        }
+        
+        if (updated.length > 0) {
+            console.log('🔧 Hyperparameters updated:');
+            updated.forEach(msg => console.log(`   ${msg}`));
+        }
+        
+        return updated.length > 0;
+    }
+    
+    /**
+     * Get current hyperparameters
+     * @returns {Object} Current hyperparameter values
+     */
+    getHyperparameters() {
+        return {
+            learningRate: this.learningRate,
+            entropyCoef: this.entropyCoef,
+            clipEpsilon: this.clipEpsilon,
+            epochs: this.epochs,
+            gamma: this.gamma,
+            lambda: this.lambda,
+            valueCoef: this.valueCoef
+        };
     }
     
     /**
