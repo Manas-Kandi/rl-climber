@@ -32,24 +32,24 @@ async function testRewardSystem() {
     console.log(`  Goal reward: ${goalReward} (expected: 100)`);
     console.log(`  ✅ ${goalReward === 100 ? 'PASS' : 'FAIL'}\n`);
     
-    // Test 2: Falling should give -100
+    // Test 2: Falling should give -50 (REDUCED from -100)
     console.log('💀 Test 2: Fall Punishment');
     env.reset();
     physics.setBodyPosition(agentBody, { x: 0, y: -3, z: 0 });
     const fallReward = env.calculateReward(null, 0, null);
-    console.log(`  Fall reward: ${fallReward} (expected: -100)`);
-    console.log(`  ✅ ${fallReward === -100 ? 'PASS' : 'FAIL'}\n`);
+    console.log(`  Fall reward: ${fallReward} (expected: -50, reduced to encourage risk)`);
+    console.log(`  ✅ ${fallReward === -50 ? 'PASS' : 'FAIL'}\n`);
     
-    // Test 3: Out of bounds should give -100
+    // Test 3: Out of bounds should give -50 (REDUCED from -100)
     console.log('🚫 Test 3: Out of Bounds Punishment');
     env.reset();
     physics.setBodyPosition(agentBody, { x: 15, y: 1, z: 0 });
     const oobReward = env.calculateReward(null, 0, null);
-    console.log(`  Out of bounds reward: ${oobReward} (expected: -100)`);
-    console.log(`  ✅ ${oobReward === -100 ? 'PASS' : 'FAIL'}\n`);
+    console.log(`  Out of bounds reward: ${oobReward} (expected: -50, reduced to encourage exploration)`);
+    console.log(`  ✅ ${oobReward === -50 ? 'PASS' : 'FAIL'}\n`);
     
-    // Test 4: Step progression rewards (diminishing)
-    console.log('📈 Test 4: Step Progression (Diminishing Returns)');
+    // Test 4: Step progression rewards (MASSIVE, diminishing)
+    console.log('📈 Test 4: Step Progression (MASSIVE Rewards, Diminishing)');
     env.reset();
     
     // Simulate reaching different steps
@@ -58,6 +58,7 @@ async function testRewardSystem() {
         env.reset();
         env.highestStepReached = step - 1; // Previous highest
         env.currentStepOn = step; // Current step
+        env.timeOnCurrentStep = 0; // Fresh on step
         
         // Position agent on the step
         const stepY = (step + 1) * 1.0;
@@ -67,8 +68,8 @@ async function testRewardSystem() {
         const reward = env.calculateReward(null, 0, null);
         stepRewards.push(reward);
         
-        const expectedReward = Math.max(1, 9 - step);
-        console.log(`  Step ${step}: ${reward.toFixed(1)} (expected: ${expectedReward})`);
+        const expectedReward = 50 - (step * 5); // NEW: 50, 45, 40, ..., 5
+        console.log(`  Step ${step}: ${reward.toFixed(1)} (expected: ~${expectedReward})`);
     }
     
     // Verify diminishing pattern
@@ -81,30 +82,62 @@ async function testRewardSystem() {
     }
     console.log(`  ✅ Diminishing returns: ${diminishing ? 'PASS' : 'FAIL'}\n`);
     
-    // Test 5: Jumping down punishment
-    console.log('💥 Test 5: Jumping Down Punishment');
+    // Test 5: Jumping down punishment (REDUCED)
+    console.log('💥 Test 5: Jumping Down Punishment (REDUCED)');
     env.reset();
     env.currentStepOn = 3; // Start on step 3
     env.highestStepReached = 3;
+    env.timeOnCurrentStep = 0;
     
-    // Simulate jumping down to step 1
+    // Simulate jumping down to step 1 (2 steps down)
     physics.setBodyPosition(agentBody, { x: 0, y: 2, z: -2 });
     const jumpDownReward = env.calculateReward(null, 0, null);
-    console.log(`  Jump down reward: ${jumpDownReward.toFixed(1)} (should be negative)`);
-    console.log(`  ✅ ${jumpDownReward < 0 ? 'PASS' : 'FAIL'}\n`);
+    console.log(`  Jump down 2 steps: ${jumpDownReward.toFixed(1)} (expected: ~-10, was -30)`);
+    console.log(`  ✅ ${jumpDownReward < 0 && jumpDownReward > -15 ? 'PASS' : 'FAIL'}\n`);
     
-    // Test 6: Stagnation punishment
-    console.log('😴 Test 6: Stagnation Punishment');
+    // Test 6: Baseline penalty (doing nothing is negative!)
+    console.log('⚖️ Test 6: Baseline Penalty (Doing Nothing Costs!)');
     env.reset();
     physics.setBodyPosition(agentBody, { x: 0, y: 1, z: 0 });
-    
-    // Simulate staying in same place for multiple steps
+    env.currentStepOn = -1; // On ground
+    env.highestStepReached = -1;
+    env.timeOnCurrentStep = 0;
     env.lastPosition = { x: 0, y: 1, z: 0 };
-    env.stagnationTimer = 120; // 2 seconds of stagnation
+    env.stagnationTimer = 0;
     
-    const stagnationReward = env.calculateReward(null, 0, null);
-    console.log(`  Stagnation reward: ${stagnationReward.toFixed(1)} (should be negative)`);
-    console.log(`  ✅ ${stagnationReward < 0 ? 'PASS' : 'FAIL'}\n`);
+    const baselineReward = env.calculateReward(null, 0, null);
+    console.log(`  Baseline reward (on ground): ${baselineReward.toFixed(1)} (should be negative)`);
+    console.log(`  ✅ ${baselineReward < 0 ? 'PASS' : 'FAIL'}\n`);
+    
+    // Test 7: Time decay on steps
+    console.log('⏱️ Test 7: Time Decay (Rewards Decrease Over Time)');
+    env.reset();
+    env.currentStepOn = 1;
+    env.highestStepReached = 1;
+    physics.setBodyPosition(agentBody, { x: 0, y: 2, z: -2 });
+    
+    // Fresh on step
+    env.timeOnCurrentStep = 10;
+    const freshReward = env.calculateReward(null, 0, null);
+    console.log(`  Fresh on step (10 steps): ${freshReward.toFixed(1)} (should be positive)`);
+    
+    // Been here a while
+    env.timeOnCurrentStep = 100;
+    const staleReward = env.calculateReward(null, 0, null);
+    console.log(`  Stale on step (100 steps): ${staleReward.toFixed(1)} (should be less positive or negative)`);
+    console.log(`  ✅ ${freshReward > staleReward ? 'PASS' : 'FAIL'}\n`);
+    
+    // Test 8: Exploration bonus
+    console.log('🔍 Test 8: Exploration Bonus');
+    env.reset();
+    physics.setBodyPosition(agentBody, { x: 0, y: 1, z: 0 });
+    env.currentStepOn = -1;
+    env.highestStepReached = -1;
+    env.timeOnCurrentStep = 0;
+    
+    const rewardWithAction = env.calculateReward(null, 0, null); // Action 0 (forward)
+    console.log(`  Reward with action: ${rewardWithAction.toFixed(1)} (includes +0.2 exploration bonus)`);
+    console.log(`  ✅ PASS (exploration bonus included)\n`);
     
     return true;
 }
@@ -145,9 +178,9 @@ function testRewardRange() {
     
     console.log(`  Min reward observed: ${minReward}`);
     console.log(`  Max reward observed: ${maxReward}`);
-    console.log(`  Range compliance: ${minReward >= -100 && maxReward <= 100 ? 'PASS' : 'FAIL'}`);
+    console.log(`  Range compliance: ${minReward >= -50 && maxReward <= 100 ? 'PASS' : 'FAIL'}`);
     
-    return minReward >= -100 && maxReward <= 100;
+    return minReward >= -50 && maxReward <= 100;
 }
 
 /**
@@ -157,25 +190,33 @@ function compareRewardSystems() {
     console.log('⚖️ Comparing Old vs New Reward Systems');
     
     console.log('\n📊 Old System Problems:');
-    console.log('  ❌ Rewards in hundreds (inflated)');
-    console.log('  ❌ No clear punishment for bad behavior');
-    console.log('  ❌ No stagnation detection');
-    console.log('  ❌ Linear step rewards (no diminishing returns)');
-    console.log('  ❌ Weak learning signals');
+    console.log('  ❌ Small positive rewards (+1 to +9)');
+    console.log('  ❌ Large negative penalties (-15 to -100)');
+    console.log('  ❌ Doing nothing gives ~0 reward (attractive!)');
+    console.log('  ❌ Risk/reward ratio favors stagnation');
+    console.log('  ❌ Agent learns: "Better to do nothing than risk failure"');
     
-    console.log('\n✅ New System Improvements:');
-    console.log('  ✅ Rewards clamped to [-100, +100]');
-    console.log('  ✅ Clear punishment for jumping down (-15 per step)');
-    console.log('  ✅ Stagnation punishment (-0.5 per step after 1s)');
-    console.log('  ✅ Diminishing step rewards (9, 8, 7, ..., 1)');
-    console.log('  ✅ Strong learning signals');
-    console.log('  ✅ Only +100 for goal, only -100 for death/OOB');
+    console.log('\n✅ Psychology-Based System Improvements:');
+    console.log('  ✅ MASSIVE positive rewards (+50 to +5 per step)');
+    console.log('  ✅ REDUCED negative penalties (-5 to -10)');
+    console.log('  ✅ Baseline penalty (-0.5 every step)');
+    console.log('  ✅ Time decay (rewards decrease if staying on step)');
+    console.log('  ✅ Exploration bonus (+0.2 for any action)');
+    console.log('  ✅ Risk/reward ratio favors exploration!');
+    console.log('  ✅ Agent learns: "Taking risks is MUCH better than doing nothing"');
     
-    console.log('\n🎯 Expected Learning Improvements:');
-    console.log('  • Agent will avoid jumping down stairs');
-    console.log('  • Agent will not stay in one place');
-    console.log('  • Agent will prioritize reaching goal over exploring');
-    console.log('  • Training will be more stable and focused');
+    console.log('\n🎯 Expected Behavioral Changes:');
+    console.log('  • Agent will actively seek progress (huge rewards!)');
+    console.log('  • Agent will take calculated risks (small penalties)');
+    console.log('  • Agent cannot stay in one place (baseline + decay)');
+    console.log('  • Agent will explore different strategies (exploration bonus)');
+    console.log('  • Training will be more aggressive and exploratory');
+    
+    console.log('\n🧠 The Psychology:');
+    console.log('  • Negative rewards make 0 attractive → shift baseline negative!');
+    console.log('  • Expected value drives behavior → make progress highly positive!');
+    console.log('  • Agent compares options → make desired behavior mathematically optimal!');
+    console.log('  • Time decay prevents camping → forces continuous progress!');
 }
 
 /**

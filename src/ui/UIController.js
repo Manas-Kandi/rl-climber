@@ -48,6 +48,7 @@ export class UIController {
     this.elements = {
       // Training buttons
       btnStart: document.getElementById('btn-start'),
+      btnVisualTrain: document.getElementById('btn-visual-train'),
       btnStop: document.getElementById('btn-stop'),
       btnSave: document.getElementById('btn-save'),
       btnLoad: document.getElementById('btn-load'),
@@ -83,6 +84,7 @@ export class UIController {
       statStatus: document.getElementById('stat-status'),
       statCurrentStep: document.getElementById('stat-current-step'),
       statHighestStep: document.getElementById('stat-highest-step'),
+      episodesTrained: document.getElementById('episodes-trained'),
       
       // Model info display
       modelInfo: document.getElementById('model-info'),
@@ -136,6 +138,7 @@ export class UIController {
   setupEventListeners() {
     // Training control buttons
     this.elements.btnStart.addEventListener('click', () => this.onStartTraining());
+    this.elements.btnVisualTrain?.addEventListener('click', () => this.onStartVisualTraining());
     this.elements.btnStop.addEventListener('click', () => this.onStopTraining());
     
     // Model management buttons
@@ -197,13 +200,13 @@ export class UIController {
   }
 
   /**
-   * Handle start training button click
+   * Handle start training button click (fast mode)
    */
   async onStartTraining() {
     try {
       this.setTrainingState(true);
-      this.showTrainingStatus('Training');
-      this.showNotification('Starting training...', 'success');
+      this.showTrainingStatus('Fast Training');
+      this.showNotification('Starting fast training...', 'success');
       
       // Start training with default number of episodes
       await this.orchestrator.startTraining(1000);
@@ -211,6 +214,25 @@ export class UIController {
     } catch (error) {
       console.error('Error starting training:', error);
       this.showNotification('Error starting training: ' + error.message, 'error');
+      this.setTrainingState(false);
+    }
+  }
+
+  /**
+   * Handle visual training button click (slow, visualized mode)
+   */
+  async onStartVisualTraining() {
+    try {
+      this.setTrainingState(true);
+      this.showTrainingStatus('Visual Training');
+      this.showNotification('Starting visual training (autoplay speed)...', 'success');
+      
+      // Start visual training mode (continuous until stopped)
+      await this.orchestrator.startVisualTraining(10000);
+      
+    } catch (error) {
+      console.error('Error starting visual training:', error);
+      this.showNotification('Error starting visual training: ' + error.message, 'error');
       this.setTrainingState(false);
     }
   }
@@ -363,6 +385,11 @@ export class UIController {
       this.elements.statEpisode.textContent = stats.currentEpisode || 0;
     }
     
+    // Update episodes trained counter
+    if (this.elements.episodesTrained) {
+      this.elements.episodesTrained.textContent = stats.totalEpisodes || 0;
+    }
+    
     // Update current reward display from stats.avgReward
     if (this.elements.statReward) {
       const avgReward = stats.avgReward || 0;
@@ -389,12 +416,15 @@ export class UIController {
       this.updateModelInfo();
     }
 
-    // Log stats update for debugging
-    console.log('Stats updated:', {
-      episode: stats.currentEpisode,
-      avgReward: stats.avgReward?.toFixed(2),
-      successRate: (stats.successRate * 100)?.toFixed(2) + '%'
-    });
+    // Log stats update for debugging (only in visual mode or every 100 episodes)
+    if (this.orchestrator.visualTrainingMode || stats.currentEpisode % 100 === 0) {
+      console.log('Stats updated:', {
+        episode: stats.currentEpisode,
+        totalEpisodes: stats.totalEpisodes,
+        avgReward: stats.avgReward?.toFixed(2),
+        successRate: (stats.successRate * 100)?.toFixed(2) + '%'
+      });
+    }
   }
   
   /**
