@@ -547,6 +547,18 @@ export class ClimbingEnvironment {
       totalReward += proximityReward;
     }
     
+    // === FORWARD PROGRESS REWARD ===
+    // Strong reward for moving toward stairs (negative Z direction)
+    // This encourages agent to leave starting platform and approach stairs
+    if (agentPos.z < 3 && agentPos.z > -20) {
+      // Reward increases as agent moves forward (toward negative Z)
+      // At z=3 (start): 0 reward
+      // At z=0 (Step 0): 1.5 reward
+      // At z=-18 (Step 9): 10.5 reward
+      const forwardProgress = (3 - agentPos.z) * 0.5;
+      totalReward += forwardProgress;
+    }
+    
     // === STAYING ON STEPS BONUS ===
     // Small reward for being on any step (not ground)
     if (currentStep >= 0) {
