@@ -34,7 +34,7 @@ export class PhysicsEngine {
     this.world.broadphase = new CANNON.SAPBroadphase(this.world);
     
     // Enable contact material mixing
-    this.world.allowSleep = true;
+    this.world.allowSleep = false;  // CRITICAL FIX: Disable sleep to prevent freezing
     this.world.defaultContactMaterial.friction = 0.3;
     this.world.defaultContactMaterial.restitution = 0.1;
     
@@ -254,8 +254,8 @@ export class PhysicsEngine {
     });
     
     // Configure linear and angular damping to prevent excessive spinning
-    agentBody.linearDamping = 0.3;  // Increased from 0.1 for better control
-    agentBody.angularDamping = 0.5;  // Increased from 0.1 to prevent spinning
+    agentBody.linearDamping = 0.1;  // REDUCED: Lower damping for better responsiveness
+    agentBody.angularDamping = 0.3;  // REDUCED: Lower damping to prevent freezing
     
     // Add to world and track
     this.addBody(agentBody, 'agent');

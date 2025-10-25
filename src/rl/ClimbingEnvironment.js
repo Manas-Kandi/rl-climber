@@ -26,7 +26,7 @@ export class ClimbingEnvironment {
     // Jump mechanics
     this.canJump = true;
     this.jumpCooldown = 0;
-    this.jumpCooldownSteps = 5; // Must wait 5 steps between jumps
+    this.jumpCooldownSteps = 3; // REDUCED: Shorter cooldown for better responsiveness
     
     // Step tracking for staircase
     this.highestStepReached = -1; // -1 = ground, 0-9 = steps
@@ -474,8 +474,8 @@ export class ClimbingEnvironment {
     const agentPos = this.physicsEngine.getBodyPosition(this.agentBody);
     const agentVel = this.physicsEngine.getBodyVelocity(this.agentBody);
     
-    // Check if agent has low vertical velocity (not falling fast)
-    if (Math.abs(agentVel.y) > 2.0) {
+    // IMPROVED: More lenient velocity check for better grounding detection
+    if (Math.abs(agentVel.y) > 3.0) {
       return false;
     }
     
@@ -488,6 +488,12 @@ export class ClimbingEnvironment {
       if (bodyId && (bodyId === 'ground' || bodyId.includes('ledge'))) {
         return true;
       }
+    }
+    
+    // FALLBACK: Check if agent is very close to ground level
+    // This helps when collision detection is unreliable
+    if (agentPos.y <= 1.2 && Math.abs(agentVel.y) < 1.0) {
+      return true;
     }
     
     return false;

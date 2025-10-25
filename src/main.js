@@ -24,6 +24,8 @@ import './test-staircase.js';
 import './test-rewards.js';
 import './diagnose-steps.js';
 import './reset-model.js';
+import './diagnose-freezing.js';
+import './test-freeze-fix.js';
 
 /**
  * Main application class that coordinates all components
@@ -72,9 +74,9 @@ class ClimbingGameApp {
                 ],
                 agentStart: { x: 0, y: 1, z: 0 },
                 actionForces: {
-                    move: 8.0,   // Reduced for better staircase control
-                    jump: 8.0,   // Original value - works well
-                    grab: 20.0   // Increased from 2.0 proportionally
+                    move: 18.0,  // INCREASED 50%: Much more responsive WASD movement
+                    jump: 10.0,  // INCREASED: More reliable jumping
+                    grab: 25.0   // INCREASED: Stronger grab force
                 }
             },
             
@@ -273,6 +275,10 @@ class ClimbingGameApp {
             // 9. Start memory monitoring
             console.log('🧠 Starting memory monitoring...');
             this.startMemoryMonitoring();
+            
+            // 9.5. Start freeze monitoring and auto-recovery
+            console.log('🔍 Starting freeze monitoring...');
+            this.startFreezeMonitoring();
             
             // 10. Start the rendering loop
             console.log('🎬 Starting rendering loop...');
@@ -750,6 +756,117 @@ class ClimbingGameApp {
     }
     
     /**
+     * Start freeze monitoring and auto-recovery
+     */
+    startFreezeMonitoring() {
+        console.log('🔍 Starting freeze monitoring and auto-recovery...');
+        
+        // Track agent movement
+        this.lastAgentPosition = null;
+        this.lastMovementTime = Date.now();
+        this.freezeCheckInterval = null;
+        
+        // Check for freezing every 2 seconds
+        this.freezeCheckInterval = setInterval(() => {
+            this.checkForFreeze();
+        }, 2000);
+        
+        console.log('✅ Freeze monitoring active');
+    }
+    
+    /**
+     * Check if agent is frozen and apply auto-recovery
+     */
+    checkForFreeze() {
+        if (!this.physicsEngine || !this.environment) return;
+        
+        const agentBody = this.physicsEngine.getBody('agent');
+        if (!agentBody) return;
+        
+        const currentPos = this.physicsEngine.getBodyPosition(agentBody);
+        const currentVel = this.physicsEngine.getBodyVelocity(agentBody);
+        const currentTime = Date.now();
+        
+        // Calculate movement and velocity magnitude
+        let totalMovement = 0;
+        if (this.lastAgentPosition) {
+            const deltaX = Math.abs(currentPos.x - this.lastAgentPosition.x);
+            const deltaY = Math.abs(currentPos.y - this.lastAgentPosition.y);
+            const deltaZ = Math.abs(currentPos.z - this.lastAgentPosition.z);
+            totalMovement = deltaX + deltaY + deltaZ;
+        }
+        
+        const velocityMagnitude = Math.sqrt(
+            currentVel.x * currentVel.x + 
+            currentVel.y * currentVel.y + 
+            currentVel.z * currentVel.z
+        );
+        
+        // Check if agent is moving
+        const isMoving = totalMovement > 0.01 || velocityMagnitude > 0.05;
+        
+        if (isMoving) {
+            this.lastMovementTime = currentTime;
+        } else {
+            // Check for freeze (no movement for 3+ seconds)
+            const timeSinceMovement = currentTime - this.lastMovementTime;
+            if (timeSinceMovement > 3000) {
+                console.warn('🚨 FREEZE DETECTED - Applying auto-recovery...');
+                this.applyFreezeRecovery(agentBody);
+                this.lastMovementTime = currentTime; // Reset timer
+            }
+        }
+        
+        this.lastAgentPosition = { ...currentPos };
+    }
+    
+    /**
+     * Apply automatic freeze recovery measures
+     */
+    applyFreezeRecovery(agentBody) {
+        console.log('🔧 Applying freeze recovery measures...');
+        
+        // 1. Wake up physics body if sleeping
+        if (agentBody.wakeUp) {
+            agentBody.wakeUp();
+            console.log('  ✅ Woke up physics body');
+        }
+        
+        // 2. Reset damping if too high
+        if (agentBody.linearDamping > 0.2) {
+            agentBody.linearDamping = 0.1;
+            console.log('  ✅ Reset linear damping to 0.1');
+        }
+        
+        // 3. Apply small impulse to break stillness
+        this.physicsEngine.applyImpulse(agentBody, { x: 0, y: 0.2, z: 0 });
+        console.log('  ✅ Applied recovery impulse');
+        
+        // 4. Reset jump cooldown
+        if (this.environment.jumpCooldown > 0) {
+            this.environment.jumpCooldown = 0;
+            console.log('  ✅ Reset jump cooldown');
+        }
+        
+        // 5. Force physics step
+        this.physicsEngine.step();
+        console.log('  ✅ Forced physics step');
+        
+        console.log('🔧 Freeze recovery complete');
+    }
+    
+    /**
+     * Stop freeze monitoring
+     */
+    stopFreezeMonitoring() {
+        if (this.freezeCheckInterval) {
+            clearInterval(this.freezeCheckInterval);
+            this.freezeCheckInterval = null;
+            console.log('🔍 Freeze monitoring stopped');
+        }
+    }
+    
+    /**
      * Perform manual memory cleanup
      */
     cleanupMemory() {
@@ -909,6 +1026,9 @@ class ClimbingGameApp {
         
         // Stop memory monitoring
         this.stopMemoryMonitoring();
+        
+        // Stop freeze monitoring
+        this.stopFreezeMonitoring();
         
         // Dispose of all components in reverse order of creation
         if (this.uiController) {
