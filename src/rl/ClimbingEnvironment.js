@@ -691,10 +691,10 @@ export class ClimbingEnvironment {
       this.safetyBuffer--;
     }
     
-    // === 3. ABSOLUTE FAILURE: Buffer ran out on ground ===
+    // === 3. FAILURE: Buffer ran out on ground ===
     if (currentStep < 0 && this.safetyBuffer <= 0) {
-      totalReward = -100.0;  // ABSOLUTE PENALTY
-      console.log('❌ BUFFER EXPIRED ON GROUND! Absolute penalty: -100.0 (episode will end)');
+      totalReward = -10.0;  // Moderate penalty (action-level)
+      console.log('❌ BUFFER EXPIRED ON GROUND! Penalty: -10.0 (episode will end)');
       return totalReward;
     }
     
@@ -737,14 +737,46 @@ export class ClimbingEnvironment {
       return totalReward; // Return immediately, no other rewards matter
     }
     
-    // === 3. STEP PROGRESSION: ONLY way to get positive rewards ===
+    // === 3. ACTION-OUTCOME REWARDS: What did this action achieve? ===
+    
+    // 3a. LANDED ON STAIRS (immediate action outcome)
+    if (currentStep >= 0 && prevStepOn < 0) {
+      // This action got us ON stairs!
+      totalReward += 5.0;  // BIG immediate reward
+      console.log(`✅ ACTION RESULT: Landed on stairs! +5.0`);
+    }
+    
+    // 3b. MOVED TO HIGHER STEP (immediate action outcome)
+    if (currentStep > prevStepOn && currentStep >= 0 && prevStepOn >= 0) {
+      // This action moved us UP!
+      const heightGain = currentStep - prevStepOn;
+      totalReward += 3.0 * heightGain;  // +3 per step climbed
+      console.log(`✅ ACTION RESULT: Climbed ${heightGain} step(s)! +${(3.0 * heightGain).toFixed(1)}`);
+    }
+    
+    // 3c. FELL OFF STAIRS (immediate action outcome)
+    if (currentStep < 0 && prevStepOn >= 0) {
+      // This action made us FALL!
+      totalReward -= 2.0;  // Penalty for falling
+      console.log(`❌ ACTION RESULT: Fell off stairs! -2.0`);
+    }
+    
+    // 3d. MOVED TO LOWER STEP (immediate action outcome)
+    if (currentStep >= 0 && prevStepOn >= 0 && currentStep < prevStepOn) {
+      // This action moved us DOWN!
+      const heightLoss = prevStepOn - currentStep;
+      totalReward -= 2.0 * heightLoss;  // -2 per step lost
+      console.log(`❌ ACTION RESULT: Moved down ${heightLoss} step(s)! -${(2.0 * heightLoss).toFixed(1)}`);
+    }
+    
+    // === 4. SMALL EPISODE-LEVEL BONUS (very low weight) ===
+    // Track highest step reached for small bonus
     if (currentStep > this.highestStepReached && currentStep >= 0) {
-      // BIG reward for reaching new step
-      const stepReward = 10.0 - (currentStep * 0.5);  // Step 0=+10, Step 9=+5.5
-      totalReward += stepReward;
+      const episodeBonus = 0.5;  // VERY SMALL compared to action rewards
+      totalReward += episodeBonus;
       this.highestStepReached = currentStep;
       this.stepsVisited.add(currentStep);
-      console.log(`🎯 NEW STEP ${currentStep}! Reward: +${stepReward.toFixed(1)}`);
+      console.log(`📈 Episode milestone: Step ${currentStep} (+${episodeBonus} bonus)`);
     }
     
     // Reset jump tracking
@@ -754,24 +786,24 @@ export class ClimbingEnvironment {
     // Just being on stairs = 0 reward
     // This is expected, not rewarded
     
-    // === 5. ABSOLUTE TERMINAL FAILURES ===
+    // === 5. TERMINAL FAILURES (moderate penalties) ===
     
-    // 5a. Fell to death - ABSOLUTE FAILURE
+    // 5a. Fell to death
     if (agentPos.y < this.config.fallThreshold) {
-      totalReward = -100.0;  // ABSOLUTE PENALTY
-      console.log('💀 FELL TO DEATH! Absolute penalty: -100.0');
+      totalReward = -10.0;  // Moderate penalty (action-level, not episode-level)
+      console.log('💀 FELL TO DEATH! Penalty: -10.0');
       return totalReward;
     }
     
-    // 5b. Out of bounds - ABSOLUTE FAILURE
+    // 5b. Out of bounds
     if (this.isOutOfBounds()) {
-      totalReward = -100.0;  // ABSOLUTE PENALTY
-      console.log('🚫 OUT OF BOUNDS! Absolute penalty: -100.0');
+      totalReward = -10.0;  // Moderate penalty (action-level, not episode-level)
+      console.log('🚫 OUT OF BOUNDS! Penalty: -10.0');
       return totalReward;
     }
     
     // === 6. CLAMP FINAL REWARD ===
-    totalReward = Math.max(-100, Math.min(20, totalReward));
+    totalReward = Math.max(-10, Math.min(10, totalReward));
     
     // === 8. DEBUG LOGGING (every 100 steps) ===
     if (this.currentStep % 100 === 0 && this.currentStep > 0) {
