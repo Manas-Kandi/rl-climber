@@ -41,6 +41,10 @@ export class ClimbingEnvironment {
     this.jumpedThisStep = false;
     this.consecutiveWastefulJumps = 0;
     
+    // Strict progress tracking
+    this.stepsOffStairs = 0;  // Count steps spent NOT on stairs
+    this.episodesWithoutProgress = 0;  // Count episodes without reaching new steps
+    
     // Trajectory recording
     this.recordTrajectories = false;
     this.currentTrajectory = [];
@@ -385,6 +389,24 @@ export class ClimbingEnvironment {
       return new Float32Array(9);
     }
     
+    // === EPISODE-LEVEL PENALTY FOR NO PROGRESS ===
+    // If previous episode didn't reach any new steps, add accumulating penalty
+    if (this.currentStep > 0) { // Not first episode
+      const previousHighest = this.highestStepReached;
+      
+      if (previousHighest < 0) {
+        // Didn't even reach Step 0!
+        this.episodesWithoutProgress++;
+        const episodePenalty = -1.0 * Math.min(10, this.episodesWithoutProgress);
+        console.log(`❌ EPISODE FAILED! No progress for ${this.episodesWithoutProgress} episodes. Penalty: ${episodePenalty.toFixed(1)}`);
+        // This penalty will be applied at the start of next episode
+        this.totalReward += episodePenalty;
+      } else {
+        // Made some progress, reset counter
+        this.episodesWithoutProgress = 0;
+      }
+    }
+    
     // Reset agent body position to start position
     const startPos = this.config.agent.startPosition;
     this.physicsEngine.setBodyPosition(this.agentBody, startPos);
@@ -426,6 +448,10 @@ export class ClimbingEnvironment {
     this.lastJumpStep = -1;
     this.jumpedThisStep = false;
     this.consecutiveWastefulJumps = 0;
+    
+    // Reset strict progress tracking
+    this.stepsOffStairs = 0;
+    // DON'T reset episodesWithoutProgress - it accumulates!
     
     // Start new trajectory recording if enabled
     if (this.recordTrajectories) {
@@ -588,18 +614,17 @@ export class ClimbingEnvironment {
   }
 
   /**
-   * Calculate reward for the current step - PSYCHOLOGY-BASED REWARD SYSTEM
+   * Calculate reward for the current step - STRICT PROGRESS-ONLY SYSTEM
    * 
-   * KEY PRINCIPLES:
-   * 1. Make "doing nothing" NEGATIVE (baseline is -0.5, not 0)
-   * 2. Make progress HIGHLY POSITIVE (20-50 points per step)
-   * 3. Make failures LESS PUNISHING (-5 to -10, not -15 to -45)
-   * 4. Add TIME DECAY (rewards decrease if staying on same step)
-   * 5. Add EXPLORATION BONUS (reward trying new actions)
+   * NEW PHILOSOPHY:
+   * 1. Being on stairs = BASELINE (0)
+   * 2. NOT being on stairs = HEAVY PENALTY (accumulating)
+   * 3. Making progress = ONLY positive reward
+   * 4. No progress = Accumulating penalty
+   * 5. Terminal failures = MASSIVE penalty
    * 
-   * This makes the risk/reward ratio favor exploration over stagnation!
+   * This FORCES the agent to climb or suffer!
    * 
-   * Range: -50 (worst behavior) to +100 (goal reached)
    * @param {Float32Array} prevState - Previous state vector
    * @param {number} action - Action taken
    * @param {Float32Array} newState - New state vector after action
@@ -645,18 +670,32 @@ export class ClimbingEnvironment {
       this.lastPosition = { ...agentPos };
     }
     
-    // === 1. BASELINE: DOING NOTHING IS NEGATIVE ===
-    // Small penalty for time passing (tiny scale for interpretability)
-    totalReward -= 0.01; // Every step costs -0.01 (was -0.5)
+    // === 1. STRICT BASELINE: NOT ON STAIRS = HEAVY PENALTY ===
+    // Track if agent is on stairs
+    if (currentStep < 0) {
+      // NOT on stairs - accumulating penalty
+      this.stepsOffStairs++;
+      
+      // Base penalty for being off stairs
+      totalReward -= 0.1; // 10x worse than before
+      
+      // ACCUMULATING penalty - the longer you're off stairs, the worse it gets
+      const accumulatingPenalty = Math.min(2.0, this.stepsOffStairs * 0.01);
+      totalReward -= accumulatingPenalty;
+      
+      if (this.stepsOffStairs % 60 === 0) {
+        console.log(`⚠️ OFF STAIRS for ${this.stepsOffStairs} steps! Penalty: -${(0.1 + accumulatingPenalty).toFixed(2)}`);
+      }
+    } else {
+      // ON stairs - reset counter
+      this.stepsOffStairs = 0;
+      // Being on stairs is BASELINE (0 reward, not positive)
+      // Only CLIMBING gets positive rewards
+    }
     
     // === 1b. JUMP COST: Make jumping expensive ===
-    // Penalize jumping unless it leads to progress
     if (action === this.ACTION_SPACE.JUMP) {
-      // Base jump cost (always applied when jumping)
-      totalReward -= 0.05; // Jumping costs energy!
-      
-      // Track if this jump was productive
-      // We'll check in a moment if it led to step progression
+      totalReward -= 0.05;
       this.lastJumpStep = this.currentStep;
       this.jumpedThisStep = true;
     }
@@ -776,35 +815,13 @@ export class ClimbingEnvironment {
       return totalReward;
     }
     
-    // === 7. EXPLORATION BONUS ===
-    // Tiny bonus for taking ANY action (encourages trying things)
-    if (action !== undefined && action !== null) {
-      totalReward += 0.005; // Tiny exploration bonus (was 0.2)
-    }
+    // === 7. NO EXPLORATION BONUS ===
+    // Removed - only progress matters!
     
-    // === 8. GUIDANCE REWARDS ===
-    
-    // 8a. Being on stairs is GOOD (make this more attractive!)
-    if (currentStep >= 0) {
-      totalReward += 0.1; // INCREASED from 0.02 - being on stairs is great!
-      
-      // BONUS: Higher steps = better rewards (encourages climbing)
-      const heightBonus = currentStep * 0.02; // Step 0=+0, Step 5=+0.1, Step 9=+0.18
-      totalReward += heightBonus;
-    } else {
-      totalReward -= 0.05; // INCREASED penalty for being on ground (was -0.02)
-    }
-    
-    // 8b. Forward progress bonus (approaching stairs)
-    if (agentPos.z < 2 && agentPos.z > -20) {
-      const forwardBonus = Math.max(0, (2 - agentPos.z)) * 0.002; // Max +0.004 (was 0.1)
-      totalReward += forwardBonus;
-    }
-    
-    // 8c. Penalty for being off-center (but tiny)
-    if (Math.abs(agentPos.x) > 1.5) {
-      totalReward -= 0.006; // Tiny penalty (was 0.3)
-    }
+    // === 8. NO GUIDANCE REWARDS ===
+    // Being on stairs = 0 (baseline, already handled above)
+    // NOT being on stairs = already heavily penalized above
+    // NO bonuses for anything except CLIMBING UP!
     
     // === 9. CLAMP FINAL REWARD TO RANGE [-12, +12] ===
     totalReward = Math.max(-12, Math.min(12, totalReward)); // Expanded range for terminal penalties
