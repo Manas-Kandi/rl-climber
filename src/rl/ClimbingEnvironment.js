@@ -596,16 +596,15 @@ export class ClimbingEnvironment {
   }
 
   /**
-   * Calculate reward for the current step - ACTION-CONSEQUENCE SYSTEM
+   * Calculate reward for the current step - ABSOLUTE BINARY SYSTEM
    * 
-   * NEW PHILOSOPHY:
-   * Every action gets IMMEDIATE feedback based on its DIRECT consequence:
-   * - Did this action move me toward the goal? → Reward
-   * - Did this action move me away from the goal? → Penalty
-   * - Was this action productive? → Reward
-   * - Was this action wasteful? → Penalty
+   * CORE PHILOSOPHY:
+   * - Ground = ABSOLUTE FAILURE (-100, episode ends)
+   * - Out of bounds = ABSOLUTE FAILURE (-100, episode ends)
+   * - Stairs = ONLY safe place (0 baseline)
+   * - Climbing = ONLY way to get positive rewards
    * 
-   * CRYSTAL CLEAR cause-and-effect for every single action!
+   * NO RELATIVITY. Ground is ground. Death is death. Period.
    * 
    * @param {Float32Array} prevState - Previous state vector
    * @param {number} action - Action taken
@@ -661,51 +660,28 @@ export class ClimbingEnvironment {
     }
     
     // ============================================================================
-    // ACTION-CONSEQUENCE REWARDS: Immediate feedback for EVERY action
+    // ABSOLUTE FAILURE CHECKS - These end the episode immediately
     // ============================================================================
     
-    // === 1. MOVEMENT ACTIONS: Did this move help or hurt? ===
-    if (action === this.ACTION_SPACE.FORWARD || 
-        action === this.ACTION_SPACE.BACKWARD ||
-        action === this.ACTION_SPACE.LEFT ||
-        action === this.ACTION_SPACE.RIGHT) {
+    // === 1. ABSOLUTE FAILURE: On Ground (except starting position) ===
+    if (currentStep < 0) {
+      // Check if we're at starting position (first few steps of episode)
+      const atStartPosition = this.currentStep < 10 && 
+                             Math.abs(agentPos.x - this.config.agent.startPosition.x) < 1.0 &&
+                             Math.abs(agentPos.z - this.config.agent.startPosition.z) < 1.0;
       
-      // Calculate movement toward goal (stairs are at negative Z)
-      const movedTowardStairs = (agentPos.z < prevPos.z);
-      const movedAwayFromStairs = (agentPos.z > prevPos.z);
-      
-      // Calculate height change
-      const heightGain = agentPos.y - prevPos.y;
-      
-      // IMMEDIATE REWARD: Moving toward stairs
-      if (movedTowardStairs) {
-        totalReward += 0.2;  // Good move!
-      } else if (movedAwayFromStairs) {
-        totalReward -= 0.2;  // Bad move!
-      }
-      
-      // IMMEDIATE REWARD: Gaining height
-      if (heightGain > 0.1) {
-        totalReward += heightGain * 0.5;  // Reward proportional to height gained
-      } else if (heightGain < -0.1) {
-        totalReward -= Math.abs(heightGain) * 0.3;  // Penalty for losing height
-      }
-      
-      // IMMEDIATE REWARD: Getting on stairs
-      if (currentStep >= 0 && prevStepOn < 0) {
-        totalReward += 0.5;  // Just got on stairs!
-      } else if (currentStep < 0 && prevStepOn >= 0) {
-        totalReward -= 0.5;  // Just fell off stairs!
+      if (!atStartPosition) {
+        // NOT at start = ABSOLUTE FAILURE
+        totalReward = -100.0;  // ABSOLUTE PENALTY
+        console.log('❌ TOUCHED GROUND! Absolute penalty: -100.0 (episode will end)');
+        return totalReward;
       }
     }
     
-    // === 2. JUMP ACTION: Was this jump productive? ===
+    // === 2. TRACK JUMP FOR LATER EVALUATION ===
     if (action === this.ACTION_SPACE.JUMP) {
       this.lastJumpStep = prevStepOn;
       this.jumpedThisStep = true;
-      
-      // Check if jump was productive (will check after step progression)
-      // Base cost applied later based on outcome
     }
     
     // === 2. GOAL REACHED: MAXIMUM REWARD ===
@@ -724,71 +700,41 @@ export class ClimbingEnvironment {
       return totalReward; // Return immediately, no other rewards matter
     }
     
-    // === 3. STEP PROGRESSION: BIG REWARDS for climbing ===
+    // === 3. STEP PROGRESSION: ONLY way to get positive rewards ===
     if (currentStep > this.highestStepReached && currentStep >= 0) {
-      // MASSIVE reward for reaching new step
-      const stepReward = 2.0 - (currentStep * 0.15);  // Step 0=+2.0, Step 9=+0.65
+      // BIG reward for reaching new step
+      const stepReward = 10.0 - (currentStep * 0.5);  // Step 0=+10, Step 9=+5.5
       totalReward += stepReward;
       this.highestStepReached = currentStep;
       this.stepsVisited.add(currentStep);
-      
-      // IMMEDIATE FEEDBACK: Was this from a jump?
-      if (this.jumpedThisStep) {
-        totalReward += 0.5; // HUGE bonus for productive jump!
-        this.consecutiveWastefulJumps = 0;
-        console.log(`🎯 NEW STEP ${currentStep}! Reward: +${stepReward.toFixed(2)} (+0.5 PRODUCTIVE JUMP!)`);
-      } else {
-        console.log(`🎯 NEW STEP ${currentStep}! Reward: +${stepReward.toFixed(2)}`);
-      }
-    } else if (this.jumpedThisStep) {
-      // IMMEDIATE PENALTY: Jumped but didn't advance
-      totalReward -= 0.3; // Wasteful jump penalty
-      this.consecutiveWastefulJumps++;
-      
-      if (this.consecutiveWastefulJumps > 2) {
-        const extraPenalty = 0.1 * Math.min(5, this.consecutiveWastefulJumps - 2);
-        totalReward -= extraPenalty;
-        if (this.consecutiveWastefulJumps % 3 === 0) {
-          console.log(`⚠️ WASTEFUL JUMP! Total: ${this.consecutiveWastefulJumps}. Penalty: -${(0.3 + extraPenalty).toFixed(2)}`);
-        }
-      }
+      console.log(`🎯 NEW STEP ${currentStep}! Reward: +${stepReward.toFixed(1)}`);
     }
     
     // Reset jump tracking
     this.jumpedThisStep = false;
     
-    // === 4. POSITION-BASED REWARDS: Where are you? ===
-    if (currentStep >= 0) {
-      // On stairs - small positive reward (encourages staying on stairs)
-      totalReward += 0.05;
-    } else {
-      // Off stairs - penalty
-      totalReward -= 0.1;
-    }
+    // === 4. BEING ON STAIRS: Baseline (0) ===
+    // Just being on stairs = 0 reward
+    // This is expected, not rewarded
     
-    // === 5. BACKWARD MOVEMENT PENALTY ===
-    if (prevStepOn >= 0 && currentStep >= 0 && currentStep < prevStepOn) {
-      // Moved to lower step - bad!
-      const backwardPenalty = -0.5 * (prevStepOn - currentStep);
-      totalReward += backwardPenalty;
-      console.log(`💥 MOVED DOWN from step ${prevStepOn} to ${currentStep}! Penalty: ${backwardPenalty.toFixed(2)}`);
-    }
+    // === 5. ABSOLUTE TERMINAL FAILURES ===
     
-    // === 6. TERMINAL PENALTIES ===
+    // 5a. Fell to death - ABSOLUTE FAILURE
     if (agentPos.y < this.config.fallThreshold) {
-      totalReward += -5.0; // Death penalty
-      console.log('💀 FELL TO DEATH! Penalty: -5.0');
+      totalReward = -100.0;  // ABSOLUTE PENALTY
+      console.log('💀 FELL TO DEATH! Absolute penalty: -100.0');
       return totalReward;
     }
     
+    // 5b. Out of bounds - ABSOLUTE FAILURE
     if (this.isOutOfBounds()) {
-      totalReward += -5.0; // Out of bounds penalty
-      console.log('🚫 OUT OF BOUNDS! Penalty: -5.0');
+      totalReward = -100.0;  // ABSOLUTE PENALTY
+      console.log('🚫 OUT OF BOUNDS! Absolute penalty: -100.0');
       return totalReward;
     }
     
-    // === 7. CLAMP FINAL REWARD ===
-    totalReward = Math.max(-5, Math.min(5, totalReward));
+    // === 6. CLAMP FINAL REWARD ===
+    totalReward = Math.max(-100, Math.min(20, totalReward));
     
     // === 8. DEBUG LOGGING (every 100 steps) ===
     if (this.currentStep % 100 === 0 && this.currentStep > 0) {
@@ -824,23 +770,35 @@ export class ClimbingEnvironment {
     }
     
     const agentPos = this.physicsEngine.getBodyPosition(this.agentBody);
+    const currentStep = this.detectCurrentStep();
     
-    // Episode ends if agent falls below threshold
+    // ABSOLUTE FAILURE: On ground (except starting position)
+    if (currentStep < 0) {
+      const atStartPosition = this.currentStep < 10 && 
+                             Math.abs(agentPos.x - this.config.agent.startPosition.x) < 1.0 &&
+                             Math.abs(agentPos.z - this.config.agent.startPosition.z) < 1.0;
+      
+      if (!atStartPosition) {
+        return true;  // Episode ends immediately!
+      }
+    }
+    
+    // ABSOLUTE FAILURE: Fell to death
     if (agentPos.y < this.config.fallThreshold) {
       return true;
     }
     
-    // Episode ends if agent goes out of bounds
+    // ABSOLUTE FAILURE: Out of bounds
     if (this.isOutOfBounds()) {
       return true;
     }
     
-    // Episode ends if agent reaches goal
+    // SUCCESS: Reached goal
     if (agentPos.y >= this.config.goalHeight) {
       return true;
     }
     
-    // Episode ends if max steps reached
+    // TIMEOUT: Max steps reached
     if (this.currentStep >= this.config.maxSteps) {
       return true;
     }
