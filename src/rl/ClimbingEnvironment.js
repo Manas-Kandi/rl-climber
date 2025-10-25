@@ -636,8 +636,8 @@ export class ClimbingEnvironment {
     }
     
     // === 1. BASELINE: DOING NOTHING IS NEGATIVE ===
-    // This is the KEY psychological shift - make 0 unattractive!
-    totalReward -= 0.5; // Every step costs -0.5 by default
+    // Small penalty for time passing (tiny scale for interpretability)
+    totalReward -= 0.01; // Every step costs -0.01 (was -0.5)
     
     // === 2. GOAL REACHED: MAXIMUM REWARD ===
     // Check curriculum goal if enabled
@@ -646,117 +646,117 @@ export class ClimbingEnvironment {
       (agentPos.y >= this.config.goalHeight);
     
     if (goalReached) {
-      totalReward += 100.0; // ONLY way to get +100
+      totalReward += 10.0; // ONLY way to get +10 (was +100, scaled down)
       if (this.curriculumMode) {
-        console.log(`🎓 CURRICULUM GOAL REACHED! Step ${currentStep} >= ${this.curriculumGoalStep}! +100`);
+        console.log(`🎓 CURRICULUM GOAL REACHED! Step ${currentStep} >= ${this.curriculumGoalStep}! +10`);
       } else {
-        console.log('🏆 GOAL REACHED! +100 (MAXIMUM REWARD)');
+        console.log('🏆 GOAL REACHED! +10 (MAXIMUM REWARD)');
       }
       return totalReward; // Return immediately, no other rewards matter
     }
     
-    // === 3. STEP PROGRESSION: HUGE POSITIVE REWARDS ===
-    // Make progress 4-10x more valuable than penalties!
+    // === 3. STEP PROGRESSION: CLEAR POSITIVE REWARDS ===
+    // Diminishing rewards for each step (tiny scale)
     if (currentStep > this.highestStepReached && currentStep >= 0) {
-      // MASSIVE rewards: Step 0=+50, Step 1=+45, Step 2=+40, ..., Step 9=+5
-      const stepReward = 50 - (currentStep * 5);
+      // Rewards: Step 0=+1.0, Step 1=+0.9, Step 2=+0.8, ..., Step 9=+0.1
+      const stepReward = 1.0 - (currentStep * 0.1);
       totalReward += stepReward;
       this.highestStepReached = currentStep;
       this.stepsVisited.add(currentStep);
-      console.log(`🎯 NEW STEP ${currentStep}! Reward: +${stepReward} (HUGE!)`);
+      console.log(`🎯 NEW STEP ${currentStep}! Reward: +${stepReward.toFixed(2)}`);
     }
     
     // === 4. TIME DECAY: REWARDS DECREASE IF STAYING ON SAME STEP ===
-    // This prevents "camping" on a step
+    // This prevents "camping" on a step (tiny scale)
     if (currentStep >= 0 && this.timeOnCurrentStep > 0) {
-      // Decay formula: First 30 steps = +2, next 30 = +1, next 30 = 0, then negative
+      // Decay formula: First 30 steps = +0.05, next 30 = +0.02, next 30 = 0, then negative
       let decayReward = 0;
       if (this.timeOnCurrentStep <= 30) {
-        decayReward = 2.0; // Still good
+        decayReward = 0.05; // Still good (was 2.0)
       } else if (this.timeOnCurrentStep <= 60) {
-        decayReward = 1.0; // Getting worse
+        decayReward = 0.02; // Getting worse (was 1.0)
       } else if (this.timeOnCurrentStep <= 90) {
         decayReward = 0.0; // Neutral
       } else {
-        decayReward = -1.0 * Math.min(5, (this.timeOnCurrentStep - 90) / 30); // Max -5
+        decayReward = -0.02 * Math.min(5, (this.timeOnCurrentStep - 90) / 30); // Max -0.1 (was -5)
       }
       totalReward += decayReward;
       
       if (this.timeOnCurrentStep % 60 === 0 && this.timeOnCurrentStep > 60) {
-        console.log(`⏱️ TIME DECAY on step ${currentStep}: ${decayReward.toFixed(1)} (been here ${(this.timeOnCurrentStep/60).toFixed(1)}s)`);
+        console.log(`⏱️ TIME DECAY on step ${currentStep}: ${decayReward.toFixed(3)} (been here ${(this.timeOnCurrentStep/60).toFixed(1)}s)`);
       }
     }
     
-    // === 5. REDUCED PUNISHMENTS FOR FAILURES ===
-    // Make failures hurt less so risk-taking is more attractive!
+    // === 5. SMALL PUNISHMENTS FOR FAILURES ===
+    // Tiny penalties (not catastrophic)
     
-    // 5a. JUMPING OFF STAIRS (Moving to lower step) - REDUCED PENALTY
+    // 5a. JUMPING OFF STAIRS (Moving to lower step) - TINY PENALTY
     if (prevStepOn >= 0 && currentStep >= 0 && currentStep < prevStepOn) {
-      const jumpOffPenalty = -5 * (prevStepOn - currentStep); // Was -15, now -5
+      const jumpOffPenalty = -0.1 * (prevStepOn - currentStep); // Was -5, now -0.1
       totalReward += jumpOffPenalty;
-      console.log(`💥 JUMPED DOWN from step ${prevStepOn} to ${currentStep}! Penalty: ${jumpOffPenalty} (reduced)`);
+      console.log(`💥 JUMPED DOWN from step ${prevStepOn} to ${currentStep}! Penalty: ${jumpOffPenalty.toFixed(2)}`);
     }
     
-    // 5b. FALLING OFF STAIRS (Going from step to ground) - REDUCED PENALTY
+    // 5b. FALLING OFF STAIRS (Going from step to ground) - TINY PENALTY
     if (prevStepOn >= 0 && currentStep === -1) {
-      const fallOffPenalty = -10; // Was -25, now -10
+      const fallOffPenalty = -0.2; // Was -10, now -0.2
       totalReward += fallOffPenalty;
-      console.log(`💥 FELL OFF STAIRS from step ${prevStepOn}! Penalty: ${fallOffPenalty} (reduced)`);
+      console.log(`💥 FELL OFF STAIRS from step ${prevStepOn}! Penalty: ${fallOffPenalty.toFixed(2)}`);
     }
     
-    // 5c. STAGNATION PUNISHMENT (Staying in one place) - INCREASED
+    // 5c. STAGNATION PUNISHMENT (Staying in one place) - TINY
     if (this.stagnationTimer >= 30) { // Trigger faster (was 60)
-      const stagnationPenalty = -1.0 * Math.min(10, (this.stagnationTimer - 30) / 10); // Max -10
+      const stagnationPenalty = -0.02 * Math.min(10, (this.stagnationTimer - 30) / 10); // Max -0.2 (was -10)
       totalReward += stagnationPenalty;
       if (this.stagnationTimer % 30 === 0) { // Log more frequently
-        console.log(`😴 STAGNATION! No movement for ${(this.stagnationTimer/60).toFixed(1)}s. Penalty: ${stagnationPenalty.toFixed(1)}`);
+        console.log(`😴 STAGNATION! No movement for ${(this.stagnationTimer/60).toFixed(1)}s. Penalty: ${stagnationPenalty.toFixed(3)}`);
       }
     }
     
-    // === 6. TERMINAL PUNISHMENTS (Episode ending) - REDUCED ===
+    // === 6. TERMINAL PUNISHMENTS (Episode ending) - TINY ===
     
-    // 6a. Falling below ground - REDUCED PENALTY
+    // 6a. Falling below ground - TINY PENALTY
     if (agentPos.y < this.config.fallThreshold) {
-      totalReward += -50.0; // Was -100, now -50
-      console.log('💀 FELL TO DEATH! Penalty: -50 (reduced to encourage risk)');
+      totalReward += -1.0; // Was -50, now -1.0
+      console.log('💀 FELL TO DEATH! Penalty: -1.0');
       return totalReward;
     }
     
-    // 6b. Going out of bounds - REDUCED PENALTY
+    // 6b. Going out of bounds - TINY PENALTY
     if (this.isOutOfBounds()) {
-      totalReward += -50.0; // Was -100, now -50
-      console.log('🚫 OUT OF BOUNDS! Penalty: -50 (reduced to encourage exploration)');
+      totalReward += -1.0; // Was -50, now -1.0
+      console.log('🚫 OUT OF BOUNDS! Penalty: -1.0');
       return totalReward;
     }
     
     // === 7. EXPLORATION BONUS ===
-    // Small bonus for taking ANY action (encourages trying things)
+    // Tiny bonus for taking ANY action (encourages trying things)
     if (action !== undefined && action !== null) {
-      totalReward += 0.2; // Small exploration bonus
+      totalReward += 0.005; // Tiny exploration bonus (was 0.2)
     }
     
     // === 8. SMALL GUIDANCE REWARDS ===
     
     // 8a. Being on stairs is GOOD (but not as good as progressing)
     if (currentStep >= 0) {
-      totalReward += 1.0; // Decent bonus for being on stairs
+      totalReward += 0.02; // Small bonus for being on stairs (was 1.0)
     } else {
-      totalReward -= 1.0; // Penalty for being on ground (on top of baseline -0.5)
+      totalReward -= 0.02; // Penalty for being on ground (was -1.0)
     }
     
     // 8b. Forward progress bonus (approaching stairs)
     if (agentPos.z < 2 && agentPos.z > -20) {
-      const forwardBonus = Math.max(0, (2 - agentPos.z)) * 0.1; // Max +0.2
+      const forwardBonus = Math.max(0, (2 - agentPos.z)) * 0.002; // Max +0.004 (was 0.1)
       totalReward += forwardBonus;
     }
     
-    // 8c. Penalty for being off-center (but small)
+    // 8c. Penalty for being off-center (but tiny)
     if (Math.abs(agentPos.x) > 1.5) {
-      totalReward -= 0.3;
+      totalReward -= 0.006; // Tiny penalty (was 0.3)
     }
     
-    // === 9. CLAMP FINAL REWARD TO RANGE [-50, +100] ===
-    totalReward = Math.max(-50, Math.min(100, totalReward));
+    // === 9. CLAMP FINAL REWARD TO RANGE [-2, +12] ===
+    totalReward = Math.max(-2, Math.min(12, totalReward)); // Was [-50, +100]
     
     return totalReward;
   }
