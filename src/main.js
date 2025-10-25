@@ -253,7 +253,10 @@ class ClimbingGameApp {
                 this.sceneBuilder.buildScene(staircaseScene);
                 // Update environment config with scene settings
                 this.environment.config.goalHeight = staircaseScene.goalHeight;
+                this.environment.config.agent.startPosition = staircaseScene.agentStart;
                 Object.assign(this.environment.config.rewardWeights, staircaseScene.rewardConfig);
+                // Reset environment to apply new start position
+                this.environment.reset();
                 console.log('✅ Staircase scene loaded and configured');
             }
             
@@ -398,21 +401,6 @@ class ClimbingGameApp {
             { x: 0, y: 0, z: 0 }
         );
         
-        // Create wall physics body
-        this.physicsEngine.createWallBody(
-            { x: 0, y: this.config.environment.wallHeight / 2, z: -5 },
-            { x: 10, y: this.config.environment.wallHeight, z: 1 }
-        );
-        
-        // Create ledge physics bodies
-        this.config.environment.ledges.forEach((ledge, index) => {
-            this.physicsEngine.createLedgeBody(
-                ledge.position,
-                ledge.size,
-                `ledge_${index}`
-            );
-        });
-        
         // Create visual elements
         console.log('🎨 Creating visual elements...');
         
@@ -425,20 +413,10 @@ class ClimbingGameApp {
         // Create boundary markers (red lines showing platform edges)
         this.renderingEngine.createBoundaryMarkers(10, 10);
         
-        // Create climbing wall with ledges
-        const wallGroup = this.renderingEngine.createClimbingWall(this.config.environment.ledges);
+        // Create agent mesh (position will be set by scene)
+        const agentMesh = this.renderingEngine.createAgent({ x: 0, y: 1, z: 0 });
         
-        // Create goal platform
-        const goalMesh = this.renderingEngine.createGoal({
-            x: 0,
-            y: this.config.environment.goalHeight,
-            z: -5
-        });
-        
-        // Create agent mesh
-        const agentMesh = this.renderingEngine.createAgent(this.config.environment.agentStart);
-        
-        console.log('🏗️ Environment setup complete');
+        console.log('🏗️ Environment setup complete (scene-specific objects will be added by SceneBuilder)');
     }
     
     /**

@@ -62,7 +62,7 @@ export class SceneManager {
             name: 'staircase',
             description: 'Simple staircase with 10 steps',
             goalHeight: 10.0,
-            agentStart: { x: 0, y: 1, z: 0 },
+            agentStart: { x: 0, y: 1, z: 3 },  // Start in front of stairs
             obstacles: [],
             rewardConfig: {
                 heightGain: 3.0,      // High reward for climbing

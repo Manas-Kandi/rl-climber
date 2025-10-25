@@ -25,6 +25,15 @@ export class SceneBuilder {
             this.buildObstacle(obstacle);
         });
         
+        // Update agent start position if specified
+        if (sceneConfig.agentStart && this.renderingEngine.agentMesh) {
+            this.renderingEngine.agentMesh.position.set(
+                sceneConfig.agentStart.x,
+                sceneConfig.agentStart.y,
+                sceneConfig.agentStart.z
+            );
+        }
+        
         console.log('✅ Scene built with', sceneConfig.obstacles.length, 'obstacles');
     }
     

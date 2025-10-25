@@ -849,9 +849,10 @@ export class UIController {
       
       // Update environment config
       app.environment.config.goalHeight = scene.goalHeight;
+      app.environment.config.agent.startPosition = scene.agentStart;
       Object.assign(app.environment.config.rewardWeights, scene.rewardConfig);
       
-      // Reset environment
+      // Reset environment with new start position
       app.environment.reset();
       
       this.showNotification(`Scene loaded: ${sceneName}`, 'success');
