@@ -552,25 +552,25 @@ export class ClimbingEnvironment {
     const agentPos = this.physicsEngine.getBodyPosition(this.agentBody);
     const agentVel = this.physicsEngine.getBodyVelocity(this.agentBody);
     
-    // IMPROVED: More lenient velocity check for better grounding detection
-    if (Math.abs(agentVel.y) > 3.0) {
-      return false;
+    // LENIENT: Allow movement even when slightly airborne
+    if (Math.abs(agentVel.y) > 5.0) {
+      return false; // Definitely in air
     }
     
-    // Check if agent is in contact with ground or ledges
+    // Check if agent is in contact with ground or ledges/steps
     const collidingBodies = this.physicsEngine.getCollidingBodies(this.agentBody);
     
     for (const body of collidingBodies) {
       const bodyId = this.getBodyId(body);
-      // Agent is grounded if touching ground or any ledge
-      if (bodyId && (bodyId === 'ground' || bodyId.includes('ledge'))) {
+      // Agent is grounded if touching ground, ledge, or step
+      if (bodyId && (bodyId === 'ground' || bodyId.includes('ledge') || bodyId.includes('step'))) {
         return true;
       }
     }
     
-    // FALLBACK: Check if agent is very close to ground level
+    // FALLBACK: Check if agent is very close to any surface
     // This helps when collision detection is unreliable
-    if (agentPos.y <= 1.2 && Math.abs(agentVel.y) < 1.0) {
+    if (agentPos.y <= 1.5 && Math.abs(agentVel.y) < 2.0) {
       return true;
     }
     

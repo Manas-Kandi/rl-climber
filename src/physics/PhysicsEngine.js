@@ -190,27 +190,43 @@ export class PhysicsEngine {
   }
 
   /**
-   * Create a static ledge body
+   * Create a static ledge body (used for steps and platforms)
    * @param {Object} position - Ledge position {x, y, z}
    * @param {Object} size - Ledge size {x, y, z}
    * @param {string} id - Optional identifier for the ledge
    * @returns {CANNON.Body} The ledge body
    */
   createLedgeBody(position, size = { x: 2, y: 0.2, z: 1 }, id = null) {
-    // Create a box shape for the ledge
-    const ledgeShape = new CANNON.Box(new CANNON.Vec3(size.x / 2, size.y / 2, size.z / 2));
-    
     // Create the body with zero mass (static)
     const ledgeBody = new CANNON.Body({ mass: 0 });
-    ledgeBody.addShape(ledgeShape);
+    
+    // Main step platform (top surface)
+    const mainShape = new CANNON.Box(new CANNON.Vec3(size.x / 2, size.y / 2, size.z / 2));
+    ledgeBody.addShape(mainShape);
+    
+    // Add small ramp at front edge to prevent getting stuck
+    // This allows the agent to smoothly climb onto the step
+    const rampHeight = size.y * 0.3; // 30% of step height
+    const rampDepth = size.z * 0.15; // 15% of step depth
+    
+    if (id && id.includes('step_')) {
+      // Only add ramps to actual steps, not goal platforms
+      const rampShape = new CANNON.Box(new CANNON.Vec3(size.x / 2, rampHeight / 2, rampDepth / 2));
+      
+      // Position ramp at front edge, slightly lower
+      const rampOffset = new CANNON.Vec3(0, -size.y / 2 + rampHeight / 2, size.z / 2 - rampDepth / 2);
+      ledgeBody.addShape(rampShape, rampOffset);
+    }
     
     // Set position
     ledgeBody.position.set(position.x, position.y, position.z);
     
-    // Configure material properties for good grip
+    // Configure material properties
+    // Top surface: high friction for walking
+    // Sides: lower friction to prevent sticking
     ledgeBody.material = new CANNON.Material({
-      friction: 0.6, // High friction for gripping
-      restitution: 0.1
+      friction: 0.4,      // Moderate friction (was 0.6)
+      restitution: 0.05   // Minimal bounce
     });
     
     // Add to world and track with unique ID
@@ -230,37 +246,39 @@ export class PhysicsEngine {
    * @returns {CANNON.Body} The agent body
    */
   createAgentBody(position = { x: 0, y: 0.5, z: 0 }, mass = 1.0, size = 0.5, shape = 'box') {
-    let agentShape;
-    
-    // Create shape based on type
-    if (shape === 'sphere') {
-      agentShape = new CANNON.Sphere(size);
-    } else {
-      // Default to box
-      agentShape = new CANNON.Box(new CANNON.Vec3(size, size, size));
-    }
-    
     // Create the body with specified mass (dynamic)
     const agentBody = new CANNON.Body({ mass: mass });
-    agentBody.addShape(agentShape);
+    
+    // Use a compound shape: box body with rounded bottom
+    // This prevents getting stuck on edges
+    const mainBox = new CANNON.Box(new CANNON.Vec3(size * 0.9, size * 0.7, size * 0.9));
+    agentBody.addShape(mainBox, new CANNON.Vec3(0, size * 0.15, 0));
+    
+    // Add small sphere at bottom for smooth sliding over edges
+    const bottomSphere = new CANNON.Sphere(size * 0.4);
+    agentBody.addShape(bottomSphere, new CANNON.Vec3(0, -size * 0.3, 0));
     
     // Set position (agent starts at y=0.5 to sit on ground at y=0)
     agentBody.position.set(position.x, position.y, position.z);
     
     // Configure material properties for realistic movement
     agentBody.material = new CANNON.Material({
-      friction: 0.5,      // INCREASED from 0.3 for better grip
-      restitution: 0.05   // DECREASED from 0.1 for less bounce
+      friction: 0.3,      // REDUCED from 0.5 for smoother sliding
+      restitution: 0.01   // MINIMAL bounce
     });
     
-    // Configure linear and angular damping for realistic movement
-    agentBody.linearDamping = 0.05;  // DECREASED from 0.1 for more responsive movement
-    agentBody.angularDamping = 0.5;  // INCREASED from 0.3 to reduce spinning
+    // Configure damping for smooth, responsive movement
+    agentBody.linearDamping = 0.01;  // VERY LOW for sliding on ground
+    agentBody.angularDamping = 0.8;  // HIGH to prevent spinning
+    
+    // Prevent the agent from tipping over
+    agentBody.fixedRotation = false;  // Allow some rotation for realistic physics
+    agentBody.updateMassProperties();
     
     // Add to world and track
     this.addBody(agentBody, 'agent');
     
-    console.log('Agent body created at:', position, 'with mass:', mass);
+    console.log('Agent body created at:', position, 'with mass:', mass, '(compound shape with rounded bottom)');
     return agentBody;
   }
 
