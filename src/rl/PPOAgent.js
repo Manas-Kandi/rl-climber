@@ -9,13 +9,13 @@ export class PPOAgent {
         this.stateSize = stateSize;
         this.actionSize = actionSize;
         
-        // Hyperparameters - BOOSTED for faster learning
+        // Hyperparameters - MAXIMUM EXPLORATION for learning new reward system
         this.gamma = config.gamma || 0.99;
         this.lambda = config.lambda || 0.95;
         this.clipEpsilon = config.clipEpsilon || 0.3;  // INCREASED from 0.2
-        this.entropyCoef = config.entropyCoef || 0.05;  // INCREASED from 0.01
+        this.entropyCoef = config.entropyCoef || 0.2;  // MASSIVELY INCREASED from 0.05 for exploration!
         this.valueCoef = config.valueCoef || 0.5;
-        this.learningRate = config.learningRate || 0.003;  // INCREASED from 0.0003
+        this.learningRate = config.learningRate || 0.01;  // INCREASED from 0.003 for faster unlearning
         this.epochs = config.epochs || 20;  // INCREASED from 10
         
         // Build networks
@@ -482,6 +482,30 @@ export class PPOAgent {
             lambda: this.lambda,
             valueCoef: this.valueCoef
         };
+    }
+    
+    /**
+     * Reset networks to random initialization (fresh start)
+     * Use this when the agent has learned a bad policy
+     */
+    resetNetworks() {
+        console.log('🔄 Resetting networks to random initialization...');
+        
+        // Dispose old networks
+        if (this.actorNetwork) this.actorNetwork.dispose();
+        if (this.criticNetwork) this.criticNetwork.dispose();
+        if (this.actorOptimizer) this.actorOptimizer.dispose();
+        if (this.criticOptimizer) this.criticOptimizer.dispose();
+        
+        // Rebuild networks with random weights
+        this.actorNetwork = this.buildActorNetwork();
+        this.criticNetwork = this.buildCriticNetwork();
+        
+        // Recreate optimizers
+        this.actorOptimizer = tf.train.adam(this.learningRate);
+        this.criticOptimizer = tf.train.adam(this.learningRate);
+        
+        console.log('✅ Networks reset! Agent will explore from scratch.');
     }
     
     /**

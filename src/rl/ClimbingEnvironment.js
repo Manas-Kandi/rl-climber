@@ -790,6 +790,11 @@ export class ClimbingEnvironment {
     // === 7. CLAMP FINAL REWARD ===
     totalReward = Math.max(-5, Math.min(5, totalReward));
     
+    // === 8. DEBUG LOGGING (every 100 steps) ===
+    if (this.currentStep % 100 === 0 && this.currentStep > 0) {
+      console.log(`📊 Step ${this.currentStep}: Reward=${totalReward.toFixed(2)}, Pos=(${agentPos.x.toFixed(1)}, ${agentPos.y.toFixed(1)}, ${agentPos.z.toFixed(1)}), OnStep=${currentStep}`);
+    }
+    
     return totalReward;
   }
   
