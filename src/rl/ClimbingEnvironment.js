@@ -36,6 +36,11 @@ export class ClimbingEnvironment {
     this.timeOnSteps = 0;
     this.timeOnCurrentStep = 0; // NEW: Track time spent on current step for decay
     
+    // Jump tracking for penalizing wasteful jumps
+    this.lastJumpStep = -1;
+    this.jumpedThisStep = false;
+    this.consecutiveWastefulJumps = 0;
+    
     // Trajectory recording
     this.recordTrajectories = false;
     this.currentTrajectory = [];
@@ -417,6 +422,11 @@ export class ClimbingEnvironment {
     this.lastPosition = null;
     this.stagnationTimer = 0;
     
+    // Reset jump tracking
+    this.lastJumpStep = -1;
+    this.jumpedThisStep = false;
+    this.consecutiveWastefulJumps = 0;
+    
     // Start new trajectory recording if enabled
     if (this.recordTrajectories) {
       this.currentTrajectory = [];
@@ -639,6 +649,18 @@ export class ClimbingEnvironment {
     // Small penalty for time passing (tiny scale for interpretability)
     totalReward -= 0.01; // Every step costs -0.01 (was -0.5)
     
+    // === 1b. JUMP COST: Make jumping expensive ===
+    // Penalize jumping unless it leads to progress
+    if (action === this.ACTION_SPACE.JUMP) {
+      // Base jump cost (always applied when jumping)
+      totalReward -= 0.05; // Jumping costs energy!
+      
+      // Track if this jump was productive
+      // We'll check in a moment if it led to step progression
+      this.lastJumpStep = this.currentStep;
+      this.jumpedThisStep = true;
+    }
+    
     // === 2. GOAL REACHED: MAXIMUM REWARD ===
     // Check curriculum goal if enabled
     const goalReached = this.curriculumMode ? 
@@ -663,8 +685,31 @@ export class ClimbingEnvironment {
       totalReward += stepReward;
       this.highestStepReached = currentStep;
       this.stepsVisited.add(currentStep);
-      console.log(`🎯 NEW STEP ${currentStep}! Reward: +${stepReward.toFixed(2)}`);
+      
+      // BONUS: If we just jumped and reached a new step, that was a GOOD jump!
+      if (this.jumpedThisStep) {
+        totalReward += 0.1; // Bonus for productive jump
+        this.consecutiveWastefulJumps = 0; // Reset wasteful jump counter
+        console.log(`🎯 NEW STEP ${currentStep}! Reward: +${stepReward.toFixed(2)} (+0.1 jump bonus)`);
+      } else {
+        console.log(`🎯 NEW STEP ${currentStep}! Reward: +${stepReward.toFixed(2)}`);
+      }
+    } else if (this.jumpedThisStep && currentStep === this.lastJumpStep) {
+      // PENALTY: Jumped but didn't advance to new step = wasteful!
+      totalReward -= 0.08; // Penalty for wasteful jump
+      this.consecutiveWastefulJumps++;
+      
+      // Increasing penalty for repeated wasteful jumps
+      if (this.consecutiveWastefulJumps > 3) {
+        totalReward -= 0.05 * Math.min(5, this.consecutiveWastefulJumps - 3); // Max -0.25
+        if (this.consecutiveWastefulJumps % 5 === 0) {
+          console.log(`⚠️ WASTEFUL JUMPING! ${this.consecutiveWastefulJumps} jumps without progress. Extra penalty: -${(0.05 * Math.min(5, this.consecutiveWastefulJumps - 3)).toFixed(2)}`);
+        }
+      }
     }
+    
+    // Reset jump tracking for next step
+    this.jumpedThisStep = false;
     
     // === 4. TIME DECAY: REWARDS DECREASE IF STAYING ON SAME STEP ===
     // This prevents "camping" on a step (tiny scale)
