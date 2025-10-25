@@ -12,18 +12,18 @@ export class TrainingOrchestrator {
     constructor(environment, agent, config = {}) {
         this.environment = environment;
         this.agent = agent;
-        
+
         // Training state variables
         this.currentEpisode = 0;
         this.isTraining = false;
         this.isPaused = false;
         this.visualTrainingMode = false; // NEW: Visual training mode flag
-        this.visualTrainingDelay = 16; // NEW: Delay between steps in ms (60 FPS)
-        
+        this.visualTrainingDelay = 0; // CHANGED: No delay - training runs at full speed in background
+
         // Statistics arrays
         this.rewardHistory = [];
         this.successHistory = [];
-        
+
         // Configuration with defaults
         this.config = {
             numEpisodes: 1000,
@@ -34,11 +34,11 @@ export class TrainingOrchestrator {
             autoSaveInterval: 10, // Auto-save every N episodes
             ...config
         };
-        
+
         // Callback arrays for events
         this.episodeCompleteCallbacks = [];
         this.trainingCompleteCallbacks = [];
-        
+
         // Model manager will be set externally
         this.modelManager = null;
     }
@@ -50,26 +50,26 @@ export class TrainingOrchestrator {
     async runEpisodeDQN() {
         // Get initial state from environment reset
         let state = this.environment.reset();
-        
+
         // Initialize episode variables
         let totalReward = 0;
         let steps = 0;
         let done = false;
-        
+
         // Episode loop
         const maxSteps = this.environment.config?.maxSteps || this.environment.maxSteps || 500;
         while (!done && steps < maxSteps) {
             // Select action using epsilon-greedy policy
             const epsilon = this.agent.epsilon;
             const action = this.agent.selectAction(state, epsilon);
-            
+
             // Execute action in environment
             const stepResult = this.environment.step(action);
             const { state: nextState, reward, done: isDone, info } = stepResult;
-            
+
             // Store experience in replay buffer
             this.agent.remember(state, action, reward, nextState, isDone);
-            
+
             // Train if buffer has enough samples
             if (this.agent.canTrain && this.agent.canTrain(this.config.batchSize)) {
                 const trainResult = this.agent.train(this.config.batchSize);
@@ -78,13 +78,13 @@ export class TrainingOrchestrator {
                     info.loss = trainResult.loss;
                 }
             }
-            
+
             // Update state and accumulate reward
             state = nextState;
             totalReward += reward;
             done = isDone;
             steps++;
-            
+
             // Render scene every N steps based on renderInterval
             if (steps % this.config.renderInterval === 0) {
                 // Trigger rendering update (environment should handle this)
@@ -93,21 +93,21 @@ export class TrainingOrchestrator {
                 }
             }
         }
-        
+
         // Determine if episode was successful
         const success = this.environment.isGoalReached ? this.environment.isGoalReached() : totalReward > 50;
-        
+
         // Get step tracking info if available
-        const highestStep = this.environment.highestStepReached !== undefined ? 
+        const highestStep = this.environment.highestStepReached !== undefined ?
             this.environment.highestStepReached : -1;
         const currentStep = this.environment.currentStepOn !== undefined ?
             this.environment.currentStepOn : -1;
-        
+
         // Debug: Log if reward is exactly 0
         if (totalReward === 0) {
             console.warn(`⚠️ DQN Episode ended with exactly 0 reward! Steps: ${steps}, Done: ${done}`);
         }
-        
+
         return {
             episodeReward: totalReward,
             episodeSteps: steps,
@@ -124,7 +124,7 @@ export class TrainingOrchestrator {
     async runEpisodePPO() {
         // Get initial state from environment reset
         let state = this.environment.reset();
-        
+
         // Initialize trajectory storage arrays
         const states = [];
         const actions = [];
@@ -132,23 +132,23 @@ export class TrainingOrchestrator {
         const logProbs = [];
         const values = [];
         const dones = [];
-        
+
         // Initialize episode variables
         let totalReward = 0;
         let steps = 0;
         let done = false;
-        
+
         // Episode loop
         const maxSteps = this.environment.config?.maxSteps || this.environment.maxSteps || 500;
         while (!done && steps < maxSteps) {
             // Select action using policy (training=true for exploration)
             const actionResult = this.agent.selectAction(state, true);
             const { action, logProb, value } = actionResult;
-            
+
             // Execute action in environment
             const stepResult = this.environment.step(action);
             const { state: nextState, reward, done: isDone, info } = stepResult;
-            
+
             // Store trajectory data
             states.push(Array.from(state)); // Convert Float32Array to regular array
             actions.push(action);
@@ -156,13 +156,13 @@ export class TrainingOrchestrator {
             logProbs.push(logProb);
             values.push(value);
             dones.push(isDone);
-            
+
             // Update state and accumulate reward
             state = nextState;
             totalReward += reward;
             done = isDone;
             steps++;
-            
+
             // Render scene every N steps
             if (steps % this.config.renderInterval === 0) {
                 // Trigger rendering update
@@ -171,7 +171,7 @@ export class TrainingOrchestrator {
                 }
             }
         }
-        
+
         // After episode ends, compute advantages and returns
         const trajectory = {
             states: states,
@@ -181,33 +181,33 @@ export class TrainingOrchestrator {
             values: values,
             dones: dones
         };
-        
+
         // Compute advantages using GAE
         const advantages = this.agent.computeAdvantages(rewards, values, dones);
         trajectory.advantages = Array.from(advantages);
-        
+
         // Compute returns (advantages + values)
         const returns = advantages.map((adv, i) => adv + values[i]);
         trajectory.returns = returns;
-        
+
         // Train the agent with this trajectory
         const trainingResult = this.agent.train(trajectory); // FIXED: Removed array wrapper
-        
+
         // Store training metrics if available (could be used for logging)
         if (trainingResult) {
             // Training metrics are available in trainingResult
             // Can be logged or stored for monitoring
         }
-        
+
         // Determine if episode was successful
         const success = this.environment.isGoalReached ? this.environment.isGoalReached() : totalReward > 50;
-        
+
         // Get step tracking info if available
-        const highestStep = this.environment.highestStepReached !== undefined ? 
+        const highestStep = this.environment.highestStepReached !== undefined ?
             this.environment.highestStepReached : -1;
         const currentStep = this.environment.currentStepOn !== undefined ?
             this.environment.currentStepOn : -1;
-        
+
         return {
             episodeReward: totalReward,
             episodeSteps: steps,
@@ -232,29 +232,29 @@ export class TrainingOrchestrator {
      */
     async startVisualTraining(numEpisodes = null) {
         const totalEpisodes = numEpisodes || 10000; // Default to many episodes
-        
+
         // Set training flags
         this.isTraining = true;
         this.isPaused = false;
         this.visualTrainingMode = true;
-        
+
         console.log(`🎬 Starting VISUAL training mode for ${totalEpisodes} episodes...`);
-        console.log(`   Training at ~${Math.round(1000/this.visualTrainingDelay)} FPS (autoplay speed)`);
-        
+        console.log(`   Training runs at FULL SPEED in background (not throttled by browser)`);
+
         // Main visual training loop
         for (let episode = 0; episode < totalEpisodes && this.isTraining; episode++) {
             this.currentEpisode = episode;
-            
+
             // Check if training is paused
             while (this.isPaused && this.isTraining) {
-                await this.sleep(100);
+                await this.sleep(0); // Yield immediately, check again
             }
-            
+
             // Exit if training was stopped
             if (!this.isTraining) {
                 break;
             }
-            
+
             // Run episode in visual mode (with delays between steps)
             let episodeResult;
             if (this.agent.constructor.name === 'DQNAgent' || this.agent.memory) {
@@ -265,15 +265,15 @@ export class TrainingOrchestrator {
                 // Default to DQN
                 episodeResult = await this.runEpisodeDQNVisual();
             }
-            
+
             // Store episode results
             this.rewardHistory.push(episodeResult.episodeReward);
             this.successHistory.push(episodeResult.success);
-            
+
             // Log every episode in visual mode
             const successIcon = episodeResult.success ? '🏆' : '❌';
             console.log(`${successIcon} Episode ${episode}: Reward=${episodeResult.episodeReward.toFixed(1)}, Steps=${episodeResult.episodeSteps}, Highest Step=${episodeResult.highestStep}`);
-            
+
             // Update hyperparameters
             if (this.agent.constructor.name === 'DQNAgent' || this.agent.memory) {
                 if (this.agent.epsilonDecay) {
@@ -282,12 +282,12 @@ export class TrainingOrchestrator {
                         this.agent.epsilon * this.agent.epsilonDecay
                     );
                 }
-                
+
                 if (episode % this.config.targetUpdateFreq === 0 && this.agent.updateTargetNetwork) {
                     this.agent.updateTargetNetwork();
                 }
             }
-            
+
             // Call episode complete callbacks
             const stats = this.getTrainingStats();
             this.episodeCompleteCallbacks.forEach(callback => {
@@ -297,13 +297,13 @@ export class TrainingOrchestrator {
                     console.error('Error in episode complete callback:', error);
                 }
             });
-            
+
             // Auto-save periodically
             if (this.modelManager && episode > 0 && episode % this.config.autoSaveInterval === 0) {
                 try {
                     const avgReward = this.getAverageReward(Math.min(100, this.rewardHistory.length));
                     const successRate = this.getSuccessRate(Math.min(100, this.successHistory.length));
-                    
+
                     await this.modelManager.saveModel({
                         episodeCount: episode,
                         totalSteps: episode * (this.environment.maxSteps || 500),
@@ -314,35 +314,35 @@ export class TrainingOrchestrator {
                     console.error('Error auto-saving model:', error);
                 }
             }
-            
-            // Small delay between episodes
-            await this.sleep(500); // 0.5 second pause between episodes
+
+            // Yield control between episodes (no delay needed)
+            await this.sleep(0); // Immediate yield, not throttled
         }
-        
+
         // Training complete
         this.isTraining = false;
         this.visualTrainingMode = false;
         console.log('🎬 Visual training completed!');
-        
+
         // Save final model
         if (this.modelManager) {
             try {
                 const avgReward = this.getAverageReward(Math.min(100, this.rewardHistory.length));
                 const successRate = this.getSuccessRate(Math.min(100, this.successHistory.length));
-                
+
                 await this.modelManager.saveModel({
                     episodeCount: totalEpisodes,
                     totalSteps: totalEpisodes * (this.environment.maxSteps || 500),
                     avgReward: avgReward,
                     successRate: successRate
                 });
-                
+
                 console.log('✅ Final model saved');
             } catch (error) {
                 console.error('Error saving final model:', error);
             }
         }
-        
+
         // Call training complete callbacks
         const finalStats = this.getTrainingStats();
         this.trainingCompleteCallbacks.forEach(callback => {
@@ -360,24 +360,24 @@ export class TrainingOrchestrator {
      */
     async runEpisodeDQNVisual() {
         let state = this.environment.reset();
-        
+
         let totalReward = 0;
         let steps = 0;
         let done = false;
-        
+
         const maxSteps = this.environment.config?.maxSteps || this.environment.maxSteps || 500;
         while (!done && steps < maxSteps) {
             // Select action
             const epsilon = this.agent.epsilon;
             const action = this.agent.selectAction(state, epsilon);
-            
+
             // Execute action
             const stepResult = this.environment.step(action);
             const { state: nextState, reward, done: isDone, info } = stepResult;
-            
+
             // Store experience
             this.agent.remember(state, action, reward, nextState, isDone);
-            
+
             // Train if possible
             if (this.agent.canTrain && this.agent.canTrain(this.config.batchSize)) {
                 const trainResult = this.agent.train(this.config.batchSize);
@@ -385,23 +385,23 @@ export class TrainingOrchestrator {
                     info.loss = trainResult.loss;
                 }
             }
-            
+
             // Update state
             state = nextState;
             totalReward += reward;
             done = isDone;
             steps++;
-            
-            // VISUAL MODE: Add delay between steps for visualization
-            await this.sleep(this.visualTrainingDelay);
+
+            // Yield control to allow rendering updates (not throttled)
+            await this.sleep(0);
         }
-        
+
         const success = this.environment.isGoalReached ? this.environment.isGoalReached() : totalReward > 50;
-        const highestStep = this.environment.highestStepReached !== undefined ? 
+        const highestStep = this.environment.highestStepReached !== undefined ?
             this.environment.highestStepReached : -1;
         const currentStep = this.environment.currentStepOn !== undefined ?
             this.environment.currentStepOn : -1;
-        
+
         return {
             episodeReward: totalReward,
             episodeSteps: steps,
@@ -417,28 +417,28 @@ export class TrainingOrchestrator {
      */
     async runEpisodePPOVisual() {
         let state = this.environment.reset();
-        
+
         const states = [];
         const actions = [];
         const rewards = [];
         const logProbs = [];
         const values = [];
         const dones = [];
-        
+
         let totalReward = 0;
         let steps = 0;
         let done = false;
-        
+
         const maxSteps = this.environment.config?.maxSteps || this.environment.maxSteps || 500;
         while (!done && steps < maxSteps) {
             // Select action
             const actionResult = this.agent.selectAction(state, true);
             const { action, logProb, value } = actionResult;
-            
+
             // Execute action
             const stepResult = this.environment.step(action);
             const { state: nextState, reward, done: isDone, info } = stepResult;
-            
+
             // Store trajectory data
             states.push(Array.from(state));
             actions.push(action);
@@ -446,17 +446,17 @@ export class TrainingOrchestrator {
             logProbs.push(logProb);
             values.push(value);
             dones.push(isDone);
-            
+
             // Update state
             state = nextState;
             totalReward += reward;
             done = isDone;
             steps++;
-            
-            // VISUAL MODE: Add delay between steps for visualization
-            await this.sleep(this.visualTrainingDelay);
+
+            // Yield control to allow rendering updates (not throttled)
+            await this.sleep(0);
         }
-        
+
         // Compute advantages and train
         const trajectory = {
             states: states,
@@ -466,21 +466,21 @@ export class TrainingOrchestrator {
             values: values,
             dones: dones
         };
-        
+
         const advantages = this.agent.computeAdvantages(rewards, values, dones);
         trajectory.advantages = Array.from(advantages);
-        
+
         const returns = advantages.map((adv, i) => adv + values[i]);
         trajectory.returns = returns;
-        
+
         this.agent.train(trajectory); // FIXED: Removed array wrapper
-        
+
         const success = this.environment.isGoalReached ? this.environment.isGoalReached() : totalReward > 50;
-        const highestStep = this.environment.highestStepReached !== undefined ? 
+        const highestStep = this.environment.highestStepReached !== undefined ?
             this.environment.highestStepReached : -1;
         const currentStep = this.environment.currentStepOn !== undefined ?
             this.environment.currentStepOn : -1;
-        
+
         return {
             episodeReward: totalReward,
             episodeSteps: steps,
@@ -492,12 +492,13 @@ export class TrainingOrchestrator {
 
     /**
      * Set the visual training speed (FPS)
-     * @param {number} fps - Frames per second (1-60)
+     * NOTE: Training now runs at full speed regardless of this setting
+     * This method is kept for compatibility but has no effect
+     * @param {number} fps - Frames per second (ignored)
      */
     setVisualTrainingSpeed(fps) {
-        fps = Math.max(1, Math.min(60, fps)); // Clamp between 1-60
-        this.visualTrainingDelay = Math.round(1000 / fps);
-        console.log(`🎬 Visual training speed set to ${fps} FPS (${this.visualTrainingDelay}ms delay)`);
+        console.log(`ℹ️ Training speed setting ignored - training always runs at full speed in background`);
+        console.log(`   Rendering will update as fast as possible when tab is active`);
     }
 
     /**
@@ -507,27 +508,27 @@ export class TrainingOrchestrator {
      */
     async startTraining(numEpisodes = null) {
         const totalEpisodes = numEpisodes || this.config.numEpisodes;
-        
+
         // Set training flag
         this.isTraining = true;
         this.isPaused = false;
-        
+
         console.log(`Starting training for ${totalEpisodes} episodes...`);
-        
+
         // Main training loop
         for (let episode = 0; episode < totalEpisodes && this.isTraining; episode++) {
             this.currentEpisode = episode;
-            
+
             // Check if training is paused
             while (this.isPaused && this.isTraining) {
                 await this.sleep(100); // Wait 100ms before checking again
             }
-            
+
             // Exit if training was stopped
             if (!this.isTraining) {
                 break;
             }
-            
+
             // Run episode based on agent type
             let episodeResult;
             if (this.agent.constructor.name === 'DQNAgent' || this.agent.memory) {
@@ -547,16 +548,16 @@ export class TrainingOrchestrator {
                     episodeResult = await this.runEpisodeDQN();
                 }
             }
-            
+
             // Store episode results in history arrays
             this.rewardHistory.push(episodeResult.episodeReward);
             this.successHistory.push(episodeResult.success);
-            
+
             // Debug: Log rewards occasionally
             if (episode % 100 === 0) {
                 console.log(`📊 Episode ${episode}: Reward=${episodeResult.episodeReward.toFixed(2)}, Steps=${episodeResult.episodeSteps}, Success=${episodeResult.success}`);
             }
-            
+
             // Update hyperparameters if needed
             if (this.agent.constructor.name === 'DQNAgent' || this.agent.memory) {
                 // Update epsilon for DQN
@@ -566,13 +567,13 @@ export class TrainingOrchestrator {
                         this.agent.epsilon * this.agent.epsilonDecay
                     );
                 }
-                
+
                 // Update target network periodically
                 if (episode % this.config.targetUpdateFreq === 0 && this.agent.updateTargetNetwork) {
                     this.agent.updateTargetNetwork();
                 }
             }
-            
+
             // Call episode complete callbacks with statistics
             const stats = this.getTrainingStats();
             this.episodeCompleteCallbacks.forEach(callback => {
@@ -582,20 +583,20 @@ export class TrainingOrchestrator {
                     console.error('Error in episode complete callback:', error);
                 }
             });
-            
+
             // Log progress every N episodes
             if (episode % this.config.statsUpdateInterval === 0) {
                 const avgReward = this.getAverageReward(Math.min(100, this.rewardHistory.length));
                 const successRate = this.getSuccessRate(Math.min(100, this.successHistory.length));
                 console.log(`Episode ${episode}: Avg Reward: ${avgReward.toFixed(2)}, Success Rate: ${(successRate * 100).toFixed(1)}%`);
             }
-            
+
             // Auto-save model periodically if model manager is available
             if (this.modelManager && episode > 0 && episode % this.config.autoSaveInterval === 0) {
                 try {
                     const avgReward = this.getAverageReward(Math.min(100, this.rewardHistory.length));
                     const successRate = this.getSuccessRate(Math.min(100, this.successHistory.length));
-                    
+
                     await this.modelManager.saveModel({
                         episodeCount: episode,
                         totalSteps: episode * (this.environment.maxSteps || 500),
@@ -606,34 +607,34 @@ export class TrainingOrchestrator {
                     console.error('Error auto-saving model:', error);
                 }
             }
-            
-            // Allow other tasks to run
-            await this.sleep(1);
+
+            // Yield control to allow other tasks to run
+            await this.sleep(0); // Immediate yield, not throttled
         }
-        
+
         // Training complete - save final model
         this.isTraining = false;
         console.log('Training completed!');
-        
+
         // Save final model if model manager is available
         if (this.modelManager) {
             try {
                 const avgReward = this.getAverageReward(Math.min(100, this.rewardHistory.length));
                 const successRate = this.getSuccessRate(Math.min(100, this.successHistory.length));
-                
+
                 await this.modelManager.saveModel({
                     episodeCount: totalEpisodes,
                     totalSteps: totalEpisodes * (this.environment.maxSteps || 500),
                     avgReward: avgReward,
                     successRate: successRate
                 });
-                
+
                 console.log('✅ Final model saved');
             } catch (error) {
                 console.error('Error saving final model:', error);
             }
         }
-        
+
         // Call training complete callbacks
         const finalStats = this.getTrainingStats();
         this.trainingCompleteCallbacks.forEach(callback => {
@@ -644,14 +645,30 @@ export class TrainingOrchestrator {
             }
         });
     }
-    
+
     /**
-     * Helper method to sleep for a given number of milliseconds
-     * @param {number} ms - Milliseconds to sleep
+     * Helper method to yield control back to the event loop
+     * Uses setImmediate pattern for background execution (not throttled by browser)
+     * @param {number} ms - Milliseconds to sleep (optional, defaults to 0 for immediate)
      * @returns {Promise<void>}
      */
-    sleep(ms) {
-        return new Promise(resolve => setTimeout(resolve, ms));
+    sleep(ms = 0) {
+        if (ms === 0) {
+            // Immediate yield - not throttled by browser tab switching
+            return new Promise(resolve => {
+                if (typeof setImmediate !== 'undefined') {
+                    setImmediate(resolve);
+                } else {
+                    // Fallback: Use MessageChannel for immediate execution
+                    const channel = new MessageChannel();
+                    channel.port1.onmessage = () => resolve();
+                    channel.port2.postMessage(null);
+                }
+            });
+        } else {
+            // Timed delay - will be throttled when tab is inactive
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
     }
 
     /**
@@ -661,7 +678,7 @@ export class TrainingOrchestrator {
         this.isPaused = true;
         console.log('Training paused');
     }
-    
+
     /**
      * Resume the training loop
      */
@@ -669,7 +686,7 @@ export class TrainingOrchestrator {
         this.isPaused = false;
         console.log('Training resumed');
     }
-    
+
     /**
      * Stop the training loop
      */
@@ -678,7 +695,7 @@ export class TrainingOrchestrator {
         this.isPaused = false;
         console.log('Training stopped');
     }
-    
+
     /**
      * Get current training statistics
      * @returns {Object} Training statistics object
@@ -686,7 +703,7 @@ export class TrainingOrchestrator {
     getTrainingStats() {
         const recentRewards = this.rewardHistory.slice(-100); // Last 100 episodes
         const recentSuccesses = this.successHistory.slice(-100);
-        
+
         return {
             currentEpisode: this.currentEpisode,
             totalEpisodes: this.rewardHistory.length,
@@ -700,7 +717,7 @@ export class TrainingOrchestrator {
             totalSteps: this.rewardHistory.length * (this.environment.maxSteps || 500)
         };
     }
-    
+
     /**
      * Register a callback for episode completion events
      * @param {Function} callback - Callback function to call when episode completes
@@ -712,7 +729,7 @@ export class TrainingOrchestrator {
             console.warn('Episode complete callback must be a function');
         }
     }
-    
+
     /**
      * Register a callback for training completion events
      * @param {Function} callback - Callback function to call when training completes
@@ -724,7 +741,7 @@ export class TrainingOrchestrator {
             console.warn('Training complete callback must be a function');
         }
     }
-    
+
     /**
      * Calculate average reward over the last N episodes
      * @param {number} n - Number of recent episodes to average
@@ -732,12 +749,12 @@ export class TrainingOrchestrator {
      */
     getAverageReward(n = 100) {
         if (this.rewardHistory.length === 0) return 0;
-        
+
         const recentRewards = this.rewardHistory.slice(-n);
         const sum = recentRewards.reduce((acc, reward) => acc + reward, 0);
         return sum / recentRewards.length;
     }
-    
+
     /**
      * Calculate success rate over the last N episodes
      * @param {number} n - Number of recent episodes to check
@@ -745,12 +762,12 @@ export class TrainingOrchestrator {
      */
     getSuccessRate(n = 100) {
         if (this.successHistory.length === 0) return 0;
-        
+
         const recentSuccesses = this.successHistory.slice(-n);
         const successCount = recentSuccesses.filter(success => success).length;
         return successCount / recentSuccesses.length;
     }
-    
+
     /**
      * Clear training history and reset statistics
      */

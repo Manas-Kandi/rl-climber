@@ -1614,20 +1614,15 @@ function handleUnload(event) {
 }
 
 /**
- * Handle visibility change - pause/resume when tab is hidden/visible
+ * Handle visibility change - LOG ONLY, don't pause training!
+ * Training should continue in background for maximum efficiency
  */
 function handleVisibilityChange() {
     if (app && app.isInitialized) {
         if (document.hidden) {
-            console.log('👁️ Tab hidden, pausing application...');
-            if (app.orchestrator && app.orchestrator.isTraining) {
-                app.orchestrator.pauseTraining();
-            }
+            console.log('👁️ Tab hidden - training continues in background! 🚀');
         } else {
-            console.log('👁️ Tab visible, resuming application...');
-            if (app.orchestrator && app.orchestrator.isPaused) {
-                app.orchestrator.resumeTraining();
-            }
+            console.log('👁️ Tab visible - welcome back!');
         }
     }
 }
@@ -1643,7 +1638,7 @@ if (document.readyState === 'loading') {
 window.addEventListener('beforeunload', handleUnload);
 window.addEventListener('unload', handleUnload);
 
-// Handle tab visibility changes
+// Handle tab visibility changes (for logging only, don't pause!)
 document.addEventListener('visibilitychange', handleVisibilityChange);
 
 console.log('🎮 3D RL Climbing Game - Loading...');
