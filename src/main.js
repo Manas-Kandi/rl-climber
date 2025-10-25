@@ -22,6 +22,7 @@ import './test-movement.js';
 import './reset-and-train.js';
 import './test-staircase.js';
 import './test-rewards.js';
+import './diagnose-steps.js';
 
 /**
  * Main application class that coordinates all components

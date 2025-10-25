@@ -72,6 +72,15 @@ export class SceneManager {
             }
         };
         
+        // Create starting platform (where agent spawns)
+        scene.obstacles.push({
+            type: 'step',
+            position: { x: 0, y: 0.5, z: 3 },
+            size: { x: 4, y: 1, z: 3 },
+            color: 0x654321,  // Darker brown
+            id: 'start_platform'
+        });
+        
         // Create 10 steps
         const stepHeight = 1.0;
         const stepDepth = 2.0;

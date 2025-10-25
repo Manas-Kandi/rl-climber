@@ -399,6 +399,10 @@ export class ClimbingEnvironment {
     }
     
     // Determine step by Z position
+    // Steps are at: z=0, -2, -4, -6, -8, -10, -12, -14, -16, -18
+    // Step centers are at: y=0.5, 1.5, 2.5, 3.5, 4.5, 5.5, 6.5, 7.5, 8.5, 9.5
+    // Agent standing ON step would be at: y≈1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+    
     for (let i = 0; i < 10; i++) {
       const stepCenterZ = -2.0 * i;  // Steps at 0, -2, -4, -6, -8, -10, -12, -14, -16, -18
       const stepMinZ = stepCenterZ - 1.0;  // Each step is 2 units deep
@@ -406,12 +410,14 @@ export class ClimbingEnvironment {
       
       // Check if agent is within this step's Z range
       if (agentPos.z >= stepMinZ && agentPos.z <= stepMaxZ) {
-        // Also check if agent is at approximately the right height
-        const expectedHeight = (i + 1) * 1.0;  // Step 0 at y=1, Step 1 at y=2, etc.
-        const heightDiff = Math.abs(agentPos.y - expectedHeight);
+        // Step center is at y = (i + 0.5), top surface at y = (i + 1)
+        // Agent standing on step should be at y ≈ (i + 1) ± 0.5
+        const stepTopY = (i + 1) * 1.0;
+        const heightDiff = Math.abs(agentPos.y - stepTopY);
         
-        // Allow some tolerance (agent can be slightly above/below step)
-        if (heightDiff < 1.5) {
+        // Tighter tolerance: agent must be within 0.8 units of step top
+        // This allows for agent height (0.5) plus small margin
+        if (heightDiff < 0.8) {
           return i;
         }
       }
