@@ -28,6 +28,13 @@ export class ClimbingEnvironment {
     this.jumpCooldown = 0;
     this.jumpCooldownSteps = 5; // Must wait 5 steps between jumps
     
+    // Step tracking for staircase
+    this.highestStepReached = -1; // -1 = ground, 0-9 = steps
+    this.currentStepOn = -1;
+    this.stepsVisited = new Set();
+    this.timeOnGround = 0;
+    this.timeOnSteps = 0;
+    
     // Trajectory recording
     this.recordTrajectories = false;
     this.currentTrajectory = [];
@@ -320,6 +327,13 @@ export class ClimbingEnvironment {
     this.canJump = true;
     this.jumpCooldown = 0;
     
+    // Reset step tracking
+    this.highestStepReached = -1;
+    this.currentStepOn = -1;
+    this.stepsVisited.clear();
+    this.timeOnGround = 0;
+    this.timeOnSteps = 0;
+    
     // Start new trajectory recording if enabled
     if (this.recordTrajectories) {
       this.currentTrajectory = [];
@@ -340,6 +354,40 @@ export class ClimbingEnvironment {
     return initialState;
   }
   
+  /**
+   * Detect which step the agent is currently on
+   * @returns {number} Step number (-1 for ground, 0-9 for steps, 10 for goal)
+   */
+  detectCurrentStep() {
+    if (!this.agentBody) return -1;
+    
+    const agentPos = this.physicsEngine.getBodyPosition(this.agentBody);
+    const collidingBodies = this.physicsEngine.getCollidingBodies(this.agentBody);
+    
+    // Check if on goal
+    if (agentPos.y >= this.config.goalHeight - 0.5) {
+      return 10; // Goal
+    }
+    
+    // Check colliding bodies for steps
+    for (const body of collidingBodies) {
+      const bodyId = this.getBodyId(body);
+      if (bodyId && bodyId.startsWith('step_')) {
+        const stepNum = parseInt(bodyId.split('_')[1]);
+        return stepNum;
+      }
+    }
+    
+    // Check by height (fallback if not touching)
+    if (agentPos.y < 1.5) {
+      return -1; // Ground
+    }
+    
+    // Estimate step by height
+    const estimatedStep = Math.floor(agentPos.y / 1.0);
+    return Math.min(estimatedStep - 1, 9);
+  }
+
   /**
    * Check if agent is out of bounds (off the platform)
    * @returns {boolean} True if agent is outside boundary limits
@@ -422,76 +470,78 @@ export class ClimbingEnvironment {
     
     const agentPos = this.physicsEngine.getBodyPosition(this.agentBody);
     
-    // Calculate height gain reward: (newY - prevY) * heightGainWeight
-    if (prevState && newState) {
-      // Previous Y is normalized by dividing by 15.0, so multiply to denormalize
-      const prevY = prevState[1] * 15.0;
-      const newY = agentPos.y;
-      const heightGain = newY - prevY;
-      
-      // Reward positive height gain (but less if not grounded to prevent exploit)
-      if (heightGain > 0) {
-        if (this.isGrounded() || this.isTouchingLedge()) {
-          // Full reward when on ground or ledge
-          totalReward += heightGain * this.config.rewardWeights.heightGain;
-        } else {
-          // Reduced reward when airborne (prevents infinite jumping exploit)
-          totalReward += heightGain * this.config.rewardWeights.heightGain * 0.3;
-        }
+    // Detect current step
+    const currentStep = this.detectCurrentStep();
+    const prevStepOn = this.currentStepOn;
+    this.currentStepOn = currentStep;
+    
+    // === PROGRESSIVE STEP REWARDS (Main Learning Signal) ===
+    // Reward for reaching a new step (exponentially increasing)
+    if (currentStep > this.highestStepReached && currentStep >= 0) {
+      const stepReward = (currentStep + 1) * 15.0; // Step 0: 15, Step 1: 30, Step 2: 45, etc.
+      totalReward += stepReward;
+      this.highestStepReached = currentStep;
+      this.stepsVisited.add(currentStep);
+      console.log(`🎯 Reached step ${currentStep}! Reward: +${stepReward}`);
+    }
+    
+    // === GROUND PENALTY (Discourage staying on ground) ===
+    if (currentStep === -1) {
+      this.timeOnGround++;
+      // Increasing penalty for staying on ground
+      if (this.timeOnGround > 10) {
+        totalReward -= 0.5; // Strong penalty for wasting time on ground
+      } else {
+        totalReward -= 0.1; // Small penalty
       }
+    } else {
+      this.timeOnGround = 0; // Reset when on steps
+      this.timeOnSteps++;
+      // Small reward for being on steps
+      totalReward += 0.2;
     }
     
-    // Small penalty for failed jump attempts (trying to jump while airborne)
-    if (action === this.ACTION_SPACE.JUMP && !this.isGrounded()) {
-      totalReward -= 0.1; // Reduced from 0.5 to not discourage jumping too much
+    // === HEIGHT-BASED REWARD (Continuous signal) ===
+    // Reward for being higher up
+    const heightBonus = agentPos.y * 0.5; // 0.5 per unit height
+    totalReward += heightBonus;
+    
+    // === FORWARD MOVEMENT REWARD (Toward stairs) ===
+    // Reward for moving toward stairs (negative Z)
+    if (agentPos.z < 0 && agentPos.z > -12) {
+      totalReward += 1.0; // Bonus for being in staircase zone
     }
     
-    // Add survival reward: +0.1 per step
-    totalReward += this.config.rewardWeights.survival;
-    
-    // Add time penalty: -0.01 per step
-    totalReward += this.config.rewardWeights.timePenalty;
-    
-    // Check if goal reached: add +100 if agent Y >= goalHeight
+    // === GOAL REACHED (Ultimate reward) ===
     if (agentPos.y >= this.config.goalHeight) {
       totalReward += this.config.rewardWeights.goalReached;
+      console.log('🏆 GOAL REACHED! +100');
     }
     
-    // Check if fallen: add -50 if agent Y < fallThreshold
+    // === PENALTIES (Clear negative signals) ===
+    
+    // Fall penalty (very bad)
     if (agentPos.y < this.config.fallThreshold) {
       totalReward += this.config.rewardWeights.fall;
     }
     
-    // Check if out of bounds: add -100 if agent left the platform
+    // Out of bounds penalty (very bad)
     if (this.isOutOfBounds()) {
       totalReward += this.config.rewardWeights.outOfBounds;
     }
     
-    // Reward ledge contact (being on a ledge)
-    if (this.isTouchingLedge()) {
-      totalReward += this.config.rewardWeights.ledgeGrab;
-      
-      // Extra reward for successful grab action on a ledge
-      if (action === this.ACTION_SPACE.GRAB) {
-        totalReward += 3.0; // Bonus for using grab correctly
-      }
-    }
-    
-    // Reward for being close to the wall (encourages approaching ledges)
-    if (agentPos.z < -3 && agentPos.z > -7) {
-      totalReward += 0.5; // Small bonus for being near the climbing wall
-    }
-    
-    // Penalty for being too close to boundaries (encourages staying in safe zone)
+    // Edge proximity penalty
     const distanceToEdgeX = this.config.boundaryX - Math.abs(agentPos.x);
     const distanceToEdgeZ = this.config.boundaryZ - Math.abs(agentPos.z);
     const minDistanceToEdge = Math.min(distanceToEdgeX, distanceToEdgeZ);
     
     if (minDistanceToEdge < 2.0) {
-      // Penalty increases as agent gets closer to edge
-      const edgePenalty = (2.0 - minDistanceToEdge) * -2.0;
+      const edgePenalty = (2.0 - minDistanceToEdge) * -3.0; // Stronger penalty
       totalReward += edgePenalty;
     }
+    
+    // Small time penalty (encourage efficiency)
+    totalReward += this.config.rewardWeights.timePenalty;
     
     return totalReward;
   }

@@ -76,14 +76,14 @@ class ClimbingGameApp {
             
             // Agent hyperparameters
             dqn: {
-                gamma: 0.99,
-                epsilon: 1.0,
-                epsilonMin: 0.01,
-                epsilonDecay: 0.995,
-                learningRate: 0.0003,
+                gamma: 0.99,              // Discount factor (keep future rewards important)
+                epsilon: 1.0,             // Start with full exploration
+                epsilonMin: 0.05,         // Increased from 0.01 - keep some exploration
+                epsilonDecay: 0.998,      // Slower decay - explore longer
+                learningRate: 0.001,      // Increased from 0.0003 - learn faster
                 bufferSize: 10000,
-                batchSize: 32,
-                targetUpdateFreq: 100
+                batchSize: 64,            // Increased from 32 - more stable learning
+                targetUpdateFreq: 50      // Decreased from 100 - update more often
             },
             
             ppo: {

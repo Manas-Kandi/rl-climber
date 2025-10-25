@@ -65,13 +65,10 @@ export class SceneManager {
             agentStart: { x: 0, y: 1, z: 3 },  // Start in front of stairs
             obstacles: [],
             rewardConfig: {
-                heightGain: 3.0,      // High reward for climbing
-                goalReached: 100.0,
-                survival: 0.1,
-                fall: -10.0,          // Less harsh for learning
-                timePenalty: -0.001,  // Very small
-                stepReward: 10.0,     // Reward for reaching each step
-                outOfBounds: -30.0
+                goalReached: 100.0,   // Ultimate goal
+                fall: -50.0,          // Strong penalty for falling
+                timePenalty: -0.01,   // Small time pressure
+                outOfBounds: -50.0    // Strong penalty for leaving
             }
         };
         
