@@ -27,12 +27,12 @@ window.testRewards = function(game) {
     console.log('Test 2: Step Detection');
     const testPositions = [
         { pos: { x: 0, y: 1, z: 3 }, expected: -1, desc: 'Start (ground)' },
-        { pos: { x: 0, y: 1, z: 0 }, expected: 0, desc: 'Step 0' },
-        { pos: { x: 0, y: 2, z: -1.5 }, expected: 1, desc: 'Step 1' },
-        { pos: { x: 0, y: 3, z: -3 }, expected: 2, desc: 'Step 2' },
-        { pos: { x: 0, y: 5, z: -6 }, expected: 4, desc: 'Step 4' },
-        { pos: { x: 0, y: 10, z: -13.5 }, expected: 9, desc: 'Step 9' },
-        { pos: { x: 5, y: 2, z: -1.5 }, expected: -1, desc: 'Off to side' }
+        { pos: { x: 0, y: 1, z: 0 }, expected: 0, desc: 'Step 0 (center)' },
+        { pos: { x: 0, y: 2, z: -2 }, expected: 1, desc: 'Step 1 (center)' },
+        { pos: { x: 0, y: 3, z: -4 }, expected: 2, desc: 'Step 2 (center)' },
+        { pos: { x: 0, y: 5, z: -8 }, expected: 4, desc: 'Step 4 (center)' },
+        { pos: { x: 0, y: 10, z: -18 }, expected: 9, desc: 'Step 9 (center)' },
+        { pos: { x: 5, y: 2, z: -2 }, expected: -1, desc: 'Off to side' }
     ];
     
     for (const test of testPositions) {
@@ -49,10 +49,10 @@ window.testRewards = function(game) {
     
     // Simulate climbing step by step
     const stepPositions = [
-        { x: 0, y: 1, z: 0 },    // Step 0
-        { x: 0, y: 2, z: -1.5 }, // Step 1
-        { x: 0, y: 3, z: -3 },   // Step 2
-        { x: 0, y: 4, z: -4.5 }  // Step 3
+        { x: 0, y: 1, z: 0 },   // Step 0 (center)
+        { x: 0, y: 2, z: -2 },  // Step 1 (center)
+        { x: 0, y: 3, z: -4 },  // Step 2 (center)
+        { x: 0, y: 4, z: -6 }   // Step 3 (center)
     ];
     
     let totalReward = 0;
