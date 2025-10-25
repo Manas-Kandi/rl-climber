@@ -73,7 +73,7 @@ export class ClimbingEnvironment {
     // Store environment configuration with defaults
     this.config = {
       // Episode settings
-      maxSteps: config.maxSteps || 500,
+      maxSteps: config.maxSteps || 2000,  // MUCH longer to allow learning
       
       // Reward weights
       rewardWeights: {
@@ -433,7 +433,10 @@ export class ClimbingEnvironment {
     
     // Reset strict progress tracking
     this.stepsOffStairs = 0;
-    // DON'T reset episodesWithoutProgress - it accumulates!
+    
+    // Reset safety buffer system
+    this.safetyBuffer = 200;  // Start with 200 steps
+    this.hasReachedStairs = false;
     
     // Start new trajectory recording if enabled
     if (this.recordTrajectories) {
@@ -663,28 +666,52 @@ export class ClimbingEnvironment {
     // ABSOLUTE FAILURE CHECKS - These end the episode immediately
     // ============================================================================
     
-    // === 1. GRACE PERIOD: Allow time to leave starting area ===
-    const inGracePeriod = this.currentStep < 50;  // First 50 steps
-    const inStartZone = Math.abs(agentPos.x - this.config.agent.startPosition.x) < 2.0 &&
-                       Math.abs(agentPos.z - this.config.agent.startPosition.z) < 3.0;
+    // === 1. SAFETY BUFFER SYSTEM ===
+    // Initialize buffer if not set
+    if (this.safetyBuffer === undefined) {
+      this.safetyBuffer = 200;  // Start with 200 steps
+      this.hasReachedStairs = false;
+    }
     
-    // === 2. ABSOLUTE FAILURE: On Ground (after grace period or outside start zone) ===
+    // === 2. UPDATE BUFFER BASED ON POSITION ===
+    if (currentStep >= 0) {
+      // ON STAIRS: Infinite buffer!
+      this.safetyBuffer = Infinity;
+      this.hasReachedStairs = true;
+      console.log('✅ ON STAIRS! Buffer = INFINITE');
+    } else if (currentStep < 0 && this.hasReachedStairs) {
+      // FELL OFF STAIRS: Reset buffer to 200
+      if (this.safetyBuffer === Infinity) {
+        this.safetyBuffer = 200;
+        console.log('⚠️ LEFT STAIRS! Buffer reset to 200 steps');
+      }
+      this.safetyBuffer--;  // Count down
+    } else {
+      // STILL AT START: Count down from initial 200
+      this.safetyBuffer--;
+    }
+    
+    // === 3. ABSOLUTE FAILURE: Buffer ran out on ground ===
+    if (currentStep < 0 && this.safetyBuffer <= 0) {
+      totalReward = -100.0;  // ABSOLUTE PENALTY
+      console.log('❌ BUFFER EXPIRED ON GROUND! Absolute penalty: -100.0 (episode will end)');
+      return totalReward;
+    }
+    
+    // === 4. ENCOURAGE MOVEMENT TOWARD STAIRS (when on ground) ===
     if (currentStep < 0) {
-      if (!inGracePeriod || !inStartZone) {
-        // NOT in grace period/zone = ABSOLUTE FAILURE
-        totalReward = -100.0;  // ABSOLUTE PENALTY
-        console.log('❌ ON GROUND! Absolute penalty: -100.0 (episode will end)');
-        return totalReward;
+      const distanceToStairs = Math.abs(agentPos.z - 0);  // Stairs start at z=0
+      const prevDistanceToStairs = Math.abs(prevPos.z - 0);
+      
+      if (distanceToStairs < prevDistanceToStairs) {
+        totalReward += 0.5;  // Moving toward stairs!
       } else {
-        // In grace period - encourage moving toward stairs
-        const distanceToStairs = Math.abs(agentPos.z - 0);  // Stairs start at z=0
-        const prevDistanceToStairs = Math.abs(prevPos.z - 0);
-        
-        if (distanceToStairs < prevDistanceToStairs) {
-          totalReward += 0.5;  // Moving toward stairs!
-        } else {
-          totalReward -= 0.5;  // Moving away from stairs!
-        }
+        totalReward -= 0.5;  // Moving away from stairs!
+      }
+      
+      // Log buffer status occasionally
+      if (this.currentStep % 50 === 0) {
+        console.log(`📊 Buffer: ${this.safetyBuffer === Infinity ? 'INFINITE' : this.safetyBuffer} steps remaining`);
       }
     }
     
@@ -782,13 +809,10 @@ export class ClimbingEnvironment {
     const agentPos = this.physicsEngine.getBodyPosition(this.agentBody);
     const currentStep = this.detectCurrentStep();
     
-    // ABSOLUTE FAILURE: On ground (after grace period or outside start zone)
+    // ABSOLUTE FAILURE: Buffer expired on ground
     if (currentStep < 0) {
-      const inGracePeriod = this.currentStep < 50;  // First 50 steps
-      const inStartZone = Math.abs(agentPos.x - this.config.agent.startPosition.x) < 2.0 &&
-                         Math.abs(agentPos.z - this.config.agent.startPosition.z) < 3.0;
-      
-      if (!inGracePeriod || !inStartZone) {
+      const buffer = this.safetyBuffer !== undefined ? this.safetyBuffer : 200;
+      if (buffer <= 0) {
         return true;  // Episode ends immediately!
       }
     }
