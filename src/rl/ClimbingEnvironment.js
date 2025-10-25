@@ -41,6 +41,10 @@ export class ClimbingEnvironment {
     this.trajectoryHistory = [];
     this.maxTrajectories = 100; // Keep last 100 episodes
     
+    // Reward system tracking
+    this.lastPosition = null;
+    this.stagnationTimer = 0;
+    
     // Action space constants
     this.ACTION_SPACE = {
       FORWARD: 0,
@@ -339,6 +343,10 @@ export class ClimbingEnvironment {
     this.timeOnGround = 0;
     this.timeOnSteps = 0;
     
+    // Reset reward tracking
+    this.lastPosition = null;
+    this.stagnationTimer = 0;
+    
     // Start new trajectory recording if enabled
     if (this.recordTrajectories) {
       this.currentTrajectory = [];
@@ -500,7 +508,8 @@ export class ClimbingEnvironment {
   }
 
   /**
-   * Calculate reward for the current step
+   * Calculate reward for the current step - COMPLETELY REDESIGNED REWARD SYSTEM
+   * Range: -100 (worst behavior) to +100 (goal reached)
    * @param {Float32Array} prevState - Previous state vector
    * @param {number} action - Action taken
    * @param {Float32Array} newState - New state vector after action
@@ -515,87 +524,120 @@ export class ClimbingEnvironment {
     
     const agentPos = this.physicsEngine.getBodyPosition(this.agentBody);
     
-    // Detect current step
+    // Detect current step and track movement
     const currentStep = this.detectCurrentStep();
     const prevStepOn = this.currentStepOn;
     this.currentStepOn = currentStep;
     
-    // === MAIN REWARD: REACHING NEW STEPS ===
-    // This is the primary learning signal - huge rewards for progress
+    // Track time on current position for stagnation detection
+    if (!this.lastPosition) {
+      this.lastPosition = { ...agentPos };
+      this.stagnationTimer = 0;
+    }
+    
+    const positionChange = Math.sqrt(
+      Math.pow(agentPos.x - this.lastPosition.x, 2) +
+      Math.pow(agentPos.y - this.lastPosition.y, 2) +
+      Math.pow(agentPos.z - this.lastPosition.z, 2)
+    );
+    
+    if (positionChange < 0.1) {
+      this.stagnationTimer++;
+    } else {
+      this.stagnationTimer = 0;
+      this.lastPosition = { ...agentPos };
+    }
+    
+    // === 1. GOAL REACHED: MAXIMUM REWARD ===
+    if (agentPos.y >= this.config.goalHeight) {
+      totalReward += 100.0; // ONLY way to get +100
+      console.log('🏆 GOAL REACHED! +100 (MAXIMUM REWARD)');
+      return totalReward; // Return immediately, no other rewards matter
+    }
+    
+    // === 2. STEP PROGRESSION REWARDS (Diminishing Returns) ===
     if (currentStep > this.highestStepReached && currentStep >= 0) {
-      const stepReward = (currentStep + 1) * 20.0; // Step 0: 20, Step 1: 40, Step 2: 60, etc.
+      // Diminishing rewards: Step 0=8, Step 1=7, Step 2=6, ..., Step 9=1
+      const stepReward = Math.max(1, 9 - currentStep);
       totalReward += stepReward;
       this.highestStepReached = currentStep;
       this.stepsVisited.add(currentStep);
-      console.log(`🎯 NEW STEP ${currentStep}! Reward: +${stepReward.toFixed(1)}`);
+      console.log(`🎯 NEW STEP ${currentStep}! Reward: +${stepReward} (diminishing)`);
     }
     
-    // === CONTINUOUS HEIGHT REWARD ===
-    // Reward for being at higher positions (helps with gradient)
-    // This provides a continuous signal between discrete steps
-    const heightReward = agentPos.y * 0.3;
-    totalReward += heightReward;
+    // === 3. SEVERE PUNISHMENTS FOR BAD BEHAVIOR ===
     
-    // === DISTANCE TO NEXT STEP REWARD ===
-    // Reward for getting closer to the next step
-    if (currentStep >= 0 && currentStep < 9) {
-      const nextStepZ = -2.0 * (currentStep + 1);  // Steps at 0, -2, -4, -6, etc.
-      const nextStepY = (currentStep + 2) * 1.0;   // Heights at 1, 2, 3, 4, etc.
-      
-      // Distance to next step
-      const distToNextStep = Math.sqrt(
-        Math.pow(agentPos.z - nextStepZ, 2) +
-        Math.pow(agentPos.y - nextStepY, 2)
-      );
-      
-      // Reward for being close to next step (inverse distance)
-      const proximityReward = Math.max(0, 3.0 - distToNextStep) * 0.5;
-      totalReward += proximityReward;
+    // 3a. JUMPING OFF STAIRS (Moving to lower step)
+    if (prevStepOn >= 0 && currentStep >= 0 && currentStep < prevStepOn) {
+      const jumpOffPenalty = -15 * (prevStepOn - currentStep); // Worse for bigger jumps down
+      totalReward += jumpOffPenalty;
+      console.log(`💥 JUMPED DOWN from step ${prevStepOn} to ${currentStep}! Penalty: ${jumpOffPenalty}`);
     }
     
-    // === FORWARD PROGRESS REWARD ===
-    // Strong reward for moving toward stairs (negative Z direction)
-    // This encourages agent to leave starting platform and approach stairs
-    if (agentPos.z < 3 && agentPos.z > -20) {
-      // Reward increases as agent moves forward (toward negative Z)
-      // At z=3 (start): 0 reward
-      // At z=0 (Step 0): 1.5 reward
-      // At z=-18 (Step 9): 10.5 reward
-      const forwardProgress = (3 - agentPos.z) * 0.5;
-      totalReward += forwardProgress;
+    // 3b. FALLING OFF STAIRS (Going from step to ground)
+    if (prevStepOn >= 0 && currentStep === -1) {
+      const fallOffPenalty = -25; // Heavy penalty for falling off
+      totalReward += fallOffPenalty;
+      console.log(`💥 FELL OFF STAIRS from step ${prevStepOn}! Penalty: ${fallOffPenalty}`);
     }
     
-    // === STAYING ON STEPS BONUS ===
-    // Small reward for being on any step (not ground)
-    if (currentStep >= 0) {
-      totalReward += 0.5;
+    // 3c. SKIPPING STAIRS (Jumping more than 1 step ahead)
+    if (prevStepOn >= 0 && currentStep > prevStepOn + 1) {
+      const skipPenalty = -10 * (currentStep - prevStepOn - 1); // Penalty for each skipped step
+      totalReward += skipPenalty;
+      console.log(`⚠️ SKIPPED ${currentStep - prevStepOn - 1} STAIRS! Penalty: ${skipPenalty}`);
     }
     
-    // === GOAL REACHED ===
-    if (agentPos.y >= this.config.goalHeight) {
-      totalReward += this.config.rewardWeights.goalReached;
-      console.log('🏆 GOAL REACHED! +100');
+    // 3d. STAGNATION PUNISHMENT (Staying in one place)
+    if (this.stagnationTimer >= 60) { // ~1 second at 60 FPS
+      const stagnationPenalty = -0.5 * Math.min(10, this.stagnationTimer - 60); // Max -5 per step
+      totalReward += stagnationPenalty;
+      if (this.stagnationTimer % 60 === 0) { // Log every second
+        console.log(`😴 STAGNATION! No movement for ${(this.stagnationTimer/60).toFixed(1)}s. Penalty: ${stagnationPenalty.toFixed(1)}`);
+      }
     }
     
-    // === PENALTIES ===
+    // === 4. TERMINAL PUNISHMENTS (Episode ending) ===
     
-    // Fall penalty (episode will end)
+    // 4a. Falling below ground
     if (agentPos.y < this.config.fallThreshold) {
-      totalReward += this.config.rewardWeights.fall;
+      totalReward += -100.0; // MAXIMUM PUNISHMENT
+      console.log('💀 FELL TO DEATH! Penalty: -100 (MAXIMUM PUNISHMENT)');
+      return totalReward;
     }
     
-    // Out of bounds penalty (episode will end)
+    // 4b. Going out of bounds
     if (this.isOutOfBounds()) {
-      totalReward += this.config.rewardWeights.outOfBounds;
+      totalReward += -100.0; // MAXIMUM PUNISHMENT
+      console.log('🚫 OUT OF BOUNDS! Penalty: -100 (MAXIMUM PUNISHMENT)');
+      return totalReward;
     }
     
-    // Penalty for being off to the side (not aligned with stairs)
-    if (Math.abs(agentPos.x) > 1.5) {
-      totalReward -= 0.5;
+    // === 5. SMALL GUIDANCE REWARDS (Very small, just for direction) ===
+    
+    // 5a. Tiny reward for being on stairs vs ground
+    if (currentStep >= 0) {
+      totalReward += 0.1; // Very small bonus for being on stairs
+    } else {
+      totalReward -= 0.2; // Small penalty for being on ground
     }
     
-    // Small time penalty (encourage efficiency)
+    // 5b. Tiny reward for forward progress (approaching stairs)
+    if (agentPos.z < 2 && agentPos.z > -20) {
+      const forwardBonus = Math.max(0, (2 - agentPos.z)) * 0.05; // Max +0.1
+      totalReward += forwardBonus;
+    }
+    
+    // 5c. Tiny penalty for being off-center
+    if (Math.abs(agentPos.x) > 1.0) {
+      totalReward -= 0.1;
+    }
+    
+    // 5d. Very small time pressure (encourage efficiency)
     totalReward -= 0.01;
+    
+    // === 6. CLAMP FINAL REWARD TO RANGE [-100, +100] ===
+    totalReward = Math.max(-100, Math.min(100, totalReward));
     
     return totalReward;
   }

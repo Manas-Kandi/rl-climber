@@ -26,6 +26,7 @@ import './diagnose-steps.js';
 import './reset-model.js';
 import './diagnose-freezing.js';
 import './test-freeze-fix.js';
+import './test-new-rewards.js';
 
 /**
  * Main application class that coordinates all components
