@@ -95,6 +95,12 @@ export class TrainingOrchestrator {
         // Determine if episode was successful
         const success = this.environment.isGoalReached ? this.environment.isGoalReached() : totalReward > 50;
         
+        // Get step tracking info if available
+        const highestStep = this.environment.highestStepReached !== undefined ? 
+            this.environment.highestStepReached : -1;
+        const currentStep = this.environment.currentStepOn !== undefined ?
+            this.environment.currentStepOn : -1;
+        
         // Debug: Log if reward is exactly 0
         if (totalReward === 0) {
             console.warn(`⚠️ DQN Episode ended with exactly 0 reward! Steps: ${steps}, Done: ${done}`);
@@ -103,7 +109,9 @@ export class TrainingOrchestrator {
         return {
             episodeReward: totalReward,
             episodeSteps: steps,
-            success: success
+            success: success,
+            highestStep: highestStep,
+            currentStep: currentStep
         };
     }
 
@@ -192,10 +200,18 @@ export class TrainingOrchestrator {
         // Determine if episode was successful
         const success = this.environment.isGoalReached ? this.environment.isGoalReached() : totalReward > 50;
         
+        // Get step tracking info if available
+        const highestStep = this.environment.highestStepReached !== undefined ? 
+            this.environment.highestStepReached : -1;
+        const currentStep = this.environment.currentStepOn !== undefined ?
+            this.environment.currentStepOn : -1;
+        
         return {
             episodeReward: totalReward,
             episodeSteps: steps,
-            success: success
+            success: success,
+            highestStep: highestStep,
+            currentStep: currentStep
         };
     }
 

@@ -307,12 +307,17 @@ export class ClimbingEnvironment {
       return new Float32Array(9);
     }
     
-    // Reset agent body position to start position (0, 1, 0)
+    // Reset agent body position to start position
     const startPos = this.config.agent.startPosition;
     this.physicsEngine.setBodyPosition(this.agentBody, startPos);
     
     // Reset agent body velocity to zero
     this.physicsEngine.setBodyVelocity(this.agentBody, { x: 0, y: 0, z: 0 });
+    
+    // Reset angular velocity too
+    if (this.agentBody.angularVelocity) {
+      this.agentBody.angularVelocity.set(0, 0, 0);
+    }
     
     // Reset episode step counter to 0
     this.currentStep = 0;
@@ -350,8 +355,16 @@ export class ClimbingEnvironment {
     // Return initial state as Float32Array
     const initialState = this.getState();
     
-    console.log('Environment reset - Agent at:', startPos, 'Initial state:', initialState);
     return initialState;
+  }
+  
+  /**
+   * Update the agent start position (used when switching scenes)
+   * @param {Object} position - New start position {x, y, z}
+   */
+  updateStartPosition(position) {
+    this.config.agent.startPosition = { ...position };
+    console.log('Agent start position updated to:', position);
   }
   
   /**
@@ -362,30 +375,52 @@ export class ClimbingEnvironment {
     if (!this.agentBody) return -1;
     
     const agentPos = this.physicsEngine.getBodyPosition(this.agentBody);
-    const collidingBodies = this.physicsEngine.getCollidingBodies(this.agentBody);
     
     // Check if on goal
     if (agentPos.y >= this.config.goalHeight - 0.5) {
       return 10; // Goal
     }
     
-    // Check colliding bodies for steps
-    for (const body of collidingBodies) {
-      const bodyId = this.getBodyId(body);
-      if (bodyId && bodyId.startsWith('step_')) {
-        const stepNum = parseInt(bodyId.split('_')[1]);
-        return stepNum;
+    // Detect step by position (more reliable than collision detection)
+    // Steps are at z positions: 0, -1.5, -3, -4.5, -6, -7.5, -9, -10.5, -12, -13.5
+    // Each step is 2 units deep (z range)
+    
+    // Must be in staircase Z range
+    if (agentPos.z > 1 || agentPos.z < -15) {
+      return -1; // Not on stairs
+    }
+    
+    // Must be within staircase X bounds
+    if (Math.abs(agentPos.x) > 2.5) {
+      return -1; // Off to the side
+    }
+    
+    // Determine step by Z position
+    // Step 0: z = 0 to -2
+    // Step 1: z = -1 to -3
+    // Step 2: z = -2 to -4
+    // etc.
+    
+    for (let i = 0; i < 10; i++) {
+      const stepCenterZ = -1.5 * i;
+      const stepMinZ = stepCenterZ - 1.5;
+      const stepMaxZ = stepCenterZ + 1.5;
+      
+      // Check if agent is within this step's Z range
+      if (agentPos.z >= stepMinZ && agentPos.z <= stepMaxZ) {
+        // Also check if agent is at approximately the right height
+        const expectedHeight = (i + 1) * 1.0;
+        const heightDiff = Math.abs(agentPos.y - expectedHeight);
+        
+        // Allow some tolerance (agent can be slightly above/below step)
+        if (heightDiff < 1.5) {
+          return i;
+        }
       }
     }
     
-    // Check by height (fallback if not touching)
-    if (agentPos.y < 1.5) {
-      return -1; // Ground
-    }
-    
-    // Estimate step by height
-    const estimatedStep = Math.floor(agentPos.y / 1.0);
-    return Math.min(estimatedStep - 1, 9);
+    // Default to ground
+    return -1;
   }
 
   /**
@@ -475,73 +510,70 @@ export class ClimbingEnvironment {
     const prevStepOn = this.currentStepOn;
     this.currentStepOn = currentStep;
     
-    // === PROGRESSIVE STEP REWARDS (Main Learning Signal) ===
-    // Reward for reaching a new step (exponentially increasing)
+    // === MAIN REWARD: REACHING NEW STEPS ===
+    // This is the primary learning signal - huge rewards for progress
     if (currentStep > this.highestStepReached && currentStep >= 0) {
-      const stepReward = (currentStep + 1) * 15.0; // Step 0: 15, Step 1: 30, Step 2: 45, etc.
+      const stepReward = (currentStep + 1) * 20.0; // Step 0: 20, Step 1: 40, Step 2: 60, etc.
       totalReward += stepReward;
       this.highestStepReached = currentStep;
       this.stepsVisited.add(currentStep);
-      console.log(`🎯 Reached step ${currentStep}! Reward: +${stepReward}`);
+      console.log(`🎯 NEW STEP ${currentStep}! Reward: +${stepReward.toFixed(1)}`);
     }
     
-    // === GROUND PENALTY (Discourage staying on ground) ===
-    if (currentStep === -1) {
-      this.timeOnGround++;
-      // Increasing penalty for staying on ground
-      if (this.timeOnGround > 10) {
-        totalReward -= 0.5; // Strong penalty for wasting time on ground
-      } else {
-        totalReward -= 0.1; // Small penalty
-      }
-    } else {
-      this.timeOnGround = 0; // Reset when on steps
-      this.timeOnSteps++;
-      // Small reward for being on steps
-      totalReward += 0.2;
+    // === CONTINUOUS HEIGHT REWARD ===
+    // Reward for being at higher positions (helps with gradient)
+    // This provides a continuous signal between discrete steps
+    const heightReward = agentPos.y * 0.3;
+    totalReward += heightReward;
+    
+    // === DISTANCE TO NEXT STEP REWARD ===
+    // Reward for getting closer to the next step
+    if (currentStep >= 0 && currentStep < 9) {
+      const nextStepZ = -1.5 * (currentStep + 1);
+      const nextStepY = (currentStep + 2) * 1.0;
+      
+      // Distance to next step
+      const distToNextStep = Math.sqrt(
+        Math.pow(agentPos.z - nextStepZ, 2) +
+        Math.pow(agentPos.y - nextStepY, 2)
+      );
+      
+      // Reward for being close to next step (inverse distance)
+      const proximityReward = Math.max(0, 2.0 - distToNextStep) * 0.5;
+      totalReward += proximityReward;
     }
     
-    // === HEIGHT-BASED REWARD (Continuous signal) ===
-    // Reward for being higher up
-    const heightBonus = agentPos.y * 0.5; // 0.5 per unit height
-    totalReward += heightBonus;
-    
-    // === FORWARD MOVEMENT REWARD (Toward stairs) ===
-    // Reward for moving toward stairs (negative Z)
-    if (agentPos.z < 0 && agentPos.z > -12) {
-      totalReward += 1.0; // Bonus for being in staircase zone
+    // === STAYING ON STEPS BONUS ===
+    // Small reward for being on any step (not ground)
+    if (currentStep >= 0) {
+      totalReward += 0.5;
     }
     
-    // === GOAL REACHED (Ultimate reward) ===
+    // === GOAL REACHED ===
     if (agentPos.y >= this.config.goalHeight) {
       totalReward += this.config.rewardWeights.goalReached;
       console.log('🏆 GOAL REACHED! +100');
     }
     
-    // === PENALTIES (Clear negative signals) ===
+    // === PENALTIES ===
     
-    // Fall penalty (very bad)
+    // Fall penalty (episode will end)
     if (agentPos.y < this.config.fallThreshold) {
       totalReward += this.config.rewardWeights.fall;
     }
     
-    // Out of bounds penalty (very bad)
+    // Out of bounds penalty (episode will end)
     if (this.isOutOfBounds()) {
       totalReward += this.config.rewardWeights.outOfBounds;
     }
     
-    // Edge proximity penalty
-    const distanceToEdgeX = this.config.boundaryX - Math.abs(agentPos.x);
-    const distanceToEdgeZ = this.config.boundaryZ - Math.abs(agentPos.z);
-    const minDistanceToEdge = Math.min(distanceToEdgeX, distanceToEdgeZ);
-    
-    if (minDistanceToEdge < 2.0) {
-      const edgePenalty = (2.0 - minDistanceToEdge) * -3.0; // Stronger penalty
-      totalReward += edgePenalty;
+    // Penalty for being off to the side (not aligned with stairs)
+    if (Math.abs(agentPos.x) > 1.5) {
+      totalReward -= 0.5;
     }
     
     // Small time penalty (encourage efficiency)
-    totalReward += this.config.rewardWeights.timePenalty;
+    totalReward -= 0.01;
     
     return totalReward;
   }

@@ -20,6 +20,8 @@ import './diagnostics.js';
 import './test-jump-fix.js';
 import './test-movement.js';
 import './reset-and-train.js';
+import './test-staircase.js';
+import './test-rewards.js';
 
 /**
  * Main application class that coordinates all components
@@ -68,7 +70,7 @@ class ClimbingGameApp {
                 ],
                 agentStart: { x: 0, y: 1, z: 0 },
                 actionForces: {
-                    move: 15.0,  // Reduced from 50.0 - more controllable
+                    move: 8.0,   // Reduced for better staircase control
                     jump: 8.0,   // Original value - works well
                     grab: 20.0   // Increased from 2.0 proportionally
                 }

@@ -81,6 +81,8 @@ export class UIController {
       statReward: document.getElementById('stat-reward'),
       statSuccess: document.getElementById('stat-success'),
       statStatus: document.getElementById('stat-status'),
+      statCurrentStep: document.getElementById('stat-current-step'),
+      statHighestStep: document.getElementById('stat-highest-step'),
       
       // Model info display
       modelInfo: document.getElementById('model-info'),
@@ -173,9 +175,10 @@ export class UIController {
    */
   setupOrchestatorCallbacks() {
     // Listen for episode completion
-    this.orchestrator.onEpisodeComplete((stats) => {
+    this.orchestrator.onEpisodeComplete((stats, episodeResult) => {
       this.updateStatsPanel(stats);
       this.updateCharts(stats);
+      this.updateStepTracking(episodeResult);
       
       // Show visual feedback based on episode outcome
       if (stats.lastEpisodeSuccess) {
@@ -392,6 +395,30 @@ export class UIController {
       avgReward: stats.avgReward?.toFixed(2),
       successRate: (stats.successRate * 100)?.toFixed(2) + '%'
     });
+  }
+  
+  /**
+   * Update step tracking display (called during training)
+   * @param {Object} episodeResult - Result from episode with step info
+   */
+  updateStepTracking(episodeResult) {
+    if (!episodeResult) return;
+    
+    // Update current step
+    if (episodeResult.currentStep !== undefined && this.elements.statCurrentStep) {
+      const stepText = episodeResult.currentStep === -1 ? 'Ground' : 
+                       episodeResult.currentStep === 10 ? 'Goal' :
+                       `Step ${episodeResult.currentStep}`;
+      this.elements.statCurrentStep.textContent = stepText;
+    }
+    
+    // Update highest step reached
+    if (episodeResult.highestStep !== undefined && this.elements.statHighestStep) {
+      const stepText = episodeResult.highestStep === -1 ? 'Ground' :
+                       episodeResult.highestStep === 10 ? 'Goal' :
+                       `Step ${episodeResult.highestStep}`;
+      this.elements.statHighestStep.textContent = stepText;
+    }
   }
 
   /**
