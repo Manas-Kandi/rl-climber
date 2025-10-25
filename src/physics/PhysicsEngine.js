@@ -135,21 +135,21 @@ export class PhysicsEngine {
    * @param {Object} position - Position {x, y, z}
    * @returns {CANNON.Body} The ground body
    */
-  createGroundBody(width = 20, depth = 20, position = { x: 0, y: 0, z: 0 }) {
-    // Create a box shape for the ground
+  createGroundBody(width = 20, depth = 20, position = { x: 0, y: -0.05, z: 0 }) {
+    // Create a box shape for the ground (slightly thicker for better contact)
     const groundShape = new CANNON.Box(new CANNON.Vec3(width / 2, 0.1, depth / 2));
     
     // Create the body with zero mass (static)
     const groundBody = new CANNON.Body({ mass: 0 });
     groundBody.addShape(groundShape);
     
-    // Set position
+    // Set position (slightly below y=0 for better contact)
     groundBody.position.set(position.x, position.y, position.z);
     
-    // Configure material properties
+    // Configure material properties for realistic ground
     groundBody.material = new CANNON.Material({
-      friction: 0.3,
-      restitution: 0.1
+      friction: 0.5,      // INCREASED from 0.3 for better grip
+      restitution: 0.05   // DECREASED from 0.1 for less bounce
     });
     
     // Add to world and track
@@ -229,7 +229,7 @@ export class PhysicsEngine {
    * @param {string} shape - Shape type: 'box' or 'sphere'
    * @returns {CANNON.Body} The agent body
    */
-  createAgentBody(position = { x: 0, y: 1, z: 0 }, mass = 1.0, size = 0.5, shape = 'box') {
+  createAgentBody(position = { x: 0, y: 0.5, z: 0 }, mass = 1.0, size = 0.5, shape = 'box') {
     let agentShape;
     
     // Create shape based on type
@@ -244,18 +244,18 @@ export class PhysicsEngine {
     const agentBody = new CANNON.Body({ mass: mass });
     agentBody.addShape(agentShape);
     
-    // Set position
+    // Set position (agent starts at y=0.5 to sit on ground at y=0)
     agentBody.position.set(position.x, position.y, position.z);
     
-    // Configure material properties
+    // Configure material properties for realistic movement
     agentBody.material = new CANNON.Material({
-      friction: 0.3,
-      restitution: 0.1
+      friction: 0.5,      // INCREASED from 0.3 for better grip
+      restitution: 0.05   // DECREASED from 0.1 for less bounce
     });
     
-    // Configure linear and angular damping to prevent excessive spinning
-    agentBody.linearDamping = 0.1;  // REDUCED: Lower damping for better responsiveness
-    agentBody.angularDamping = 0.3;  // REDUCED: Lower damping to prevent freezing
+    // Configure linear and angular damping for realistic movement
+    agentBody.linearDamping = 0.05;  // DECREASED from 0.1 for more responsive movement
+    agentBody.angularDamping = 0.5;  // INCREASED from 0.3 to reduce spinning
     
     // Add to world and track
     this.addBody(agentBody, 'agent');

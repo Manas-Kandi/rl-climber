@@ -62,7 +62,7 @@ export class SceneManager {
             name: 'staircase',
             description: 'Simple staircase with 10 steps',
             goalHeight: 10.0,
-            agentStart: { x: 0, y: 1, z: 3 },  // Start in front of stairs
+            agentStart: { x: 0, y: 0.5, z: 3 },  // Start ON GROUND (lowered from y: 1)
             obstacles: [],
             rewardConfig: {
                 goalReached: 100.0,   // Ultimate goal
@@ -72,14 +72,7 @@ export class SceneManager {
             }
         };
         
-        // Create starting platform (where agent spawns)
-        scene.obstacles.push({
-            type: 'step',
-            position: { x: 0, y: 0.5, z: 3 },
-            size: { x: 4, y: 1, z: 3 },
-            color: 0x654321,  // Darker brown
-            id: 'start_platform'
-        });
+        // REMOVED: Starting platform (agent starts directly on ground)
         
         // Create 10 steps
         const stepHeight = 1.0;

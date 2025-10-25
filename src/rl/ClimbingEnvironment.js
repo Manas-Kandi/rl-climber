@@ -87,7 +87,7 @@ export class ClimbingEnvironment {
       
       // Agent configuration
       agent: {
-        startPosition: config.agent?.startPosition || { x: 0, y: 1, z: 0 },
+        startPosition: config.agent?.startPosition || { x: 0, y: 0.5, z: 3 },  // CHANGED: Start on ground in front of stairs
         size: config.agent?.size || 0.5,
         mass: config.agent?.mass || 1.0
       },
@@ -102,10 +102,10 @@ export class ClimbingEnvironment {
         {position: {x: 0, y: 12, z: -5}, size: {x: 2, y: 0.2, z: 1}}
       ],
       
-      // Action forces
+      // Action forces - INCREASED for better responsiveness
       actionForces: {
-        move: config.actionForces?.move || 5.0,
-        jump: config.actionForces?.jump || 8.0,
+        move: config.actionForces?.move || 15.0,  // INCREASED from 5.0 (3x more responsive)
+        jump: config.actionForces?.jump || 6.0,   // DECREASED from 8.0 (more realistic)
         grab: config.actionForces?.grab || 2.0
       }
     };
