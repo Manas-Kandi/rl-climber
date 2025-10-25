@@ -663,18 +663,28 @@ export class ClimbingEnvironment {
     // ABSOLUTE FAILURE CHECKS - These end the episode immediately
     // ============================================================================
     
-    // === 1. ABSOLUTE FAILURE: On Ground (except starting position) ===
+    // === 1. GRACE PERIOD: Allow time to leave starting area ===
+    const inGracePeriod = this.currentStep < 50;  // First 50 steps
+    const inStartZone = Math.abs(agentPos.x - this.config.agent.startPosition.x) < 2.0 &&
+                       Math.abs(agentPos.z - this.config.agent.startPosition.z) < 3.0;
+    
+    // === 2. ABSOLUTE FAILURE: On Ground (after grace period or outside start zone) ===
     if (currentStep < 0) {
-      // Check if we're at starting position (first few steps of episode)
-      const atStartPosition = this.currentStep < 10 && 
-                             Math.abs(agentPos.x - this.config.agent.startPosition.x) < 1.0 &&
-                             Math.abs(agentPos.z - this.config.agent.startPosition.z) < 1.0;
-      
-      if (!atStartPosition) {
-        // NOT at start = ABSOLUTE FAILURE
+      if (!inGracePeriod || !inStartZone) {
+        // NOT in grace period/zone = ABSOLUTE FAILURE
         totalReward = -100.0;  // ABSOLUTE PENALTY
-        console.log('❌ TOUCHED GROUND! Absolute penalty: -100.0 (episode will end)');
+        console.log('❌ ON GROUND! Absolute penalty: -100.0 (episode will end)');
         return totalReward;
+      } else {
+        // In grace period - encourage moving toward stairs
+        const distanceToStairs = Math.abs(agentPos.z - 0);  // Stairs start at z=0
+        const prevDistanceToStairs = Math.abs(prevPos.z - 0);
+        
+        if (distanceToStairs < prevDistanceToStairs) {
+          totalReward += 0.5;  // Moving toward stairs!
+        } else {
+          totalReward -= 0.5;  // Moving away from stairs!
+        }
       }
     }
     
@@ -772,13 +782,13 @@ export class ClimbingEnvironment {
     const agentPos = this.physicsEngine.getBodyPosition(this.agentBody);
     const currentStep = this.detectCurrentStep();
     
-    // ABSOLUTE FAILURE: On ground (except starting position)
+    // ABSOLUTE FAILURE: On ground (after grace period or outside start zone)
     if (currentStep < 0) {
-      const atStartPosition = this.currentStep < 10 && 
-                             Math.abs(agentPos.x - this.config.agent.startPosition.x) < 1.0 &&
-                             Math.abs(agentPos.z - this.config.agent.startPosition.z) < 1.0;
+      const inGracePeriod = this.currentStep < 50;  // First 50 steps
+      const inStartZone = Math.abs(agentPos.x - this.config.agent.startPosition.x) < 2.0 &&
+                         Math.abs(agentPos.z - this.config.agent.startPosition.z) < 3.0;
       
-      if (!atStartPosition) {
+      if (!inGracePeriod || !inStartZone) {
         return true;  // Episode ends immediately!
       }
     }

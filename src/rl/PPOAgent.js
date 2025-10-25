@@ -9,13 +9,13 @@ export class PPOAgent {
         this.stateSize = stateSize;
         this.actionSize = actionSize;
         
-        // Hyperparameters - MAXIMUM EXPLORATION for learning new reward system
+        // Hyperparameters - BALANCED for learning
         this.gamma = config.gamma || 0.99;
         this.lambda = config.lambda || 0.95;
         this.clipEpsilon = config.clipEpsilon || 0.3;  // INCREASED from 0.2
-        this.entropyCoef = config.entropyCoef || 0.2;  // MASSIVELY INCREASED from 0.05 for exploration!
+        this.entropyCoef = config.entropyCoef || 0.1;  // BALANCED - not too random, not too deterministic
         this.valueCoef = config.valueCoef || 0.5;
-        this.learningRate = config.learningRate || 0.01;  // INCREASED from 0.003 for faster unlearning
+        this.learningRate = config.learningRate || 0.005;  // MODERATE learning rate
         this.epochs = config.epochs || 20;  // INCREASED from 10
         
         // Build networks
