@@ -758,19 +758,21 @@ export class ClimbingEnvironment {
       }
     }
     
-    // === 6. TERMINAL PUNISHMENTS (Episode ending) - TINY ===
+    // === 6. TERMINAL PUNISHMENTS (Episode ending) - MASSIVE ===
+    // These should be WORSE than flailing around for the entire episode!
+    // Flailing for 500 steps ≈ -5.0, so these should be -10.0 or worse
     
-    // 6a. Falling below ground - TINY PENALTY
+    // 6a. Falling below ground - MASSIVE PENALTY
     if (agentPos.y < this.config.fallThreshold) {
-      totalReward += -1.0; // Was -50, now -1.0
-      console.log('💀 FELL TO DEATH! Penalty: -1.0');
+      totalReward += -10.0; // MASSIVE penalty to prevent suicide strategy
+      console.log('💀 FELL TO DEATH! Penalty: -10.0 (MASSIVE!)');
       return totalReward;
     }
     
-    // 6b. Going out of bounds - TINY PENALTY
+    // 6b. Going out of bounds - MASSIVE PENALTY
     if (this.isOutOfBounds()) {
-      totalReward += -1.0; // Was -50, now -1.0
-      console.log('🚫 OUT OF BOUNDS! Penalty: -1.0');
+      totalReward += -10.0; // MASSIVE penalty to prevent jumping off platform
+      console.log('🚫 OUT OF BOUNDS! Penalty: -10.0 (MASSIVE!)');
       return totalReward;
     }
     
@@ -780,13 +782,17 @@ export class ClimbingEnvironment {
       totalReward += 0.005; // Tiny exploration bonus (was 0.2)
     }
     
-    // === 8. SMALL GUIDANCE REWARDS ===
+    // === 8. GUIDANCE REWARDS ===
     
-    // 8a. Being on stairs is GOOD (but not as good as progressing)
+    // 8a. Being on stairs is GOOD (make this more attractive!)
     if (currentStep >= 0) {
-      totalReward += 0.02; // Small bonus for being on stairs (was 1.0)
+      totalReward += 0.1; // INCREASED from 0.02 - being on stairs is great!
+      
+      // BONUS: Higher steps = better rewards (encourages climbing)
+      const heightBonus = currentStep * 0.02; // Step 0=+0, Step 5=+0.1, Step 9=+0.18
+      totalReward += heightBonus;
     } else {
-      totalReward -= 0.02; // Penalty for being on ground (was -1.0)
+      totalReward -= 0.05; // INCREASED penalty for being on ground (was -0.02)
     }
     
     // 8b. Forward progress bonus (approaching stairs)
@@ -800,8 +806,8 @@ export class ClimbingEnvironment {
       totalReward -= 0.006; // Tiny penalty (was 0.3)
     }
     
-    // === 9. CLAMP FINAL REWARD TO RANGE [-2, +12] ===
-    totalReward = Math.max(-2, Math.min(12, totalReward)); // Was [-50, +100]
+    // === 9. CLAMP FINAL REWARD TO RANGE [-12, +12] ===
+    totalReward = Math.max(-12, Math.min(12, totalReward)); // Expanded range for terminal penalties
     
     return totalReward;
   }
