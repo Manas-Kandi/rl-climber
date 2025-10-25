@@ -177,7 +177,7 @@ export class TrainingOrchestrator {
             states: states,
             actions: actions,
             rewards: rewards,
-            logProbs: logProbs,
+            oldLogProbs: logProbs, // FIXED: Changed from logProbs to oldLogProbs
             values: values,
             dones: dones
         };
@@ -191,7 +191,7 @@ export class TrainingOrchestrator {
         trajectory.returns = returns;
         
         // Train the agent with this trajectory
-        const trainingResult = this.agent.train([trajectory]);
+        const trainingResult = this.agent.train(trajectory); // FIXED: Removed array wrapper
         
         // Store training metrics if available (could be used for logging)
         if (trainingResult) {
@@ -462,7 +462,7 @@ export class TrainingOrchestrator {
             states: states,
             actions: actions,
             rewards: rewards,
-            logProbs: logProbs,
+            oldLogProbs: logProbs, // FIXED: Changed from logProbs to oldLogProbs
             values: values,
             dones: dones
         };
@@ -473,7 +473,7 @@ export class TrainingOrchestrator {
         const returns = advantages.map((adv, i) => adv + values[i]);
         trajectory.returns = returns;
         
-        this.agent.train([trajectory]);
+        this.agent.train(trajectory); // FIXED: Removed array wrapper
         
         const success = this.environment.isGoalReached ? this.environment.isGoalReached() : totalReward > 50;
         const highestStep = this.environment.highestStepReached !== undefined ? 
