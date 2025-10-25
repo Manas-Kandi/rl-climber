@@ -389,24 +389,6 @@ export class ClimbingEnvironment {
       return new Float32Array(9);
     }
     
-    // === EPISODE-LEVEL PENALTY FOR NO PROGRESS ===
-    // If previous episode didn't reach any new steps, add accumulating penalty
-    if (this.currentStep > 0) { // Not first episode
-      const previousHighest = this.highestStepReached;
-      
-      if (previousHighest < 0) {
-        // Didn't even reach Step 0!
-        this.episodesWithoutProgress++;
-        const episodePenalty = -1.0 * Math.min(10, this.episodesWithoutProgress);
-        console.log(`❌ EPISODE FAILED! No progress for ${this.episodesWithoutProgress} episodes. Penalty: ${episodePenalty.toFixed(1)}`);
-        // This penalty will be applied at the start of next episode
-        this.totalReward += episodePenalty;
-      } else {
-        // Made some progress, reset counter
-        this.episodesWithoutProgress = 0;
-      }
-    }
-    
     // Reset agent body position to start position
     const startPos = this.config.agent.startPosition;
     this.physicsEngine.setBodyPosition(this.agentBody, startPos);
@@ -614,16 +596,16 @@ export class ClimbingEnvironment {
   }
 
   /**
-   * Calculate reward for the current step - STRICT PROGRESS-ONLY SYSTEM
+   * Calculate reward for the current step - ACTION-CONSEQUENCE SYSTEM
    * 
    * NEW PHILOSOPHY:
-   * 1. Being on stairs = BASELINE (0)
-   * 2. NOT being on stairs = HEAVY PENALTY (accumulating)
-   * 3. Making progress = ONLY positive reward
-   * 4. No progress = Accumulating penalty
-   * 5. Terminal failures = MASSIVE penalty
+   * Every action gets IMMEDIATE feedback based on its DIRECT consequence:
+   * - Did this action move me toward the goal? → Reward
+   * - Did this action move me away from the goal? → Penalty
+   * - Was this action productive? → Reward
+   * - Was this action wasteful? → Penalty
    * 
-   * This FORCES the agent to climb or suffer!
+   * CRYSTAL CLEAR cause-and-effect for every single action!
    * 
    * @param {Float32Array} prevState - Previous state vector
    * @param {number} action - Action taken
@@ -638,6 +620,14 @@ export class ClimbingEnvironment {
     }
     
     const agentPos = this.physicsEngine.getBodyPosition(this.agentBody);
+    const agentVel = this.physicsEngine.getBodyVelocity(this.agentBody);
+    
+    // Get previous position from state
+    const prevPos = {
+      x: prevState[0] * 10.0,  // Denormalize
+      y: prevState[1] * 15.0,
+      z: prevState[2] * 10.0
+    };
     
     // Detect current step and track movement
     const currentStep = this.detectCurrentStep();
@@ -670,34 +660,52 @@ export class ClimbingEnvironment {
       this.lastPosition = { ...agentPos };
     }
     
-    // === 1. STRICT BASELINE: NOT ON STAIRS = HEAVY PENALTY ===
-    // Track if agent is on stairs
-    if (currentStep < 0) {
-      // NOT on stairs - accumulating penalty
-      this.stepsOffStairs++;
+    // ============================================================================
+    // ACTION-CONSEQUENCE REWARDS: Immediate feedback for EVERY action
+    // ============================================================================
+    
+    // === 1. MOVEMENT ACTIONS: Did this move help or hurt? ===
+    if (action === this.ACTION_SPACE.FORWARD || 
+        action === this.ACTION_SPACE.BACKWARD ||
+        action === this.ACTION_SPACE.LEFT ||
+        action === this.ACTION_SPACE.RIGHT) {
       
-      // Base penalty for being off stairs
-      totalReward -= 0.1; // 10x worse than before
+      // Calculate movement toward goal (stairs are at negative Z)
+      const movedTowardStairs = (agentPos.z < prevPos.z);
+      const movedAwayFromStairs = (agentPos.z > prevPos.z);
       
-      // ACCUMULATING penalty - the longer you're off stairs, the worse it gets
-      const accumulatingPenalty = Math.min(2.0, this.stepsOffStairs * 0.01);
-      totalReward -= accumulatingPenalty;
+      // Calculate height change
+      const heightGain = agentPos.y - prevPos.y;
       
-      if (this.stepsOffStairs % 60 === 0) {
-        console.log(`⚠️ OFF STAIRS for ${this.stepsOffStairs} steps! Penalty: -${(0.1 + accumulatingPenalty).toFixed(2)}`);
+      // IMMEDIATE REWARD: Moving toward stairs
+      if (movedTowardStairs) {
+        totalReward += 0.2;  // Good move!
+      } else if (movedAwayFromStairs) {
+        totalReward -= 0.2;  // Bad move!
       }
-    } else {
-      // ON stairs - reset counter
-      this.stepsOffStairs = 0;
-      // Being on stairs is BASELINE (0 reward, not positive)
-      // Only CLIMBING gets positive rewards
+      
+      // IMMEDIATE REWARD: Gaining height
+      if (heightGain > 0.1) {
+        totalReward += heightGain * 0.5;  // Reward proportional to height gained
+      } else if (heightGain < -0.1) {
+        totalReward -= Math.abs(heightGain) * 0.3;  // Penalty for losing height
+      }
+      
+      // IMMEDIATE REWARD: Getting on stairs
+      if (currentStep >= 0 && prevStepOn < 0) {
+        totalReward += 0.5;  // Just got on stairs!
+      } else if (currentStep < 0 && prevStepOn >= 0) {
+        totalReward -= 0.5;  // Just fell off stairs!
+      }
     }
     
-    // === 1b. JUMP COST: Make jumping expensive ===
+    // === 2. JUMP ACTION: Was this jump productive? ===
     if (action === this.ACTION_SPACE.JUMP) {
-      totalReward -= 0.05;
-      this.lastJumpStep = this.currentStep;
+      this.lastJumpStep = prevStepOn;
       this.jumpedThisStep = true;
+      
+      // Check if jump was productive (will check after step progression)
+      // Base cost applied later based on outcome
     }
     
     // === 2. GOAL REACHED: MAXIMUM REWARD ===
@@ -716,115 +724,71 @@ export class ClimbingEnvironment {
       return totalReward; // Return immediately, no other rewards matter
     }
     
-    // === 3. STEP PROGRESSION: CLEAR POSITIVE REWARDS ===
-    // Diminishing rewards for each step (tiny scale)
+    // === 3. STEP PROGRESSION: BIG REWARDS for climbing ===
     if (currentStep > this.highestStepReached && currentStep >= 0) {
-      // Rewards: Step 0=+1.0, Step 1=+0.9, Step 2=+0.8, ..., Step 9=+0.1
-      const stepReward = 1.0 - (currentStep * 0.1);
+      // MASSIVE reward for reaching new step
+      const stepReward = 2.0 - (currentStep * 0.15);  // Step 0=+2.0, Step 9=+0.65
       totalReward += stepReward;
       this.highestStepReached = currentStep;
       this.stepsVisited.add(currentStep);
       
-      // BONUS: If we just jumped and reached a new step, that was a GOOD jump!
+      // IMMEDIATE FEEDBACK: Was this from a jump?
       if (this.jumpedThisStep) {
-        totalReward += 0.1; // Bonus for productive jump
-        this.consecutiveWastefulJumps = 0; // Reset wasteful jump counter
-        console.log(`🎯 NEW STEP ${currentStep}! Reward: +${stepReward.toFixed(2)} (+0.1 jump bonus)`);
+        totalReward += 0.5; // HUGE bonus for productive jump!
+        this.consecutiveWastefulJumps = 0;
+        console.log(`🎯 NEW STEP ${currentStep}! Reward: +${stepReward.toFixed(2)} (+0.5 PRODUCTIVE JUMP!)`);
       } else {
         console.log(`🎯 NEW STEP ${currentStep}! Reward: +${stepReward.toFixed(2)}`);
       }
-    } else if (this.jumpedThisStep && currentStep === this.lastJumpStep) {
-      // PENALTY: Jumped but didn't advance to new step = wasteful!
-      totalReward -= 0.08; // Penalty for wasteful jump
+    } else if (this.jumpedThisStep) {
+      // IMMEDIATE PENALTY: Jumped but didn't advance
+      totalReward -= 0.3; // Wasteful jump penalty
       this.consecutiveWastefulJumps++;
       
-      // Increasing penalty for repeated wasteful jumps
-      if (this.consecutiveWastefulJumps > 3) {
-        totalReward -= 0.05 * Math.min(5, this.consecutiveWastefulJumps - 3); // Max -0.25
-        if (this.consecutiveWastefulJumps % 5 === 0) {
-          console.log(`⚠️ WASTEFUL JUMPING! ${this.consecutiveWastefulJumps} jumps without progress. Extra penalty: -${(0.05 * Math.min(5, this.consecutiveWastefulJumps - 3)).toFixed(2)}`);
+      if (this.consecutiveWastefulJumps > 2) {
+        const extraPenalty = 0.1 * Math.min(5, this.consecutiveWastefulJumps - 2);
+        totalReward -= extraPenalty;
+        if (this.consecutiveWastefulJumps % 3 === 0) {
+          console.log(`⚠️ WASTEFUL JUMP! Total: ${this.consecutiveWastefulJumps}. Penalty: -${(0.3 + extraPenalty).toFixed(2)}`);
         }
       }
     }
     
-    // Reset jump tracking for next step
+    // Reset jump tracking
     this.jumpedThisStep = false;
     
-    // === 4. TIME DECAY: REWARDS DECREASE IF STAYING ON SAME STEP ===
-    // This prevents "camping" on a step (tiny scale)
-    if (currentStep >= 0 && this.timeOnCurrentStep > 0) {
-      // Decay formula: First 30 steps = +0.05, next 30 = +0.02, next 30 = 0, then negative
-      let decayReward = 0;
-      if (this.timeOnCurrentStep <= 30) {
-        decayReward = 0.05; // Still good (was 2.0)
-      } else if (this.timeOnCurrentStep <= 60) {
-        decayReward = 0.02; // Getting worse (was 1.0)
-      } else if (this.timeOnCurrentStep <= 90) {
-        decayReward = 0.0; // Neutral
-      } else {
-        decayReward = -0.02 * Math.min(5, (this.timeOnCurrentStep - 90) / 30); // Max -0.1 (was -5)
-      }
-      totalReward += decayReward;
-      
-      if (this.timeOnCurrentStep % 60 === 0 && this.timeOnCurrentStep > 60) {
-        console.log(`⏱️ TIME DECAY on step ${currentStep}: ${decayReward.toFixed(3)} (been here ${(this.timeOnCurrentStep/60).toFixed(1)}s)`);
-      }
+    // === 4. POSITION-BASED REWARDS: Where are you? ===
+    if (currentStep >= 0) {
+      // On stairs - small positive reward (encourages staying on stairs)
+      totalReward += 0.05;
+    } else {
+      // Off stairs - penalty
+      totalReward -= 0.1;
     }
     
-    // === 5. SMALL PUNISHMENTS FOR FAILURES ===
-    // Tiny penalties (not catastrophic)
-    
-    // 5a. JUMPING OFF STAIRS (Moving to lower step) - TINY PENALTY
+    // === 5. BACKWARD MOVEMENT PENALTY ===
     if (prevStepOn >= 0 && currentStep >= 0 && currentStep < prevStepOn) {
-      const jumpOffPenalty = -0.1 * (prevStepOn - currentStep); // Was -5, now -0.1
-      totalReward += jumpOffPenalty;
-      console.log(`💥 JUMPED DOWN from step ${prevStepOn} to ${currentStep}! Penalty: ${jumpOffPenalty.toFixed(2)}`);
+      // Moved to lower step - bad!
+      const backwardPenalty = -0.5 * (prevStepOn - currentStep);
+      totalReward += backwardPenalty;
+      console.log(`💥 MOVED DOWN from step ${prevStepOn} to ${currentStep}! Penalty: ${backwardPenalty.toFixed(2)}`);
     }
     
-    // 5b. FALLING OFF STAIRS (Going from step to ground) - TINY PENALTY
-    if (prevStepOn >= 0 && currentStep === -1) {
-      const fallOffPenalty = -0.2; // Was -10, now -0.2
-      totalReward += fallOffPenalty;
-      console.log(`💥 FELL OFF STAIRS from step ${prevStepOn}! Penalty: ${fallOffPenalty.toFixed(2)}`);
-    }
-    
-    // 5c. STAGNATION PUNISHMENT (Staying in one place) - TINY
-    if (this.stagnationTimer >= 30) { // Trigger faster (was 60)
-      const stagnationPenalty = -0.02 * Math.min(10, (this.stagnationTimer - 30) / 10); // Max -0.2 (was -10)
-      totalReward += stagnationPenalty;
-      if (this.stagnationTimer % 30 === 0) { // Log more frequently
-        console.log(`😴 STAGNATION! No movement for ${(this.stagnationTimer/60).toFixed(1)}s. Penalty: ${stagnationPenalty.toFixed(3)}`);
-      }
-    }
-    
-    // === 6. TERMINAL PUNISHMENTS (Episode ending) - MASSIVE ===
-    // These should be WORSE than flailing around for the entire episode!
-    // Flailing for 500 steps ≈ -5.0, so these should be -10.0 or worse
-    
-    // 6a. Falling below ground - MASSIVE PENALTY
+    // === 6. TERMINAL PENALTIES ===
     if (agentPos.y < this.config.fallThreshold) {
-      totalReward += -10.0; // MASSIVE penalty to prevent suicide strategy
-      console.log('💀 FELL TO DEATH! Penalty: -10.0 (MASSIVE!)');
+      totalReward += -5.0; // Death penalty
+      console.log('💀 FELL TO DEATH! Penalty: -5.0');
       return totalReward;
     }
     
-    // 6b. Going out of bounds - MASSIVE PENALTY
     if (this.isOutOfBounds()) {
-      totalReward += -10.0; // MASSIVE penalty to prevent jumping off platform
-      console.log('🚫 OUT OF BOUNDS! Penalty: -10.0 (MASSIVE!)');
+      totalReward += -5.0; // Out of bounds penalty
+      console.log('🚫 OUT OF BOUNDS! Penalty: -5.0');
       return totalReward;
     }
     
-    // === 7. NO EXPLORATION BONUS ===
-    // Removed - only progress matters!
-    
-    // === 8. NO GUIDANCE REWARDS ===
-    // Being on stairs = 0 (baseline, already handled above)
-    // NOT being on stairs = already heavily penalized above
-    // NO bonuses for anything except CLIMBING UP!
-    
-    // === 9. CLAMP FINAL REWARD TO RANGE [-12, +12] ===
-    totalReward = Math.max(-12, Math.min(12, totalReward)); // Expanded range for terminal penalties
+    // === 7. CLAMP FINAL REWARD ===
+    totalReward = Math.max(-5, Math.min(5, totalReward));
     
     return totalReward;
   }
