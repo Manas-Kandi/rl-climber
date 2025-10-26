@@ -400,7 +400,7 @@ export class ClimbingEnvironment {
   reset() {
     if (!this.agentBody) {
       console.error('Agent body not initialized, cannot reset environment');
-      return new Float32Array(9);
+      return new Float32Array(13);
     }
     
     // Reset agent body position to start position
@@ -936,7 +936,7 @@ export class ClimbingEnvironment {
     if (!this.agentBody) {
       console.error('Agent body not initialized, cannot step environment');
       return {
-        state: new Float32Array(9),
+        state: new Float32Array(13),
         reward: 0,
         done: true,
         info: { error: 'Agent not initialized' }

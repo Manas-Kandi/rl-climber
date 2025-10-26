@@ -192,9 +192,9 @@ class ClimbingGameApp {
             
             try {
                 if (this.config.agentType === 'DQN') {
-                    this.agent = new DQNAgent(9, 6, this.config.dqn);
+                    this.agent = new DQNAgent(13, 6, this.config.dqn);
                 } else if (this.config.agentType === 'PPO') {
-                    this.agent = new PPOAgent(9, 6, this.config.ppo);
+                    this.agent = new PPOAgent(13, 6, this.config.ppo);
                 } else {
                     throw new Error(`Unknown agent type: ${this.config.agentType}`);
                 }
@@ -988,7 +988,7 @@ class ClimbingGameApp {
     async testInferenceSpeed() {
         console.log('🏃 Testing neural network inference speed...');
         
-        const testState = new Float32Array([0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]);
+        const testState = new Float32Array([0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.1, 0.2, 0.3, 0.4]);
         const iterations = 100;
         
         if (this.agent && this.agent.selectAction) {
@@ -1182,9 +1182,9 @@ class ClimbingGameApp {
         // Create new agent
         this.config.agentType = agentType;
         if (agentType === 'DQN') {
-            this.agent = new DQNAgent(9, 6, this.config.dqn);
+            this.agent = new DQNAgent(13, 6, this.config.dqn);
         } else if (agentType === 'PPO') {
-            this.agent = new PPOAgent(9, 6, this.config.ppo);
+            this.agent = new PPOAgent(13, 6, this.config.ppo);
         }
         
         // Update orchestrator with new agent
@@ -1274,9 +1274,9 @@ class ClimbingGameApp {
             // Create test agent
             let testAgent;
             if (agentType === 'DQN') {
-                testAgent = new DQNAgent(9, 6, config);
+                testAgent = new DQNAgent(13, 6, config);
             } else if (agentType === 'PPO') {
-                testAgent = new PPOAgent(9, 6, config);
+                testAgent = new PPOAgent(13, 6, config);
             }
             
             // Create test orchestrator
