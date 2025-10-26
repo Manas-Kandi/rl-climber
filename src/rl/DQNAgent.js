@@ -49,9 +49,59 @@ export class DQNAgent {
     this.qNetwork = this.buildQNetwork();
     this.targetNetwork = this.buildTargetNetwork();
     
+    // Check for NaN in initial weights and reinitialize if needed
+    this.checkAndFixNaNWeights();
+    
     console.log('DQN Agent initialized');
     console.log(`State size: ${this.stateSize}, Action size: ${this.actionSize}`);
     console.log(`Gamma: ${this.gamma}, Learning rate: ${this.learningRate}`);
+  }
+  
+  /**
+   * Check if networks have NaN weights and reinitialize if needed
+   */
+  checkAndFixNaNWeights() {
+    // Check Q-network
+    const qWeights = this.qNetwork.getWeights();
+    let hasNaN = false;
+    
+    for (const weight of qWeights) {
+      const data = weight.dataSync();
+      if (data.some(v => !isFinite(v))) {
+        hasNaN = true;
+        console.warn('⚠️  Q-network has NaN/Inf weights, reinitializing...');
+        break;
+      }
+    }
+    
+    if (hasNaN) {
+      // Dispose old network
+      this.qNetwork.dispose();
+      // Build new one
+      this.qNetwork = this.buildQNetwork();
+      console.log('✅ Q-network reinitialized');
+    }
+    
+    // Check target network
+    const targetWeights = this.targetNetwork.getWeights();
+    hasNaN = false;
+    
+    for (const weight of targetWeights) {
+      const data = weight.dataSync();
+      if (data.some(v => !isFinite(v))) {
+        hasNaN = true;
+        console.warn('⚠️  Target network has NaN/Inf weights, reinitializing...');
+        break;
+      }
+    }
+    
+    if (hasNaN) {
+      // Dispose old network
+      this.targetNetwork.dispose();
+      // Build new one
+      this.targetNetwork = this.buildTargetNetwork();
+      console.log('✅ Target network reinitialized');
+    }
   }
   
   /**
@@ -443,13 +493,30 @@ export class DQNAgent {
       // Apply clipped gradients
       this.optimizer.applyGradients(clippedGrads);
       
-      // Dispose gradients
-      grads.dispose();
+      // Dispose gradients manually
+      Object.values(grads.grads).forEach(grad => grad.dispose());
+      
+      // Check for NaN in weights after training
+      const weights = this.qNetwork.getWeights();
+      let hasNaN = false;
+      for (const weight of weights) {
+        const data = weight.dataSync();
+        if (data.some(v => !isFinite(v))) {
+          hasNaN = true;
+          console.error('❌ NaN detected in weights after training! Reinitializing network...');
+          // Reinitialize network
+          this.qNetwork.dispose();
+          this.qNetwork = this.buildQNetwork();
+          this.updateTargetNetwork();
+          break;
+        }
+      }
       
       return {
         loss: lossValue,
         batchSize: batch.states.length,
-        epsilon: this.epsilon
+        epsilon: this.epsilon,
+        hasNaN: hasNaN
       };
     });
   }

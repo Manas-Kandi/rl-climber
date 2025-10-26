@@ -315,8 +315,8 @@ export class TrainingOrchestrator {
                 }
             }
 
-            // Yield control between episodes (no delay needed)
-            await this.sleep(0); // Immediate yield, not throttled
+            // Yield control between episodes to allow UI updates
+            await this.sleep(10); // 10ms delay allows browser to update UI
         }
 
         // Training complete
@@ -453,8 +453,10 @@ export class TrainingOrchestrator {
             done = isDone;
             steps++;
 
-            // Yield control to allow rendering updates (not throttled)
-            await this.sleep(0);
+            // Yield control every 10 steps to allow rendering updates
+            if (steps % 10 === 0) {
+                await this.sleep(1); // 1ms delay allows browser to render
+            }
         }
 
         // Compute advantages and train

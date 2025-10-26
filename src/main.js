@@ -51,7 +51,7 @@ class ClimbingGameApp {
         // Configuration
         this.config = {
             // Agent type: 'DQN' or 'PPO'
-            agentType: 'DQN',
+            agentType: 'PPO',  // CHANGED: PPO is more stable for physics tasks
             
             // Physics settings
             physics: {
@@ -94,12 +94,13 @@ class ClimbingGameApp {
             },
             
             ppo: {
-                gamma: 0.99,
-                lambda: 0.95,
-                clipEpsilon: 0.2,
-                entropyCoef: 0.01,
-                valueCoef: 0.5,
-                learningRate: 0.0003
+                gamma: 0.99,           // Discount factor (standard)
+                lambda: 0.95,          // GAE lambda (standard)
+                clipEpsilon: 0.2,      // PPO clip range (standard)
+                entropyCoef: 0.05,     // Entropy bonus (increased for more exploration)
+                valueCoef: 0.5,        // Value loss coefficient (standard)
+                learningRate: 0.0003,  // Learning rate (conservative for stability)
+                epochs: 10             // Training epochs per trajectory
             },
             
             // Training settings

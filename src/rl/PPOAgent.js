@@ -9,14 +9,14 @@ export class PPOAgent {
         this.stateSize = stateSize;
         this.actionSize = actionSize;
         
-        // Hyperparameters - BALANCED for learning
+        // Hyperparameters - Optimized for stability and learning
         this.gamma = config.gamma || 0.99;
         this.lambda = config.lambda || 0.95;
-        this.clipEpsilon = config.clipEpsilon || 0.3;  // INCREASED from 0.2
-        this.entropyCoef = config.entropyCoef || 0.1;  // BALANCED - not too random, not too deterministic
+        this.clipEpsilon = config.clipEpsilon || 0.2;
+        this.entropyCoef = config.entropyCoef || 0.05;
         this.valueCoef = config.valueCoef || 0.5;
-        this.learningRate = config.learningRate || 0.005;  // MODERATE learning rate
-        this.epochs = config.epochs || 20;  // INCREASED from 10
+        this.learningRate = config.learningRate || 0.0003;
+        this.epochs = config.epochs || 10;
         
         // Build networks
         this.actorNetwork = this.buildActorNetwork();
@@ -26,11 +26,13 @@ export class PPOAgent {
         this.actorOptimizer = tf.train.adam(this.learningRate);
         this.criticOptimizer = tf.train.adam(this.learningRate);
         
-        console.log('PPO Agent initialized with BOOSTED hyperparameters:');
-        console.log('  Learning Rate:', this.learningRate, '(10x faster)');
-        console.log('  Entropy Coef:', this.entropyCoef, '(5x more exploration)');
-        console.log('  Clip Epsilon:', this.clipEpsilon, '(larger updates allowed)');
-        console.log('  Training Epochs:', this.epochs, '(2x more learning per episode)');
+        console.log('PPO Agent initialized:');
+        console.log('  State size:', this.stateSize);
+        console.log('  Action size:', this.actionSize);
+        console.log('  Learning Rate:', this.learningRate);
+        console.log('  Entropy Coef:', this.entropyCoef);
+        console.log('  Clip Epsilon:', this.clipEpsilon);
+        console.log('  Training Epochs:', this.epochs);
     }
     
     /**
@@ -234,6 +236,12 @@ export class PPOAgent {
      * @returns {Object} Training metrics including actor loss, critic loss, and entropy
      */
     train(trajectories) {
+        // Validate inputs
+        if (!trajectories || !trajectories.states || trajectories.states.length === 0) {
+            console.error('Invalid trajectories provided to PPO train');
+            return { actorLoss: 0, criticLoss: 0, entropy: 0 };
+        }
+        
         const { states, actions, oldLogProbs, advantages, returns } = trajectories;
         const batchSize = states.length;
         const epochs = this.epochs; // K epochs for PPO (configurable)
@@ -276,8 +284,8 @@ export class PPOAgent {
                 entropyValue = entropy.dataSync()[0];
             });
             
-            // Train actor network
-            this.actorOptimizer.minimize(() => {
+            // Train actor network with gradient clipping
+            const actorGrads = tf.variableGrads(() => {
                 return tf.tidy(() => {
                     // Forward pass through actor network
                     const actionProbs = this.actorNetwork.predict(statesTensor);
@@ -305,8 +313,23 @@ export class PPOAgent {
                 });
             });
             
-            // Train critic network
-            this.criticOptimizer.minimize(() => {
+            // Clip gradients and apply
+            const clippedActorGrads = {};
+            const clipNorm = 0.5;
+            for (const varName in actorGrads.grads) {
+                const grad = actorGrads.grads[varName];
+                const norm = tf.norm(grad).dataSync()[0];
+                if (norm > clipNorm) {
+                    clippedActorGrads[varName] = tf.mul(grad, clipNorm / norm);
+                } else {
+                    clippedActorGrads[varName] = grad;
+                }
+            }
+            this.actorOptimizer.applyGradients(clippedActorGrads);
+            Object.values(actorGrads.grads).forEach(grad => grad.dispose());
+            
+            // Train critic network with gradient clipping
+            const criticGrads = tf.variableGrads(() => {
                 return tf.tidy(() => {
                     // Forward pass through critic network
                     const values = this.criticNetwork.predict(statesTensor).squeeze();
@@ -315,6 +338,20 @@ export class PPOAgent {
                     return tf.mean(tf.square(tf.sub(values, returnsTensor)));
                 });
             });
+            
+            // Clip gradients and apply
+            const clippedCriticGrads = {};
+            for (const varName in criticGrads.grads) {
+                const grad = criticGrads.grads[varName];
+                const norm = tf.norm(grad).dataSync()[0];
+                if (norm > clipNorm) {
+                    clippedCriticGrads[varName] = tf.mul(grad, clipNorm / norm);
+                } else {
+                    clippedCriticGrads[varName] = grad;
+                }
+            }
+            this.criticOptimizer.applyGradients(clippedCriticGrads);
+            Object.values(criticGrads.grads).forEach(grad => grad.dispose());
             
             totalActorLoss += actorLossValue;
             totalCriticLoss += criticLossValue;

@@ -132,7 +132,8 @@ export class LivePlayMode {
                 
                 if (this.mode === 'autonomous') {
                     // Let the agent decide
-                    action = this.agent.selectAction(this.currentState, false); // Evaluation mode
+                    const result = this.agent.selectAction(this.currentState, false); // Evaluation mode
+                    action = result.action; // Extract just the action number
                 } else if (this.mode === 'manual') {
                     // Get action from user input
                     action = this.getManualAction();
