@@ -269,7 +269,7 @@ export class PhysicsEngine {
     
     // Configure damping for smooth, responsive movement
     agentBody.linearDamping = 0.01;  // VERY LOW for sliding on ground
-    agentBody.angularDamping = 0.8;  // HIGH to prevent spinning
+    agentBody.angularDamping = 0.3;  // MODERATE to prevent spinning but allow settling (reduced from 0.8)
     
     // Prevent the agent from tipping over
     agentBody.fixedRotation = false;  // Allow some rotation for realistic physics
