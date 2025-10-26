@@ -59,7 +59,7 @@ export class HeadlessTrainer {
         
         // Create environment (no rendering engine)
         const envConfig = {
-            maxSteps: 500,
+            maxSteps: 5000,  // Long episodes for thorough exploration
             agent: {
                 startPosition: { x: 0, y: 1, z: 0 },
                 size: 0.5,

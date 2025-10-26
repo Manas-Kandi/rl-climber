@@ -32,6 +32,7 @@ export class ClimbingEnvironment {
     this.highestStepReached = -1; // -1 = ground, 0-9 = steps
     this.currentStepOn = -1;
     this.stepsVisited = new Set();
+    this.hasLandedOnStairs = false; // Track if agent has landed on stairs this episode
     this.timeOnGround = 0;
     this.timeOnSteps = 0;
     this.timeOnCurrentStep = 0; // NEW: Track time spent on current step for decay
@@ -74,7 +75,7 @@ export class ClimbingEnvironment {
     // Store environment configuration with defaults
     this.config = {
       // Episode settings
-      maxSteps: config.maxSteps || 2000,  // MUCH longer to allow learning
+      maxSteps: config.maxSteps || 5000,  // Very long episodes for thorough exploration
 
       // Reward weights
       rewardWeights: {
@@ -259,36 +260,36 @@ export class ClimbingEnvironment {
       case 0: // Disabled - full task
         this.curriculumMode = false;
         this.curriculumGoalStep = 10;
-        this.config.maxSteps = 500;
-        console.log('🎓 Curriculum learning DISABLED - Full task');
+        this.config.maxSteps = 5000;
+        console.log('🎓 Curriculum learning DISABLED - Full task (5000 steps)');
         break;
 
       case 1: // Level 1: Just reach Step 0
         this.curriculumMode = true;
         this.curriculumGoalStep = 0;
-        this.config.maxSteps = 200;
-        console.log('🎓 Curriculum Level 1: Reach Step 0 (200 steps max)');
+        this.config.maxSteps = 1000;
+        console.log('🎓 Curriculum Level 1: Reach Step 0 (1000 steps max)');
         break;
 
       case 2: // Level 2: Reach Step 2
         this.curriculumMode = true;
         this.curriculumGoalStep = 2;
-        this.config.maxSteps = 300;
-        console.log('🎓 Curriculum Level 2: Reach Step 2 (300 steps max)');
+        this.config.maxSteps = 2000;
+        console.log('🎓 Curriculum Level 2: Reach Step 2 (2000 steps max)');
         break;
 
       case 3: // Level 3: Reach Step 5
         this.curriculumMode = true;
         this.curriculumGoalStep = 5;
-        this.config.maxSteps = 400;
-        console.log('🎓 Curriculum Level 3: Reach Step 5 (400 steps max)');
+        this.config.maxSteps = 3000;
+        console.log('🎓 Curriculum Level 3: Reach Step 5 (3000 steps max)');
         break;
 
       case 4: // Level 4: Full task
         this.curriculumMode = false;
         this.curriculumGoalStep = 10;
-        this.config.maxSteps = 500;
-        console.log('🎓 Curriculum Level 4: Full task (500 steps max)');
+        this.config.maxSteps = 5000;
+        console.log('🎓 Curriculum Level 4: Full task (5000 steps max)');
         break;
 
       default:
@@ -444,6 +445,7 @@ export class ClimbingEnvironment {
     this.highestStepReached = -1;
     this.currentStepOn = -1;
     this.stepsVisited.clear();
+    this.hasLandedOnStairs = false;
     this.timeOnGround = 0;
     this.timeOnSteps = 0;
     this.timeOnCurrentStep = 0; // NEW: Reset time on current step
@@ -545,9 +547,10 @@ export class ClimbingEnvironment {
         const stepTopY = (i + 1) * 1.0;
         const heightDiff = Math.abs(agentPos.y - stepTopY);
 
-        // More lenient tolerance: agent must be within 1.2 units of step top
-        // This allows for agent height (0.5) plus generous margin for physics settling
-        if (heightDiff < 1.2) {
+        // STRICT: Agent must be ABOVE the step (not just touching it)
+        // Agent center should be at step top + agent radius (0.5)
+        // Allow small tolerance for physics settling (0.7 instead of 1.2)
+        if (heightDiff < 0.7 && agentPos.y >= stepTopY - 0.3) {
           return i;
         }
       }
@@ -765,17 +768,26 @@ export class ClimbingEnvironment {
     }
 
     // 🎉 FIRST TIME ON STAIRS - BIG REWARD!
+    // Only give this reward once per episode (prevent exploit)
     if (currentStep >= 0 && prevStepOn < 0) {
-      totalReward += 15.0;
-      console.log('🎉 LANDED ON STAIRS! +15.0');
+      // Check if this is truly the first time (not bouncing on/off)
+      if (!this.hasLandedOnStairs) {
+        totalReward += 15.0;
+        this.hasLandedOnStairs = true;
+        console.log('🎉 LANDED ON STAIRS! +15.0');
+      }
     }
 
     // 📈 NEW HIGHEST STEP - MILESTONE BONUS!
+    // Only give reward if agent has been on this step for at least 3 frames (prevents exploit)
     if (currentStep > this.highestStepReached && currentStep >= 0) {
-      const milestoneReward = 10.0;
-      totalReward += milestoneReward;
-      this.highestStepReached = currentStep;
-      console.log(`📈 NEW RECORD: Step ${currentStep}! +${milestoneReward}`);
+      // Agent must stay on step for a few frames to prove they're actually ON it
+      if (this.timeOnCurrentStep >= 3) {
+        const milestoneReward = 10.0;
+        totalReward += milestoneReward;
+        this.highestStepReached = currentStep;
+        console.log(`📈 NEW RECORD: Step ${currentStep}! +${milestoneReward}`);
+      }
     }
 
     // ============================================================================

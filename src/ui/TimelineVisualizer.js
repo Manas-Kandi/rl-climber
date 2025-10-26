@@ -436,7 +436,7 @@ export class TimelineVisualizer {
         }
 
         if (steps.length < 2) {
-            console.warn('Not enough steps to draw path');
+            // Silently skip - episode ended too quickly
             return;
         }
 

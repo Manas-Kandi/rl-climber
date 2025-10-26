@@ -65,7 +65,7 @@ class ClimbingGameApp {
             
             // Environment settings
             environment: {
-                maxSteps: 500,
+                maxSteps: 5000,  // Long episodes for thorough exploration
                 groundSize: { width: 20, depth: 20 },
                 wallHeight: 15,
                 goalHeight: 14,
@@ -1525,6 +1525,20 @@ class ClimbingGameApp {
         if (this.orchestrator && this.orchestrator.isTraining) {
             console.log('🎮 Stopping training to start live play');
             this.orchestrator.stopTraining();
+            
+            // Wait a moment for training to fully stop
+            await new Promise(resolve => setTimeout(resolve, 500));
+        }
+        
+        // Reload the latest trained model before starting live play
+        if (this.modelManager) {
+            console.log('🎮 Reloading latest model for live play...');
+            try {
+                await this.modelManager.loadLatestModel();
+                console.log('✅ Latest model loaded for live play');
+            } catch (error) {
+                console.warn('⚠️ Could not reload model, using current model:', error.message);
+            }
         }
         
         await this.livePlayMode.startLivePlay(mode);
