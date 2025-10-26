@@ -44,6 +44,7 @@ export class DQNAgent {
    * Initialize the agent by building networks and optimizer
    */
   init() {
+    // Use Adam optimizer with gradient clipping
     this.optimizer = tf.train.adam(this.learningRate);
     this.qNetwork = this.buildQNetwork();
     this.targetNetwork = this.buildTargetNetwork();
@@ -391,8 +392,21 @@ export class DQNAgent {
         const done = dones[i];
         const maxNextQ = maxNextQValuesData[i];
         
+        // Check for NaN/Infinity in inputs
+        if (!isFinite(reward)) {
+          console.error(`Invalid reward at index ${i}: ${reward}`);
+          continue;
+        }
+        if (!isFinite(maxNextQ)) {
+          console.error(`Invalid maxNextQ at index ${i}: ${maxNextQ}`);
+          continue;
+        }
+        
         // Q-learning update: Q(s,a) = reward + gamma * max(Q(s',a')) if not done, else reward
-        const targetValue = done ? reward : reward + this.gamma * maxNextQ;
+        let targetValue = done ? reward : reward + this.gamma * maxNextQ;
+        
+        // Clip target value to prevent explosion
+        targetValue = Math.max(-100, Math.min(100, targetValue));
         
         // Update the target Q-value for the specific action
         const flatIndex = i * this.actionSize + action;
@@ -402,14 +416,35 @@ export class DQNAgent {
       // Create updated target tensor
       const updatedTargets = tf.tensor(targetQValuesData, targetQValues.shape);
       
-      // Perform gradient descent using optimizer.minimize()
+      // Perform gradient descent using optimizer.minimize() with gradient clipping
       let lossValue;
-      this.optimizer.minimize(() => {
+      const grads = tf.variableGrads(() => {
         const predictions = this.qNetwork.predict(states);
         const loss = tf.losses.meanSquaredError(updatedTargets, predictions);
         lossValue = loss.dataSync()[0];
         return loss;
       });
+      
+      // Clip gradients to prevent explosion
+      const clippedGrads = {};
+      const clipNorm = 1.0;  // Clip gradients to max norm of 1.0
+      
+      for (const varName in grads.grads) {
+        const grad = grads.grads[varName];
+        // Clip by global norm
+        const norm = tf.norm(grad).dataSync()[0];
+        if (norm > clipNorm) {
+          clippedGrads[varName] = tf.mul(grad, clipNorm / norm);
+        } else {
+          clippedGrads[varName] = grad;
+        }
+      }
+      
+      // Apply clipped gradients
+      this.optimizer.applyGradients(clippedGrads);
+      
+      // Dispose gradients
+      grads.dispose();
       
       return {
         loss: lossValue,
