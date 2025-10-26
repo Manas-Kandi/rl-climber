@@ -693,8 +693,8 @@ export class ClimbingEnvironment {
     
     // === 3. FAILURE: Buffer ran out on ground ===
     if (currentStep < 0 && this.safetyBuffer <= 0) {
-      totalReward = -10.0;  // Moderate penalty (action-level)
-      console.log('❌ BUFFER EXPIRED ON GROUND! Penalty: -10.0 (episode will end)');
+      totalReward = -50.0;  // HEAVY PENALTY - episode-level failure!
+      console.log('❌ BUFFER EXPIRED ON GROUND! HEAVY PENALTY: -50.0 (episode failure)');
       return totalReward;
     }
     
@@ -786,24 +786,24 @@ export class ClimbingEnvironment {
     // Just being on stairs = 0 reward
     // This is expected, not rewarded
     
-    // === 5. TERMINAL FAILURES (moderate penalties) ===
+    // === 5. TERMINAL FAILURES ===
     
-    // 5a. Fell to death
+    // 5a. Fell to death (moderate action-level penalty)
     if (agentPos.y < this.config.fallThreshold) {
-      totalReward = -10.0;  // Moderate penalty (action-level, not episode-level)
+      totalReward = -10.0;  // Moderate penalty
       console.log('💀 FELL TO DEATH! Penalty: -10.0');
       return totalReward;
     }
     
-    // 5b. Out of bounds
+    // 5b. Out of bounds (HEAVY episode-level penalty)
     if (this.isOutOfBounds()) {
-      totalReward = -10.0;  // Moderate penalty (action-level, not episode-level)
-      console.log('🚫 OUT OF BOUNDS! Penalty: -10.0');
+      totalReward = -50.0;  // HEAVY PENALTY - episode-level failure!
+      console.log('🚫 OUT OF BOUNDS! HEAVY PENALTY: -50.0 (absolute episode failure)');
       return totalReward;
     }
     
     // === 6. CLAMP FINAL REWARD ===
-    totalReward = Math.max(-10, Math.min(10, totalReward));
+    totalReward = Math.max(-50, Math.min(10, totalReward));
     
     // === 8. DEBUG LOGGING (every 100 steps) ===
     if (this.currentStep % 100 === 0 && this.currentStep > 0) {
