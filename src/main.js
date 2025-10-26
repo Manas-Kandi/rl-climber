@@ -432,25 +432,34 @@ class ClimbingGameApp {
     }
     
     /**
-     * Start the main rendering loop with 60 FPS target
+     * Start the main rendering loop with 60 FPS target - OPTIMIZED FOR VISUAL TRAINING
      */
     startRenderingLoop() {
         // Performance monitoring
-        let lastTime = 0;
+        let lastTime = performance.now();
         let frameCount = 0;
-        let fpsUpdateTime = 0;
-        let currentFPS = 0;
+        let fpsUpdateTime = performance.now();
         
         // Detailed performance tracking
         let renderTime = 0;
         let physicsTime = 0;
         let updateTime = 0;
         let frameTimeHistory = [];
-        let adaptiveRenderingEnabled = false;
         
         // Target 60 FPS (16.67ms per frame)
-        const targetFrameTime = 1000 / 60;
+        const targetFrameTime = 16.67;
         let accumulator = 0;
+        
+        // Adaptive rendering state
+        let consecutiveLowFPS = 0;
+        let adaptiveRenderingEnabled = false;
+        
+        // Store these for access in other methods
+        this.currentFPS = 0;
+        this.renderTime = 0;
+        this.physicsTime = 0;
+        this.frameTimeHistory = frameTimeHistory;
+        this.adaptiveRenderingEnabled = false;
         
         const animate = (currentTime) => {
             if (!this.isRunning) return;
@@ -465,18 +474,29 @@ class ClimbingGameApp {
                 // Add to accumulator for fixed timestep physics
                 accumulator += deltaTime;
                 
+                // OPTIMIZED: Limit physics steps per frame to prevent blocking
+                const maxPhysicsSteps = 3;
+                let physicsSteps = 0;
+                
                 // Step physics simulation with fixed timestep
                 const physicsStartTime = performance.now();
                 try {
-                    while (accumulator >= targetFrameTime) {
+                    while (accumulator >= targetFrameTime && physicsSteps < maxPhysicsSteps) {
                         this.physicsEngine.step(this.config.physics.timeStep);
                         accumulator -= targetFrameTime;
+                        physicsSteps++;
+                    }
+                    
+                    // If we hit the limit, reset accumulator to prevent spiral of death
+                    if (physicsSteps >= maxPhysicsSteps) {
+                        accumulator = 0;
                     }
                 } catch (error) {
                     console.error('❌ Physics simulation error:', error);
-                    // Continue with rendering even if physics fails
+                    accumulator = 0; // Reset to prevent cascading errors
                 }
                 physicsTime = performance.now() - physicsStartTime;
+                this.physicsTime = physicsTime;
                 
                 // Update agent position in rendering engine from physics
                 const updateStartTime = performance.now();
@@ -491,11 +511,10 @@ class ClimbingGameApp {
                     }
                 } catch (error) {
                     console.error('❌ Agent position update error:', error);
-                    // Continue with rendering
                 }
                 updateTime = performance.now() - updateStartTime;
                 
-                // Adaptive rendering - skip frames if performance is poor
+                // OPTIMIZED: Adaptive rendering based on performance
                 const shouldRender = !adaptiveRenderingEnabled || frameCount % this.getRenderSkipFactor() === 0;
                 
                 if (shouldRender) {
@@ -503,50 +522,67 @@ class ClimbingGameApp {
                     const renderStartTime = performance.now();
                     try {
                         this.renderingEngine.render();
+                        this.renderingErrorCount = 0; // Reset error count on success
                     } catch (error) {
                         console.error('❌ Rendering error:', error);
+                        this.renderingErrorCount = (this.renderingErrorCount || 0) + 1;
+                        
                         // If rendering fails repeatedly, stop the loop
                         if (this.renderingErrorCount > 10) {
                             console.error('❌ Too many rendering errors, stopping application');
                             this.stop();
                             return;
                         }
-                        this.renderingErrorCount = (this.renderingErrorCount || 0) + 1;
                     }
                     renderTime = performance.now() - renderStartTime;
                 } else {
                     renderTime = 0; // Skipped rendering
                 }
+                this.renderTime = renderTime;
                 
                 // Track frame time
                 const totalFrameTime = performance.now() - frameStartTime;
                 frameTimeHistory.push(totalFrameTime);
-                if (frameTimeHistory.length > 60) {
-                    frameTimeHistory.shift(); // Keep last 60 frames
+                if (frameTimeHistory.length > 120) { // Track 2 seconds at 60 FPS
+                    frameTimeHistory.shift();
                 }
                 
                 // FPS monitoring (update every second)
                 frameCount++;
                 if (currentTime - fpsUpdateTime >= 1000) {
-                    currentFPS = Math.round((frameCount * 1000) / (currentTime - fpsUpdateTime));
+                    const currentFPS = Math.round((frameCount * 1000) / (currentTime - fpsUpdateTime));
+                    this.currentFPS = currentFPS;
                     frameCount = 0;
                     fpsUpdateTime = currentTime;
                     
+                    // OPTIMIZED: Adaptive rendering control
+                    if (currentFPS < 50) {
+                        consecutiveLowFPS++;
+                        if (consecutiveLowFPS >= 2 && !adaptiveRenderingEnabled) {
+                            console.warn(`⚡ Enabling adaptive rendering (FPS: ${currentFPS})`);
+                            adaptiveRenderingEnabled = true;
+                            this.adaptiveRenderingEnabled = true;
+                        }
+                    } else if (currentFPS >= 58) {
+                        consecutiveLowFPS = 0;
+                        if (adaptiveRenderingEnabled) {
+                            console.log(`✅ Disabling adaptive rendering (FPS: ${currentFPS})`);
+                            adaptiveRenderingEnabled = false;
+                            this.adaptiveRenderingEnabled = false;
+                        }
+                    }
+                    
                     // Log FPS occasionally for monitoring
-                    if (Math.random() < 0.1) { // 10% chance to log
-                        console.log(`🎬 Rendering at ${currentFPS} FPS`);
+                    if (Math.random() < 0.1) {
+                        const avgFrameTime = frameTimeHistory.reduce((a, b) => a + b, 0) / frameTimeHistory.length;
+                        console.log(`🎬 FPS: ${currentFPS} | Frame: ${avgFrameTime.toFixed(2)}ms | Physics: ${physicsTime.toFixed(2)}ms | Render: ${renderTime.toFixed(2)}ms`);
                     }
                     
-                    // Warn if FPS is too low
-                    if (currentFPS < 30) {
-                        console.warn(`⚠️ Low FPS detected: ${currentFPS} FPS`);
-                    }
-                    
-                    // Check memory usage in rendering loop occasionally
-                    if (Math.random() < 0.05) { // 5% chance to check
+                    // Check memory usage occasionally
+                    if (Math.random() < 0.05) {
                         const memory = this.getMemoryStats();
                         if (memory.numTensors > 500) {
-                            console.warn(`⚠️ High tensor count in render loop: ${memory.numTensors}`);
+                            console.warn(`⚠️ High tensor count: ${memory.numTensors}`);
                         }
                     }
                 }
@@ -561,7 +597,7 @@ class ClimbingGameApp {
         };
         
         // Start the animation loop
-        console.log('🎬 Starting 60 FPS rendering loop...');
+        console.log('🎬 Starting optimized 60 FPS rendering loop...');
         this.animationId = requestAnimationFrame(animate);
     }
     
@@ -650,12 +686,35 @@ class ClimbingGameApp {
     }
     
     /**
-     * Get render skip factor based on performance
+     * Get render skip factor based on performance - OPTIMIZED FOR VISUAL TRAINING
      */
     getRenderSkipFactor() {
         const avgFrameTime = this.getAverageFrameTime();
-        const targetFrameTime = 1000 / 60; // 16.67ms for 60 FPS
+        const targetFrameTime = 16.67; // 60 FPS target
         
+        // OPTIMIZED: More intelligent frame skipping
+        // During visual training, we want smooth visuals, so be conservative
+        if (this.orchestrator && this.orchestrator.visualTrainingMode) {
+            // Visual training mode - prioritize smooth rendering
+            if (avgFrameTime > targetFrameTime * 2.5) {
+                return 3; // Skip 2 out of 3 frames only if really struggling
+            } else if (avgFrameTime > targetFrameTime * 1.8) {
+                return 2; // Skip every other frame
+            } else {
+                return 1; // Render every frame for smooth visuals
+            }
+        }
+        
+        // Background training mode - can skip more aggressively
+        if (this.orchestrator && this.orchestrator.isTraining && !this.orchestrator.visualTrainingMode) {
+            if (avgFrameTime > targetFrameTime * 1.5) {
+                return 4; // Skip 3 out of 4 frames during background training
+            } else if (avgFrameTime > targetFrameTime) {
+                return 2; // Skip every other frame
+            }
+        }
+        
+        // Normal mode (not training) - maintain smooth 60 FPS
         if (avgFrameTime > targetFrameTime * 2) {
             return 3; // Skip 2 out of 3 frames
         } else if (avgFrameTime > targetFrameTime * 1.5) {

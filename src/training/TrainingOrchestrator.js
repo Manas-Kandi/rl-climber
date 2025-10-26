@@ -366,6 +366,10 @@ export class TrainingOrchestrator {
         let done = false;
 
         const maxSteps = this.environment.config?.maxSteps || this.environment.maxSteps || 500;
+        let lastYieldTime = performance.now();
+        let frameCount = 0;
+        const targetFrameTime = 16.67; // 60 FPS target
+        
         while (!done && steps < maxSteps) {
             // Select action
             const epsilon = this.agent.epsilon;
@@ -391,9 +395,23 @@ export class TrainingOrchestrator {
             totalReward += reward;
             done = isDone;
             steps++;
+            frameCount++;
 
-            // Yield control to allow rendering updates (not throttled)
-            await this.sleep(0);
+            // OPTIMIZED: Yield control based on precise frame timing
+            const now = performance.now();
+            const elapsed = now - lastYieldTime;
+            
+            if (elapsed >= targetFrameTime) {
+                // Yield to allow rendering and UI updates
+                await this.sleep(0);
+                lastYieldTime = now;
+                frameCount = 0;
+            } else if (frameCount >= 5) {
+                // Also yield every 5 steps minimum to prevent blocking
+                await this.sleep(0);
+                lastYieldTime = now;
+                frameCount = 0;
+            }
         }
 
         const success = this.environment.isGoalReached ? this.environment.isGoalReached() : totalReward > 50;
@@ -430,6 +448,10 @@ export class TrainingOrchestrator {
         let done = false;
 
         const maxSteps = this.environment.config?.maxSteps || this.environment.maxSteps || 500;
+        let lastYieldTime = performance.now();
+        let frameCount = 0;
+        const targetFrameTime = 16.67; // 60 FPS target
+        
         while (!done && steps < maxSteps) {
             // Select action
             const actionResult = this.agent.selectAction(state, true);
@@ -452,11 +474,42 @@ export class TrainingOrchestrator {
             totalReward += reward;
             done = isDone;
             steps++;
+            frameCount++;
 
-            // Yield control every 10 steps to allow rendering updates
-            if (steps % 10 === 0) {
-                await this.sleep(1); // 1ms delay allows browser to render
+            // OPTIMIZED: Yield control based on precise frame timing
+            // This ensures smooth 60 FPS rendering without blocking
+            const now = performance.now();
+            const elapsed = now - lastYieldTime;
+            
+            if (elapsed >= targetFrameTime) {
+                // Yield to allow rendering and UI updates
+                await this.sleep(0);
+                lastYieldTime = now;
+                frameCount = 0;
+            } else if (frameCount >= 5) {
+                // Also yield every 5 steps minimum to prevent blocking
+                await this.sleep(0);
+                lastYieldTime = now;
+                frameCount = 0;
             }
+        }
+
+        // If episode ended (success or failure), pause briefly to show final state
+        if (done) {
+            // Log why episode ended
+            const agentPos = this.environment.physicsEngine?.getBodyPosition(this.environment.agentBody);
+            if (agentPos) {
+                if (this.environment.isOutOfBounds && this.environment.isOutOfBounds()) {
+                    console.log('🚫 Episode ended: Out of bounds');
+                } else if (agentPos.y < (this.environment.config?.fallThreshold || -2)) {
+                    console.log('💀 Episode ended: Fell to death');
+                } else if (agentPos.y >= (this.environment.config?.goalHeight || 10)) {
+                    console.log('🏆 Episode ended: Goal reached!');
+                } else {
+                    console.log('⏱️  Episode ended: Terminal condition');
+                }
+            }
+            await this.sleep(500); // 500ms pause to see what happened
         }
 
         // Compute advantages and train

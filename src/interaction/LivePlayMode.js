@@ -176,8 +176,26 @@ export class LivePlayMode {
         
         // Check if episode ended
         if (result.done) {
-            console.log('🎮 Episode completed in live play');
-            this.resetEpisode();
+            // Log why episode ended
+            const agentPos = this.environment.physicsEngine?.getBodyPosition(this.environment.agentBody);
+            if (agentPos) {
+                if (this.environment.isOutOfBounds && this.environment.isOutOfBounds()) {
+                    console.log('🚫 Live play episode ended: Out of bounds');
+                } else if (agentPos.y < (this.environment.config?.fallThreshold || -2)) {
+                    console.log('💀 Live play episode ended: Fell to death');
+                } else if (agentPos.y >= (this.environment.config?.goalHeight || 10)) {
+                    console.log('🏆 Live play episode ended: Goal reached!');
+                } else {
+                    console.log('⏱️  Live play episode ended');
+                }
+            }
+            
+            // Pause briefly before resetting to show final state
+            setTimeout(() => {
+                if (this.isActive) {
+                    this.resetEpisode();
+                }
+            }, 500); // 500ms pause
         }
     }
     
