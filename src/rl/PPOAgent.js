@@ -285,73 +285,95 @@ export class PPOAgent {
             });
             
             // Train actor network with gradient clipping
-            const actorGrads = tf.variableGrads(() => {
-                return tf.tidy(() => {
-                    // Forward pass through actor network
-                    const actionProbs = this.actorNetwork.predict(statesTensor);
-                    
-                    // Calculate new log probabilities
-                    const newLogProbs = this.calculateLogProbs(actionProbs, actionsTensor);
-                    
-                    // Calculate probability ratio: ratio = exp(newLogProb - oldLogProb)
-                    const ratios = tf.exp(tf.sub(newLogProbs, oldLogProbsTensor));
-                    
-                    // Calculate clipped surrogate objective
-                    const clippedRatios = tf.clipByValue(ratios, 1 - this.clipEpsilon, 1 + this.clipEpsilon);
-                    const surr1 = tf.mul(ratios, advantagesTensor);
-                    const surr2 = tf.mul(clippedRatios, advantagesTensor);
-                    const clippedSurrogate = tf.minimum(surr1, surr2);
-                    
-                    // Calculate entropy for exploration
-                    const entropy = this.calculateEntropy(actionProbs);
-                    
-                    // Actor loss: -mean(clipped surrogate) - entropyCoef * entropy
-                    return tf.neg(tf.add(
-                        tf.mean(clippedSurrogate),
-                        tf.mul(this.entropyCoef, entropy)
-                    ));
+            tf.tidy(() => {
+                const actorGrads = tf.variableGrads(() => {
+                    return tf.tidy(() => {
+                        // Forward pass through actor network
+                        const actionProbs = this.actorNetwork.predict(statesTensor);
+                        
+                        // Calculate new log probabilities
+                        const newLogProbs = this.calculateLogProbs(actionProbs, actionsTensor);
+                        
+                        // Calculate probability ratio: ratio = exp(newLogProb - oldLogProb)
+                        const ratios = tf.exp(tf.sub(newLogProbs, oldLogProbsTensor));
+                        
+                        // Calculate clipped surrogate objective
+                        const clippedRatios = tf.clipByValue(ratios, 1 - this.clipEpsilon, 1 + this.clipEpsilon);
+                        const surr1 = tf.mul(ratios, advantagesTensor);
+                        const surr2 = tf.mul(clippedRatios, advantagesTensor);
+                        const clippedSurrogate = tf.minimum(surr1, surr2);
+                        
+                        // Calculate entropy for exploration
+                        const entropy = this.calculateEntropy(actionProbs);
+                        
+                        // Actor loss: -mean(clipped surrogate) - entropyCoef * entropy
+                        return tf.neg(tf.add(
+                            tf.mean(clippedSurrogate),
+                            tf.mul(this.entropyCoef, entropy)
+                        ));
+                    });
                 });
-            });
-            
-            // Clip gradients and apply
-            const clippedActorGrads = {};
-            const clipNorm = 0.5;
-            for (const varName in actorGrads.grads) {
-                const grad = actorGrads.grads[varName];
-                const norm = tf.norm(grad).dataSync()[0];
-                if (norm > clipNorm) {
-                    clippedActorGrads[varName] = tf.mul(grad, clipNorm / norm);
-                } else {
-                    clippedActorGrads[varName] = grad;
+                
+                // Clip gradients and apply
+                const clippedActorGrads = {};
+                const clipNorm = 0.5;
+                for (const varName in actorGrads.grads) {
+                    const grad = actorGrads.grads[varName];
+                    const norm = tf.norm(grad).dataSync()[0];
+                    if (norm > clipNorm) {
+                        clippedActorGrads[varName] = tf.mul(grad, clipNorm / norm);
+                    } else {
+                        clippedActorGrads[varName] = grad;
+                    }
                 }
-            }
-            this.actorOptimizer.applyGradients(clippedActorGrads);
-            Object.values(actorGrads.grads).forEach(grad => grad.dispose());
+                this.actorOptimizer.applyGradients(clippedActorGrads);
+                
+                // Dispose clipped gradients
+                Object.values(clippedActorGrads).forEach(grad => {
+                    if (grad !== actorGrads.grads[Object.keys(clippedActorGrads).find(k => clippedActorGrads[k] === grad)]) {
+                        grad.dispose();
+                    }
+                });
+                
+                // Dispose original gradients
+                Object.values(actorGrads.grads).forEach(grad => grad.dispose());
+            });
             
             // Train critic network with gradient clipping
-            const criticGrads = tf.variableGrads(() => {
-                return tf.tidy(() => {
-                    // Forward pass through critic network
-                    const values = this.criticNetwork.predict(statesTensor).squeeze();
-                    
-                    // Critic loss: MSE(value, return)
-                    return tf.mean(tf.square(tf.sub(values, returnsTensor)));
+            tf.tidy(() => {
+                const criticGrads = tf.variableGrads(() => {
+                    return tf.tidy(() => {
+                        // Forward pass through critic network
+                        const values = this.criticNetwork.predict(statesTensor).squeeze();
+                        
+                        // Critic loss: MSE(value, return)
+                        return tf.mean(tf.square(tf.sub(values, returnsTensor)));
+                    });
                 });
-            });
-            
-            // Clip gradients and apply
-            const clippedCriticGrads = {};
-            for (const varName in criticGrads.grads) {
-                const grad = criticGrads.grads[varName];
-                const norm = tf.norm(grad).dataSync()[0];
-                if (norm > clipNorm) {
-                    clippedCriticGrads[varName] = tf.mul(grad, clipNorm / norm);
-                } else {
-                    clippedCriticGrads[varName] = grad;
+                
+                // Clip gradients and apply
+                const clippedCriticGrads = {};
+                for (const varName in criticGrads.grads) {
+                    const grad = criticGrads.grads[varName];
+                    const norm = tf.norm(grad).dataSync()[0];
+                    if (norm > clipNorm) {
+                        clippedCriticGrads[varName] = tf.mul(grad, clipNorm / norm);
+                    } else {
+                        clippedCriticGrads[varName] = grad;
+                    }
                 }
-            }
-            this.criticOptimizer.applyGradients(clippedCriticGrads);
-            Object.values(criticGrads.grads).forEach(grad => grad.dispose());
+                this.criticOptimizer.applyGradients(clippedCriticGrads);
+                
+                // Dispose clipped gradients
+                Object.values(clippedCriticGrads).forEach(grad => {
+                    if (grad !== criticGrads.grads[Object.keys(clippedCriticGrads).find(k => clippedCriticGrads[k] === grad)]) {
+                        grad.dispose();
+                    }
+                });
+                
+                // Dispose original gradients
+                Object.values(criticGrads.grads).forEach(grad => grad.dispose());
+            });
             
             totalActorLoss += actorLossValue;
             totalCriticLoss += criticLossValue;
@@ -364,6 +386,14 @@ export class PPOAgent {
         oldLogProbsTensor.dispose();
         advantagesTensor.dispose();
         returnsTensor.dispose();
+        
+        // MEMORY LEAK FIX: Force garbage collection of disposed tensors
+        // Check tensor count and warn if too high
+        const memoryInfo = tf.memory();
+        if (memoryInfo.numTensors > 200) {
+            console.warn(`⚠️ High tensor count after training: ${memoryInfo.numTensors}`);
+            console.warn('   This may indicate a memory leak. Consider restarting training.');
+        }
         
         return {
             actorLoss: totalActorLoss / epochs,

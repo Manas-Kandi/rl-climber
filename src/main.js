@@ -769,16 +769,16 @@ class ClimbingGameApp {
     }
     
     /**
-     * Start memory monitoring
+     * Start memory monitoring with automatic cleanup
      */
     startMemoryMonitoring() {
-        console.log('🧠 Starting memory monitoring...');
+        console.log('🧠 Starting memory monitoring with automatic cleanup...');
         
         // Log initial memory state
         const initialMemory = this.getMemoryStats();
         console.log('📊 Initial memory state:', initialMemory);
         
-        // Monitor memory every 30 seconds
+        // Monitor memory every 10 seconds (more frequent for leak detection)
         this.memoryMonitorInterval = setInterval(() => {
             const currentMemory = this.getMemoryStats();
             
@@ -787,22 +787,36 @@ class ClimbingGameApp {
                 console.log('🧠 Memory stats:', currentMemory);
             }
             
-            // Warn if memory usage is high
-            if (currentMemory.numTensors > 1000) {
-                console.warn('⚠️ High tensor count detected:', currentMemory.numTensors);
+            // CRITICAL: Automatic cleanup if tensor count is dangerously high
+            if (currentMemory.numTensors > 500) {
+                console.warn('🚨 CRITICAL: High tensor count detected:', currentMemory.numTensors);
+                console.warn('   Performing automatic memory cleanup...');
+                
+                // Dispose of variables that are no longer needed
+                tf.disposeVariables();
+                
+                const afterCleanup = this.getMemoryStats();
+                console.log('✅ Cleanup complete. Tensors:', currentMemory.numTensors, '→', afterCleanup.numTensors);
+                
+                // If still high after cleanup, warn user
+                if (afterCleanup.numTensors > 300) {
+                    console.error('❌ Memory leak detected! Tensor count still high after cleanup.');
+                    console.error('   Consider stopping and restarting training.');
+                }
             }
             
+            // Warn if memory usage is high
             if (currentMemory.numMB > 100) {
                 console.warn('⚠️ High memory usage detected:', currentMemory.numMB, 'MB');
             }
             
             // Force garbage collection if available (Chrome DevTools)
-            if (window.gc && currentMemory.numMB > 200) {
+            if (window.gc && (currentMemory.numMB > 200 || currentMemory.numTensors > 300)) {
                 console.log('🗑️ Forcing garbage collection...');
                 window.gc();
             }
             
-        }, 30000); // Every 30 seconds
+        }, 10000); // Every 10 seconds (more frequent monitoring)
     }
     
     /**
