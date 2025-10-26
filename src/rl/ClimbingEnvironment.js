@@ -159,10 +159,10 @@ export class ClimbingEnvironment {
   
   /**
    * Get the state space size
-   * @returns {number} State vector dimensionality (9)
+   * @returns {number} State vector dimensionality (13)
    */
   getStateSpace() {
-    return 9; // [x, y, z, vx, vy, vz, distGoal, distLedge, progress]
+    return 13; // [x, y, z, vx, vy, vz, distGoal, goalDirZ, goalDirY, currentStep, distNextStep, onStairs, buffer]
   }
   
   /**
@@ -170,13 +170,14 @@ export class ClimbingEnvironment {
    * @returns {Object} Episode stats {steps, totalReward, success}
    */
   getEpisodeStats() {
-    const agentPos = this.physicsEngine.getBodyPosition(this.agentBody);
-    const success = agentPos.y >= this.config.goalHeight;
+    const currentStep = this.detectCurrentStep();
+    const success = currentStep === 10; // Success = reached goal platform
     
     return {
       steps: this.currentStep,
       totalReward: this.totalReward,
-      success: success
+      success: success,
+      highestStep: this.highestStepReached
     };
   }
   
@@ -317,64 +318,77 @@ export class ClimbingEnvironment {
   }
   
   /**
-   * Get current state representation as 9D Float32Array
-   * State vector: [x, y, z, vx, vy, vz, distGoal, distLedge, progress]
+   * Get current state representation as 13D Float32Array
+   * State vector: [x, y, z, vx, vy, vz, distGoal, goalDirZ, goalDirY, currentStep, distNextStep, onStairs, buffer]
    * @returns {Float32Array} Normalized state vector
    */
   getState() {
     if (!this.agentBody) {
       console.error('Agent body not initialized');
-      return new Float32Array(9);
+      return new Float32Array(13);
     }
     
     // Extract agent position and velocity from physics engine
     const position = this.physicsEngine.getBodyPosition(this.agentBody);
     const velocity = this.physicsEngine.getBodyVelocity(this.agentBody);
     
-    // Calculate distance to goal using Euclidean distance
-    const goalPosition = { x: 0, y: this.config.goalHeight, z: -4 };
+    // Calculate distance to goal platform
+    // Goal platform: position { x: 0, y: 10.5, z: -20 }
+    const goalPosition = { x: 0, y: 10.75, z: -20 };  // Center of goal platform top
     const distanceToGoal = Math.sqrt(
       Math.pow(position.x - goalPosition.x, 2) +
       Math.pow(position.y - goalPosition.y, 2) +
       Math.pow(position.z - goalPosition.z, 2)
     );
     
-    // Calculate distance to nearest ledge by iterating ledge positions
-    let distanceToNearestLedge = Infinity;
-    for (const ledge of this.config.ledgePositions) {
-      const ledgePos = ledge.position;
-      const distance = Math.sqrt(
-        Math.pow(position.x - ledgePos.x, 2) +
-        Math.pow(position.y - ledgePos.y, 2) +
-        Math.pow(position.z - ledgePos.z, 2)
-      );
-      distanceToNearestLedge = Math.min(distanceToNearestLedge, distance);
-    }
+    // Calculate DIRECTION to goal (explicit guidance!)
+    const goalDirZ = (goalPosition.z - position.z) / Math.max(0.1, Math.abs(goalPosition.z - position.z));  // -1 or +1
+    const goalDirY = (goalPosition.y - position.y) / Math.max(0.1, Math.abs(goalPosition.y - position.y));  // -1 or +1
     
-    // Calculate episode progress as currentStep / maxSteps
-    const episodeProgress = this.currentStep / this.config.maxSteps;
+    // Detect current step
+    const currentStepNum = this.detectCurrentStep();
     
-    // Create state vector and normalize values to appropriate ranges
-    const state = new Float32Array(9);
+    // Calculate distance to NEXT step (immediate sub-goal)
+    const nextStep = currentStepNum + 1;
+    const nextStepZ = -2.0 * nextStep;  // Steps at z=0, -2, -4, -6, ...
+    const nextStepY = (nextStep + 1) * 1.0;  // Step tops at y=1, 2, 3, ...
+    const distanceToNextStep = Math.sqrt(
+      Math.pow(position.z - nextStepZ, 2) +
+      Math.pow(position.y - nextStepY, 2)
+    );
     
-    // Normalize position to [-1, 1] range (assuming world bounds of ±10)
-    state[0] = Math.max(-1, Math.min(1, position.x / 10.0));  // x position
-    state[1] = Math.max(-1, Math.min(1, position.y / 15.0));  // y position (0-15 range)
-    state[2] = Math.max(-1, Math.min(1, position.z / 10.0));  // z position
+    // Create state vector and normalize values
+    const state = new Float32Array(13);
     
-    // Normalize velocity to [-1, 1] range (assuming max velocity of ±20)
-    state[3] = Math.max(-1, Math.min(1, velocity.x / 20.0));  // x velocity
-    state[4] = Math.max(-1, Math.min(1, velocity.y / 20.0));  // y velocity
-    state[5] = Math.max(-1, Math.min(1, velocity.z / 20.0));  // z velocity
+    // Position (normalized to [-1, 1])
+    state[0] = Math.max(-1, Math.min(1, position.x / 10.0));
+    state[1] = Math.max(-1, Math.min(1, position.y / 15.0));
+    state[2] = Math.max(-1, Math.min(1, position.z / 10.0));
     
-    // Normalize distance to goal to [0, 1] range (max distance ~20)
-    state[6] = Math.max(0, Math.min(1, distanceToGoal / 20.0));
+    // Velocity (normalized to [-1, 1])
+    state[3] = Math.max(-1, Math.min(1, velocity.x / 20.0));
+    state[4] = Math.max(-1, Math.min(1, velocity.y / 20.0));
+    state[5] = Math.max(-1, Math.min(1, velocity.z / 20.0));
     
-    // Normalize distance to nearest ledge to [0, 1] range (max distance ~15)
-    state[7] = Math.max(0, Math.min(1, distanceToNearestLedge / 15.0));
+    // Distance to goal (normalized to [0, 1])
+    state[6] = Math.max(0, Math.min(1, distanceToGoal / 25.0));
     
-    // Episode progress is already in [0, 1] range
-    state[8] = Math.max(0, Math.min(1, episodeProgress));
+    // EXPLICIT GOAL DIRECTION (tells agent which way to go!)
+    state[7] = goalDirZ;  // -1 = go backward, +1 = go forward
+    state[8] = goalDirY;  // -1 = go down, +1 = go up
+    
+    // Current step number (normalized to [0, 1])
+    state[9] = Math.max(0, Math.min(1, (currentStepNum + 1) / 11.0));  // -1 to 10 → 0 to 1
+    
+    // Distance to next step (normalized to [0, 1])
+    state[10] = Math.max(0, Math.min(1, distanceToNextStep / 5.0));
+    
+    // Binary: On stairs or not (0 or 1)
+    state[11] = currentStepNum >= 0 ? 1.0 : 0.0;
+    
+    // Safety buffer (normalized to [0, 1])
+    const bufferValue = this.safetyBuffer === Infinity ? 1.0 : Math.min(1.0, this.safetyBuffer / 200.0);
+    state[12] = bufferValue;
     
     return state;
   }
@@ -475,9 +489,11 @@ export class ClimbingEnvironment {
     
     const agentPos = this.physicsEngine.getBodyPosition(this.agentBody);
     
-    // Check if on goal
-    if (agentPos.y >= this.config.goalHeight - 0.5) {
-      return 10; // Goal
+    // Check if on goal platform
+    // Goal is at position: { x: 0, y: 10.5, z: -20 }, size: { x: 4, y: 0.5, z: 2 }
+    // Agent needs to be: within X bounds, at correct height, within Z bounds
+    if (this.isOnGoalPlatform(agentPos)) {
+      return 10; // Goal reached!
     }
     
     // Detect step by position (more reliable than collision detection)
@@ -527,6 +543,39 @@ export class ClimbingEnvironment {
   }
 
   /**
+   * Check if agent is on the goal platform
+   * Goal platform: position { x: 0, y: 10.5, z: -20 }, size { x: 4, y: 0.5, z: 2 }
+   * @param {Object} agentPos - Agent position {x, y, z}
+   * @returns {boolean} True if agent is on goal platform
+   */
+  isOnGoalPlatform(agentPos) {
+    // Goal platform bounds
+    const goalX = 0;
+    const goalY = 10.5;
+    const goalZ = -20;
+    const goalSizeX = 4;
+    const goalSizeY = 0.5;
+    const goalSizeZ = 2;
+    
+    // Calculate bounds
+    const minX = goalX - goalSizeX / 2;
+    const maxX = goalX + goalSizeX / 2;
+    const minZ = goalZ - goalSizeZ / 2;
+    const maxZ = goalZ + goalSizeZ / 2;
+    const topY = goalY + goalSizeY / 2;
+    
+    // Check if agent is within X and Z bounds
+    const withinX = agentPos.x >= minX && agentPos.x <= maxX;
+    const withinZ = agentPos.z >= minZ && agentPos.z <= maxZ;
+    
+    // Check if agent is standing on top of platform
+    // Agent center should be at platform top + agent radius (0.5)
+    const onTop = Math.abs(agentPos.y - (topY + 0.5)) < 0.8;
+    
+    return withinX && withinZ && onTop;
+  }
+
+  /**
    * Check if agent is out of bounds (off the platform)
    * @returns {boolean} True if agent is outside boundary limits
    */
@@ -535,9 +584,14 @@ export class ClimbingEnvironment {
     
     const agentPos = this.physicsEngine.getBodyPosition(this.agentBody);
     
-    // Check if agent is outside X or Z boundaries
-    if (Math.abs(agentPos.x) > this.config.boundaryX || 
-        Math.abs(agentPos.z) > this.config.boundaryZ) {
+    // Check X bounds (±10 units)
+    if (Math.abs(agentPos.x) > this.config.boundaryX) {
+      return true;
+    }
+    
+    // Check Z bounds - stairs extend from z=3 (start) to z=-21 (goal)
+    // Allow some margin beyond the goal
+    if (agentPos.z > 5 || agentPos.z < -22) {
       return true;
     }
     
@@ -722,19 +776,20 @@ export class ClimbingEnvironment {
     }
     
     // === 2. GOAL REACHED: MAXIMUM REWARD ===
-    // Check curriculum goal if enabled
-    const goalReached = this.curriculumMode ? 
-      (currentStep >= this.curriculumGoalStep) : 
-      (agentPos.y >= this.config.goalHeight);
+    // Check if agent reached the goal platform (step 10)
+    const goalReached = currentStep === 10;
     
     if (goalReached) {
-      totalReward += 10.0; // ONLY way to get +10 (was +100, scaled down)
-      if (this.curriculumMode) {
-        console.log(`🎓 CURRICULUM GOAL REACHED! Step ${currentStep} >= ${this.curriculumGoalStep}! +10`);
-      } else {
-        console.log('🏆 GOAL REACHED! +10 (MAXIMUM REWARD)');
-      }
+      totalReward += 100.0; // MASSIVE REWARD for reaching goal!
+      console.log('🏆🏆🏆 GOAL PLATFORM REACHED! +100 (ULTIMATE SUCCESS!) 🏆🏆🏆');
       return totalReward; // Return immediately, no other rewards matter
+    }
+    
+    // Check curriculum goal if enabled (intermediate goals)
+    if (this.curriculumMode && currentStep >= this.curriculumGoalStep) {
+      totalReward += 10.0;
+      console.log(`🎓 CURRICULUM GOAL REACHED! Step ${currentStep} >= ${this.curriculumGoalStep}! +10`);
+      return totalReward;
     }
     
     // === 3. ACTION-OUTCOME REWARDS: What did this action achieve? ===
@@ -841,6 +896,11 @@ export class ClimbingEnvironment {
     const agentPos = this.physicsEngine.getBodyPosition(this.agentBody);
     const currentStep = this.detectCurrentStep();
     
+    // SUCCESS: Reached goal platform!
+    if (currentStep === 10) {
+      return true;
+    }
+    
     // ABSOLUTE FAILURE: Buffer expired on ground
     if (currentStep < 0) {
       const buffer = this.safetyBuffer !== undefined ? this.safetyBuffer : 200;
@@ -856,11 +916,6 @@ export class ClimbingEnvironment {
     
     // ABSOLUTE FAILURE: Out of bounds
     if (this.isOutOfBounds()) {
-      return true;
-    }
-    
-    // SUCCESS: Reached goal
-    if (agentPos.y >= this.config.goalHeight) {
       return true;
     }
     
@@ -989,12 +1044,14 @@ export class ClimbingEnvironment {
       
       // If episode is done, save the trajectory
       if (done) {
+        const currentStep = this.detectCurrentStep();
         this.trajectoryHistory.push({
           episode: this.trajectoryHistory.length + 1,
           trajectory: [...this.currentTrajectory],
-          success: agentPos.y >= this.config.goalHeight,
+          success: currentStep === 10, // Success = reached goal platform
           totalReward: this.totalReward,
           steps: this.currentStep,
+          highestStep: this.highestStepReached,
           duration: Date.now() - this.episodeStartTime
         });
         
@@ -1007,14 +1064,18 @@ export class ClimbingEnvironment {
     
     // Add termination reason to info if episode is done
     if (done) {
-      if (this.isOutOfBounds()) {
+      const currentStep = this.detectCurrentStep();
+      if (currentStep === 10) {
+        info.terminationReason = 'goal_reached';
+        info.success = true;
+      } else if (this.isOutOfBounds()) {
         info.terminationReason = 'out_of_bounds';
       } else if (agentPos.y < this.config.fallThreshold) {
         info.terminationReason = 'fallen';
-      } else if (agentPos.y >= this.config.goalHeight) {
-        info.terminationReason = 'goal_reached';
       } else if (this.currentStep >= this.config.maxSteps) {
         info.terminationReason = 'max_steps';
+      } else if (currentStep < 0 && this.safetyBuffer <= 0) {
+        info.terminationReason = 'buffer_expired';
       }
     }
     
