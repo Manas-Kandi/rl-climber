@@ -6,7 +6,11 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "train": "node train.js",
+    "train:ppo": "node train.js --agent PPO --episodes 1000",
+    "train:dqn": "node train.js --agent DQN --episodes 1000",
+    "train:fast": "node train.js --agent PPO --episodes 500 --no-trajectories"
   },
   "keywords": [
     "reinforcement-learning",
@@ -22,7 +26,9 @@
     "three": "^0.160.0",
     "cannon-es": "^0.20.0",
     "@tensorflow/tfjs": "^4.15.0",
-    "chart.js": "^4.4.1"
+    "@tensorflow/tfjs-node": "^4.15.0",
+    "chart.js": "^4.4.1",
+    "commander": "^11.1.0"
   },
   "devDependencies": {
     "vite": "^5.0.11"
