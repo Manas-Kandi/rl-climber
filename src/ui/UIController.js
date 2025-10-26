@@ -58,6 +58,7 @@ export class UIController {
       btnVisualize: document.getElementById('btn-visualize'),
       btnReplay: document.getElementById('btn-replay'),
       btnClearHistory: document.getElementById('btn-clear-history'),
+      btnVisualizeHistory: document.getElementById('btn-visualize-history'),
       
       // Live play buttons
       btnLiveAuto: document.getElementById('btn-live-auto'),
@@ -156,6 +157,7 @@ export class UIController {
     this.elements.btnVisualize?.addEventListener('click', () => this.onVisualizeTrajectories());
     this.elements.btnReplay?.addEventListener('click', () => this.onReplayTrajectory());
     this.elements.btnClearHistory?.addEventListener('click', () => this.onClearHistory());
+    this.elements.btnVisualizeHistory?.addEventListener('click', () => this.onVisualizeHistory());
     
     // Live play buttons
     this.elements.btnLiveAuto?.addEventListener('click', () => this.onStartLivePlay('autonomous'));
@@ -961,6 +963,30 @@ export class UIController {
     }
   }
 
+  /**
+   * Handle visualize history button click
+   */
+  async onVisualizeHistory() {
+    console.log('📊 Opening timeline visualizer...');
+    
+    try {
+      // Check if TimelineVisualizer is available
+      if (!window.climbingGame || !window.climbingGame.timelineVisualizer) {
+        this.showNotification('Timeline visualizer not available. Please load trajectory data first.', 'error');
+        return;
+      }
+      
+      // Show the timeline
+      window.climbingGame.timelineVisualizer.show();
+      
+      this.showNotification('Timeline visualizer opened! Use scrubber to navigate episodes.', 'success');
+      
+    } catch (error) {
+      console.error('Error opening timeline visualizer:', error);
+      this.showNotification('Error opening timeline: ' + error.message, 'error');
+    }
+  }
+  
   /**
    * Clean up resources
    */

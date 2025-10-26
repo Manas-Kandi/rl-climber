@@ -60,7 +60,6 @@ export class HeadlessTrainer {
         // Create environment (no rendering engine)
         const envConfig = {
             maxSteps: 500,
-            recordTrajectories: this.config.recordTrajectories,
             agent: {
                 startPosition: { x: 0, y: 1, z: 0 },
                 size: 0.5,
@@ -73,6 +72,12 @@ export class HeadlessTrainer {
             null, // No rendering engine
             envConfig
         );
+        
+        // Enable trajectory recording if requested
+        if (this.config.recordTrajectories) {
+            this.environment.setTrajectoryRecording(true);
+        }
+        
         console.log('✅ Environment initialized');
         
         // Create agent
@@ -106,7 +111,8 @@ export class HeadlessTrainer {
         
         // Create model manager
         this.modelManager = new ModelManager(this.agent, {
-            storagePath: this.config.modelStoragePath,
+            modelBasePath: `file://${this.config.modelStoragePath}/climbing-model`,
+            metadataPath: `${this.config.modelStoragePath}/metadata.json`,
             autoSave: true,
             saveInterval: this.config.saveInterval
         });

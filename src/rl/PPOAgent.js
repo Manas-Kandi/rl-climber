@@ -438,6 +438,28 @@ export class PPOAgent {
      */
     async saveModel(path) {
         try {
+            // If using file:// protocol, create directories first
+            if (path.startsWith('file://')) {
+                const fs = await import('fs');
+                const pathModule = await import('path');
+                
+                // Extract file path from file:// URL
+                const filePath = path.replace('file://', '');
+                const actorDir = filePath + '-actor';
+                const criticDir = filePath + '-critic';
+                
+                // Create directories recursively
+                const actorDirPath = pathModule.dirname(actorDir);
+                const criticDirPath = pathModule.dirname(criticDir);
+                
+                if (!fs.existsSync(actorDirPath)) {
+                    fs.mkdirSync(actorDirPath, { recursive: true });
+                }
+                if (!fs.existsSync(criticDirPath)) {
+                    fs.mkdirSync(criticDirPath, { recursive: true });
+                }
+            }
+            
             // Save actor network
             const actorPath = path + '-actor';
             await this.actorNetwork.save(actorPath);

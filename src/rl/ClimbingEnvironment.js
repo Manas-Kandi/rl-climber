@@ -14,20 +14,20 @@ export class ClimbingEnvironment {
     // Store references to engines
     this.physicsEngine = physicsEngine;
     this.renderingEngine = renderingEngine;
-    
+
     // Store agent body reference (will be set during initialization)
     this.agentBody = null;
-    
+
     // Episode tracking variables
     this.currentStep = 0;
     this.totalReward = 0;
     this.episodeStartTime = 0;
-    
+
     // Jump mechanics
     this.canJump = true;
     this.jumpCooldown = 0;
     this.jumpCooldownSteps = 3; // REDUCED: Shorter cooldown for better responsiveness
-    
+
     // Step tracking for staircase
     this.highestStepReached = -1; // -1 = ground, 0-9 = steps
     this.currentStepOn = -1;
@@ -35,31 +35,31 @@ export class ClimbingEnvironment {
     this.timeOnGround = 0;
     this.timeOnSteps = 0;
     this.timeOnCurrentStep = 0; // NEW: Track time spent on current step for decay
-    
+
     // Jump tracking for penalizing wasteful jumps
     this.lastJumpStep = -1;
     this.jumpedThisStep = false;
     this.consecutiveWastefulJumps = 0;
-    
+
     // Strict progress tracking
     this.stepsOffStairs = 0;  // Count steps spent NOT on stairs
     this.episodesWithoutProgress = 0;  // Count episodes without reaching new steps
-    
+
     // Trajectory recording
     this.recordTrajectories = false;
     this.currentTrajectory = [];
     this.trajectoryHistory = [];
     this.maxTrajectories = 100; // Keep last 100 episodes
-    
+
     // Curriculum learning
     this.curriculumMode = false;
     this.curriculumLevel = 0;
     this.curriculumGoalStep = 10; // Default: full goal
-    
+
     // Reward system tracking
     this.lastPosition = null;
     this.stagnationTimer = 0;
-    
+
     // Action space constants
     this.ACTION_SPACE = {
       FORWARD: 0,
@@ -69,12 +69,12 @@ export class ClimbingEnvironment {
       JUMP: 4,
       GRAB: 5
     };
-    
+
     // Store environment configuration with defaults
     this.config = {
       // Episode settings
       maxSteps: config.maxSteps || 2000,  // MUCH longer to allow learning
-      
+
       // Reward weights
       rewardWeights: {
         heightGain: config.rewardWeights?.heightGain || 2.0,  // Increased from 1.0 to encourage climbing
@@ -85,32 +85,32 @@ export class ClimbingEnvironment {
         ledgeGrab: config.rewardWeights?.ledgeGrab || 8.0,  // Increased from 5.0 to encourage ledge use
         outOfBounds: config.rewardWeights?.outOfBounds || -50.0  // Reduced from -100 to make learning easier
       },
-      
+
       // Environment dimensions
       goalHeight: config.goalHeight || 14.0,
       fallThreshold: config.fallThreshold || -2.0,
-      
+
       // Boundary limits (platform size)
       boundaryX: config.boundaryX || 10.0,  // ±10 units in X
       boundaryZ: config.boundaryZ || 10.0,  // ±10 units in Z
-      
+
       // Agent configuration
       agent: {
         startPosition: config.agent?.startPosition || { x: 0, y: 0.5, z: 3 },  // CHANGED: Start on ground in front of stairs
         size: config.agent?.size || 0.5,
         mass: config.agent?.mass || 1.0
       },
-      
+
       // Ledge positions for distance calculations
       ledgePositions: config.ledgePositions || [
-        {position: {x: 0, y: 2, z: -5}, size: {x: 2, y: 0.2, z: 1}},
-        {position: {x: 1, y: 4, z: -5}, size: {x: 2, y: 0.2, z: 1}},
-        {position: {x: -1, y: 6, z: -5}, size: {x: 2, y: 0.2, z: 1}},
-        {position: {x: 0, y: 8, z: -5}, size: {x: 2, y: 0.2, z: 1}},
-        {position: {x: 1, y: 10, z: -5}, size: {x: 2, y: 0.2, z: 1}},
-        {position: {x: 0, y: 12, z: -5}, size: {x: 2, y: 0.2, z: 1}}
+        { position: { x: 0, y: 2, z: -5 }, size: { x: 2, y: 0.2, z: 1 } },
+        { position: { x: 1, y: 4, z: -5 }, size: { x: 2, y: 0.2, z: 1 } },
+        { position: { x: -1, y: 6, z: -5 }, size: { x: 2, y: 0.2, z: 1 } },
+        { position: { x: 0, y: 8, z: -5 }, size: { x: 2, y: 0.2, z: 1 } },
+        { position: { x: 1, y: 10, z: -5 }, size: { x: 2, y: 0.2, z: 1 } },
+        { position: { x: 0, y: 12, z: -5 }, size: { x: 2, y: 0.2, z: 1 } }
       ],
-      
+
       // Action forces - INCREASED for better responsiveness
       actionForces: {
         move: config.actionForces?.move || 15.0,  // INCREASED from 5.0 (3x more responsive)
@@ -118,18 +118,18 @@ export class ClimbingEnvironment {
         grab: config.actionForces?.grab || 2.0
       }
     };
-    
+
     // Expose maxSteps for easier access
     this.maxSteps = this.config.maxSteps;
-    
+
     // Initialize agent body if physics engine is available
     if (this.physicsEngine) {
       this.initializeAgent();
     }
-    
+
     console.log('ClimbingEnvironment initialized with config:', this.config);
   }
-  
+
   /**
    * Initialize the agent body in the physics world
    * @private
@@ -138,17 +138,17 @@ export class ClimbingEnvironment {
     const startPos = this.config.agent.startPosition;
     const size = this.config.agent.size;
     const mass = this.config.agent.mass;
-    
+
     // Create agent body in physics engine
     this.agentBody = this.physicsEngine.createAgentBody(startPos, mass, size, 'box');
-    
+
     if (!this.agentBody) {
       console.error('Failed to create agent body in physics engine');
     } else {
       console.log('Agent body initialized at position:', startPos);
     }
   }
-  
+
   /**
    * Get the action space size
    * @returns {number} Number of discrete actions (6)
@@ -156,7 +156,7 @@ export class ClimbingEnvironment {
   getActionSpace() {
     return Object.keys(this.ACTION_SPACE).length;
   }
-  
+
   /**
    * Get the state space size
    * @returns {number} State vector dimensionality (13)
@@ -164,7 +164,7 @@ export class ClimbingEnvironment {
   getStateSpace() {
     return 13; // [x, y, z, vx, vy, vz, distGoal, goalDirZ, goalDirY, currentStep, distNextStep, onStairs, buffer]
   }
-  
+
   /**
    * Get current episode statistics
    * @returns {Object} Episode stats {steps, totalReward, success}
@@ -172,7 +172,7 @@ export class ClimbingEnvironment {
   getEpisodeStats() {
     const currentStep = this.detectCurrentStep();
     const success = currentStep === 10; // Success = reached goal platform
-    
+
     return {
       steps: this.currentStep,
       totalReward: this.totalReward,
@@ -180,7 +180,7 @@ export class ClimbingEnvironment {
       highestStep: this.highestStepReached
     };
   }
-  
+
   /**
    * Set maximum steps per episode
    * @param {number} steps - Maximum steps
@@ -188,7 +188,7 @@ export class ClimbingEnvironment {
   setMaxSteps(steps) {
     this.config.maxSteps = steps;
   }
-  
+
   /**
    * Set reward weights
    * @param {Object} weights - Reward weight configuration
@@ -196,7 +196,7 @@ export class ClimbingEnvironment {
   setRewardWeights(weights) {
     this.config.rewardWeights = { ...this.config.rewardWeights, ...weights };
   }
-  
+
   /**
    * Enable or disable trajectory recording
    * @param {boolean} enabled - Whether to record trajectories
@@ -209,7 +209,7 @@ export class ClimbingEnvironment {
       console.log('📹 Trajectory recording disabled');
     }
   }
-  
+
   /**
    * Get all recorded trajectories
    * @returns {Array} Array of trajectory objects
@@ -217,7 +217,7 @@ export class ClimbingEnvironment {
   getTrajectoryHistory() {
     return this.trajectoryHistory;
   }
-  
+
   /**
    * Get the current trajectory (in progress)
    * @returns {Array} Current trajectory steps
@@ -225,7 +225,18 @@ export class ClimbingEnvironment {
   getCurrentTrajectory() {
     return this.currentTrajectory;
   }
-  
+
+  /**
+   * Get the last recorded trajectory
+   * @returns {Object|null} Last trajectory or null if none
+   */
+  getLastTrajectory() {
+    if (this.trajectoryHistory.length === 0) {
+      return null;
+    }
+    return this.trajectoryHistory[this.trajectoryHistory.length - 1];
+  }
+
   /**
    * Clear trajectory history
    */
@@ -234,7 +245,7 @@ export class ClimbingEnvironment {
     this.currentTrajectory = [];
     console.log('📹 Trajectory history cleared');
   }
-  
+
   /**
    * Enable curriculum learning mode
    * Makes the task easier by setting intermediate goals
@@ -242,49 +253,49 @@ export class ClimbingEnvironment {
    */
   enableCurriculumLearning(level) {
     this.curriculumLevel = level;
-    
-    switch(level) {
+
+    switch (level) {
       case 0: // Disabled - full task
         this.curriculumMode = false;
         this.curriculumGoalStep = 10;
         this.config.maxSteps = 500;
         console.log('🎓 Curriculum learning DISABLED - Full task');
         break;
-        
+
       case 1: // Level 1: Just reach Step 0
         this.curriculumMode = true;
         this.curriculumGoalStep = 0;
         this.config.maxSteps = 200;
         console.log('🎓 Curriculum Level 1: Reach Step 0 (200 steps max)');
         break;
-        
+
       case 2: // Level 2: Reach Step 2
         this.curriculumMode = true;
         this.curriculumGoalStep = 2;
         this.config.maxSteps = 300;
         console.log('🎓 Curriculum Level 2: Reach Step 2 (300 steps max)');
         break;
-        
+
       case 3: // Level 3: Reach Step 5
         this.curriculumMode = true;
         this.curriculumGoalStep = 5;
         this.config.maxSteps = 400;
         console.log('🎓 Curriculum Level 3: Reach Step 5 (400 steps max)');
         break;
-        
+
       case 4: // Level 4: Full task
         this.curriculumMode = false;
         this.curriculumGoalStep = 10;
         this.config.maxSteps = 500;
         console.log('🎓 Curriculum Level 4: Full task (500 steps max)');
         break;
-        
+
       default:
         console.warn('Invalid curriculum level:', level);
         break;
     }
   }
-  
+
   /**
    * Get current curriculum status
    * @returns {Object} Curriculum info
@@ -297,7 +308,7 @@ export class ClimbingEnvironment {
       maxSteps: this.config.maxSteps
     };
   }
-  
+
   /**
    * Get trajectory statistics
    * @returns {Object} Statistics about recorded trajectories
@@ -306,7 +317,7 @@ export class ClimbingEnvironment {
     if (this.trajectoryHistory.length === 0) {
       return { totalEpisodes: 0, successfulEpisodes: 0, successRate: 0 };
     }
-    
+
     const successful = this.trajectoryHistory.filter(t => t.success).length;
     return {
       totalEpisodes: this.trajectoryHistory.length,
@@ -316,7 +327,7 @@ export class ClimbingEnvironment {
       avgReward: this.trajectoryHistory.reduce((sum, t) => sum + t.totalReward, 0) / this.trajectoryHistory.length
     };
   }
-  
+
   /**
    * Get current state representation as 13D Float32Array
    * State vector: [x, y, z, vx, vy, vz, distGoal, goalDirZ, goalDirY, currentStep, distNextStep, onStairs, buffer]
@@ -327,11 +338,11 @@ export class ClimbingEnvironment {
       console.error('Agent body not initialized');
       return new Float32Array(13);
     }
-    
+
     // Extract agent position and velocity from physics engine
     const position = this.physicsEngine.getBodyPosition(this.agentBody);
     const velocity = this.physicsEngine.getBodyVelocity(this.agentBody);
-    
+
     // Calculate distance to goal platform
     // Goal platform: position { x: 0, y: 10.5, z: -20 }
     const goalPosition = { x: 0, y: 10.75, z: -20 };  // Center of goal platform top
@@ -340,14 +351,14 @@ export class ClimbingEnvironment {
       Math.pow(position.y - goalPosition.y, 2) +
       Math.pow(position.z - goalPosition.z, 2)
     );
-    
+
     // Calculate DIRECTION to goal (explicit guidance!)
     const goalDirZ = (goalPosition.z - position.z) / Math.max(0.1, Math.abs(goalPosition.z - position.z));  // -1 or +1
     const goalDirY = (goalPosition.y - position.y) / Math.max(0.1, Math.abs(goalPosition.y - position.y));  // -1 or +1
-    
+
     // Detect current step
     const currentStepNum = this.detectCurrentStep();
-    
+
     // Calculate distance to NEXT step (immediate sub-goal)
     const nextStep = currentStepNum + 1;
     const nextStepZ = -2.0 * nextStep;  // Steps at z=0, -2, -4, -6, ...
@@ -356,43 +367,43 @@ export class ClimbingEnvironment {
       Math.pow(position.z - nextStepZ, 2) +
       Math.pow(position.y - nextStepY, 2)
     );
-    
+
     // Create state vector and normalize values
     const state = new Float32Array(13);
-    
+
     // Position (normalized to [-1, 1])
     state[0] = Math.max(-1, Math.min(1, position.x / 10.0));
     state[1] = Math.max(-1, Math.min(1, position.y / 15.0));
     state[2] = Math.max(-1, Math.min(1, position.z / 10.0));
-    
+
     // Velocity (normalized to [-1, 1])
     state[3] = Math.max(-1, Math.min(1, velocity.x / 20.0));
     state[4] = Math.max(-1, Math.min(1, velocity.y / 20.0));
     state[5] = Math.max(-1, Math.min(1, velocity.z / 20.0));
-    
+
     // Distance to goal (normalized to [0, 1])
     state[6] = Math.max(0, Math.min(1, distanceToGoal / 25.0));
-    
+
     // EXPLICIT GOAL DIRECTION (tells agent which way to go!)
     state[7] = goalDirZ;  // -1 = go backward, +1 = go forward
     state[8] = goalDirY;  // -1 = go down, +1 = go up
-    
+
     // Current step number (normalized to [0, 1])
     state[9] = Math.max(0, Math.min(1, (currentStepNum + 1) / 11.0));  // -1 to 10 → 0 to 1
-    
+
     // Distance to next step (normalized to [0, 1])
     state[10] = Math.max(0, Math.min(1, distanceToNextStep / 5.0));
-    
+
     // Binary: On stairs or not (0 or 1)
     state[11] = currentStepNum >= 0 ? 1.0 : 0.0;
-    
+
     // Safety buffer (normalized to [0, 1])
     const bufferValue = this.safetyBuffer === Infinity ? 1.0 : Math.min(1.0, this.safetyBuffer / 200.0);
     state[12] = bufferValue;
-    
+
     return state;
   }
-  
+
   /**
    * Reset the environment to initialize a new episode
    * @returns {Float32Array} Initial state as 9D Float32Array
@@ -402,32 +413,32 @@ export class ClimbingEnvironment {
       console.error('Agent body not initialized, cannot reset environment');
       return new Float32Array(13);
     }
-    
+
     // Reset agent body position to start position
     const startPos = this.config.agent.startPosition;
     this.physicsEngine.setBodyPosition(this.agentBody, startPos);
-    
+
     // Reset agent body velocity to zero
     this.physicsEngine.setBodyVelocity(this.agentBody, { x: 0, y: 0, z: 0 });
-    
+
     // Reset angular velocity too
     if (this.agentBody.angularVelocity) {
       this.agentBody.angularVelocity.set(0, 0, 0);
     }
-    
+
     // Reset episode step counter to 0
     this.currentStep = 0;
-    
+
     // Reset total reward to 0
     this.totalReward = 0;
-    
+
     // Record episode start time
     this.episodeStartTime = Date.now();
-    
+
     // Reset jump mechanics
     this.canJump = true;
     this.jumpCooldown = 0;
-    
+
     // Reset step tracking
     this.highestStepReached = -1;
     this.currentStepOn = -1;
@@ -435,23 +446,23 @@ export class ClimbingEnvironment {
     this.timeOnGround = 0;
     this.timeOnSteps = 0;
     this.timeOnCurrentStep = 0; // NEW: Reset time on current step
-    
+
     // Reset reward tracking
     this.lastPosition = null;
     this.stagnationTimer = 0;
-    
+
     // Reset jump tracking
     this.lastJumpStep = -1;
     this.jumpedThisStep = false;
     this.consecutiveWastefulJumps = 0;
-    
+
     // Reset strict progress tracking
     this.stepsOffStairs = 0;
-    
+
     // Reset safety buffer system
     this.safetyBuffer = 300;  // Start with 300 steps (increased from 200)
     this.hasReachedStairs = false;
-    
+
     // Start new trajectory recording if enabled
     if (this.recordTrajectories) {
       this.currentTrajectory = [];
@@ -464,13 +475,13 @@ export class ClimbingEnvironment {
         timestamp: Date.now()
       });
     }
-    
+
     // Return initial state as Float32Array
     const initialState = this.getState();
-    
+
     return initialState;
   }
-  
+
   /**
    * Update the agent start position (used when switching scenes)
    * @param {Object} position - New start position {x, y, z}
@@ -479,57 +490,57 @@ export class ClimbingEnvironment {
     this.config.agent.startPosition = { ...position };
     console.log('Agent start position updated to:', position);
   }
-  
+
   /**
    * Detect which step the agent is currently on
    * @returns {number} Step number (-1 for ground, 0-9 for steps, 10 for goal)
    */
   detectCurrentStep() {
     if (!this.agentBody) return -1;
-    
+
     const agentPos = this.physicsEngine.getBodyPosition(this.agentBody);
-    
+
     // Check if on goal platform
     // Goal is at position: { x: 0, y: 10.5, z: -20 }, size: { x: 4, y: 0.5, z: 2 }
     // Agent needs to be: within X bounds, at correct height, within Z bounds
     if (this.isOnGoalPlatform(agentPos)) {
       return 10; // Goal reached!
     }
-    
+
     // Detect step by position (more reliable than collision detection)
     // Steps are positioned at:
     // Step 0: center z=0, ranges from z=-1 to z=+1
     // Step 1: center z=-2, ranges from z=-3 to z=-1
     // Step 2: center z=-4, ranges from z=-5 to z=-3
     // Step i: center z=-2*i, ranges from z=(-2*i-1) to z=(-2*i+1)
-    
+
     // Must be in staircase Z range
     if (agentPos.z > 2 || agentPos.z < -20) {
       return -1; // Not on stairs
     }
-    
+
     // Must be within staircase X bounds
     if (Math.abs(agentPos.x) > 2.5) {
       return -1; // Off to the side
     }
-    
+
     // Determine step by Z position
     // Steps are at: z=0, -2, -4, -6, -8, -10, -12, -14, -16, -18
     // Step centers are at: y=0.5, 1.5, 2.5, 3.5, 4.5, 5.5, 6.5, 7.5, 8.5, 9.5
     // Agent standing ON step would be at: y≈1, 2, 3, 4, 5, 6, 7, 8, 9, 10
-    
+
     for (let i = 0; i < 10; i++) {
       const stepCenterZ = -2.0 * i;  // Steps at 0, -2, -4, -6, -8, -10, -12, -14, -16, -18
       const stepMinZ = stepCenterZ - 1.0;  // Each step is 2 units deep
       const stepMaxZ = stepCenterZ + 1.0;
-      
+
       // Check if agent is within this step's Z range
       if (agentPos.z >= stepMinZ && agentPos.z <= stepMaxZ) {
         // Step center is at y = (i + 0.5), top surface at y = (i + 1)
         // Agent standing on step should be at y ≈ (i + 1) ± 0.5
         const stepTopY = (i + 1) * 1.0;
         const heightDiff = Math.abs(agentPos.y - stepTopY);
-        
+
         // More lenient tolerance: agent must be within 1.2 units of step top
         // This allows for agent height (0.5) plus generous margin for physics settling
         if (heightDiff < 1.2) {
@@ -537,7 +548,7 @@ export class ClimbingEnvironment {
         }
       }
     }
-    
+
     // Default to ground
     return -1;
   }
@@ -556,22 +567,22 @@ export class ClimbingEnvironment {
     const goalSizeX = 4;
     const goalSizeY = 0.5;
     const goalSizeZ = 2;
-    
+
     // Calculate bounds
     const minX = goalX - goalSizeX / 2;
     const maxX = goalX + goalSizeX / 2;
     const minZ = goalZ - goalSizeZ / 2;
     const maxZ = goalZ + goalSizeZ / 2;
     const topY = goalY + goalSizeY / 2;
-    
+
     // Check if agent is within X and Z bounds
     const withinX = agentPos.x >= minX && agentPos.x <= maxX;
     const withinZ = agentPos.z >= minZ && agentPos.z <= maxZ;
-    
+
     // Check if agent is standing on top of platform
     // Agent center should be at platform top + agent radius (0.5)
     const onTop = Math.abs(agentPos.y - (topY + 0.5)) < 0.8;
-    
+
     return withinX && withinZ && onTop;
   }
 
@@ -581,20 +592,20 @@ export class ClimbingEnvironment {
    */
   isOutOfBounds() {
     if (!this.agentBody) return false;
-    
+
     const agentPos = this.physicsEngine.getBodyPosition(this.agentBody);
-    
+
     // Check X bounds (±10 units)
     if (Math.abs(agentPos.x) > this.config.boundaryX) {
       return true;
     }
-    
+
     // Check Z bounds - stairs extend from z=3 (start) to z=-21 (goal)
     // Allow some margin beyond the goal
     if (agentPos.z > 5 || agentPos.z < -22) {
       return true;
     }
-    
+
     return false;
   }
 
@@ -604,16 +615,16 @@ export class ClimbingEnvironment {
    */
   isTouchingLedge() {
     if (!this.agentBody) return false;
-    
+
     const collidingBodies = this.physicsEngine.getCollidingBodies(this.agentBody);
-    
+
     for (const body of collidingBodies) {
       const bodyId = this.getBodyId(body);
       if (bodyId && bodyId.includes('ledge')) {
         return true;
       }
     }
-    
+
     return false;
   }
 
@@ -623,18 +634,18 @@ export class ClimbingEnvironment {
    */
   isGrounded() {
     if (!this.agentBody) return false;
-    
+
     const agentPos = this.physicsEngine.getBodyPosition(this.agentBody);
     const agentVel = this.physicsEngine.getBodyVelocity(this.agentBody);
-    
+
     // LENIENT: Allow movement even when slightly airborne
     if (Math.abs(agentVel.y) > 5.0) {
       return false; // Definitely in air
     }
-    
+
     // Check if agent is in contact with ground or ledges/steps
     const collidingBodies = this.physicsEngine.getCollidingBodies(this.agentBody);
-    
+
     for (const body of collidingBodies) {
       const bodyId = this.getBodyId(body);
       // Agent is grounded if touching ground, ledge, or step
@@ -642,13 +653,13 @@ export class ClimbingEnvironment {
         return true;
       }
     }
-    
+
     // FALLBACK: Check if agent is very close to any surface
     // This helps when collision detection is unreliable
     if (agentPos.y <= 1.5 && Math.abs(agentVel.y) < 2.0) {
       return true;
     }
-    
+
     return false;
   }
 
@@ -670,37 +681,37 @@ export class ClimbingEnvironment {
    */
   calculateReward(prevState, action, newState) {
     let totalReward = 0;
-    
+
     // Defensive checks
     if (!this.agentBody) {
       console.error('calculateReward: agentBody is null');
       return totalReward;
     }
-    
+
     if (!prevState || prevState.length < 13) {
       console.error('calculateReward: invalid prevState', prevState);
       return totalReward;
     }
-    
+
     if (!newState || newState.length < 13) {
       console.error('calculateReward: invalid newState', newState);
       return totalReward;
     }
-    
+
     const agentPos = this.physicsEngine.getBodyPosition(this.agentBody);
     const agentVel = this.physicsEngine.getBodyVelocity(this.agentBody);
-    
+
     // Get previous position from state
     const prevPos = {
       x: prevState[0] * 10.0,  // Denormalize
       y: prevState[1] * 15.0,
       z: prevState[2] * 10.0
     };
-    
+
     // Detect current step and track movement
     const currentStep = this.detectCurrentStep();
     const prevStepOn = this.currentStepOn;
-    
+
     // Track time on current step for decay rewards
     if (this.currentStepOn === currentStep) {
       this.timeOnCurrentStep++;
@@ -708,37 +719,37 @@ export class ClimbingEnvironment {
       this.timeOnCurrentStep = 0;
       this.currentStepOn = currentStep;
     }
-    
+
     // Track time on current position for stagnation detection
     if (!this.lastPosition) {
       this.lastPosition = { ...agentPos };
       this.stagnationTimer = 0;
     }
-    
+
     const positionChange = Math.sqrt(
       Math.pow(agentPos.x - this.lastPosition.x, 2) +
       Math.pow(agentPos.y - this.lastPosition.y, 2) +
       Math.pow(agentPos.z - this.lastPosition.z, 2)
     );
-    
+
     if (positionChange < 0.1) {
       this.stagnationTimer++;
     } else {
       this.stagnationTimer = 0;
       this.lastPosition = { ...agentPos };
     }
-    
+
     // ============================================================================
     // ABSOLUTE FAILURE CHECKS - These end the episode immediately
     // ============================================================================
-    
+
     // === 1. SAFETY BUFFER SYSTEM ===
     // Initialize buffer if not set
     if (this.safetyBuffer === undefined) {
       this.safetyBuffer = 300;  // Start with 300 steps (increased from 200)
       this.hasReachedStairs = false;
     }
-    
+
     // === 2. UPDATE BUFFER BASED ON POSITION ===
     if (currentStep >= 0) {
       // ON STAIRS: Infinite buffer!
@@ -759,67 +770,67 @@ export class ClimbingEnvironment {
       // STILL AT START: Count down from initial 300 (increased from 200)
       this.safetyBuffer--;
     }
-    
+
     // === 3. FAILURE: Buffer ran out on ground ===
     if (currentStep < 0 && this.safetyBuffer <= 0) {
       totalReward = -10.0;  // Moderate penalty - encourages finding stairs
       console.log('❌ BUFFER EXPIRED ON GROUND! Penalty: -10.0');
       return totalReward;
     }
-    
+
     // === 4. BASELINE NEGATIVE: Small per-step penalty ===
     // This makes "do nothing" worse than trying to climb
     totalReward -= 0.1;  // Small time pressure
-    
+
     // === 5. ENCOURAGE MOVEMENT TOWARD STAIRS (when on ground) ===
     if (currentStep < 0) {
       const distanceToStairs = Math.abs(agentPos.z - 0);  // Stairs start at z=0
       const prevDistanceToStairs = Math.abs(prevPos.z - 0);
-      
+
       if (distanceToStairs < prevDistanceToStairs) {
         totalReward += 1.0;  // Moving toward stairs! (increased from 0.5)
       } else {
         totalReward -= 0.3;  // Moving away from stairs (reduced from 0.5)
       }
-      
+
       // Log buffer status occasionally
       if (this.currentStep % 50 === 0) {
         console.log(`📊 Buffer: ${this.safetyBuffer === Infinity ? 'INFINITE' : this.safetyBuffer} steps remaining`);
       }
     }
-    
+
     // === 6. TRACK JUMP FOR LATER EVALUATION ===
     if (action === this.ACTION_SPACE.JUMP) {
       this.lastJumpStep = prevStepOn;
       this.jumpedThisStep = true;
     }
-    
+
     // === 7. GOAL REACHED: MAXIMUM REWARD ===
     // Check if agent reached the goal platform (step 10)
     const goalReached = currentStep === 10;
-    
+
     if (goalReached) {
       totalReward += 100.0; // MASSIVE REWARD for reaching goal!
       console.log('🏆🏆🏆 GOAL PLATFORM REACHED! +100 (ULTIMATE SUCCESS!) 🏆🏆🏆');
       return totalReward; // Return immediately, no other rewards matter
     }
-    
+
     // Check curriculum goal if enabled (intermediate goals)
     if (this.curriculumMode && currentStep >= this.curriculumGoalStep) {
       totalReward += 10.0;
       console.log(`🎓 CURRICULUM GOAL REACHED! Step ${currentStep} >= ${this.curriculumGoalStep}! +10`);
       return totalReward;
     }
-    
+
     // === 8. ACTION-OUTCOME REWARDS: What did this action achieve? ===
-    
+
     // 8a. LANDED ON STAIRS (immediate action outcome)
     if (currentStep >= 0 && prevStepOn < 0) {
       // This action got us ON stairs!
       totalReward += 10.0;  // BIG immediate reward (increased from 5.0)
       console.log(`✅ ACTION RESULT: Landed on stairs! +10.0`);
     }
-    
+
     // 8b. MOVED TO HIGHER STEP (immediate action outcome)
     if (currentStep > prevStepOn && currentStep >= 0 && prevStepOn >= 0) {
       // This action moved us UP!
@@ -827,14 +838,14 @@ export class ClimbingEnvironment {
       totalReward += 5.0 * heightGain;  // +5 per step climbed (increased from 3.0)
       console.log(`✅ ACTION RESULT: Climbed ${heightGain} step(s)! +${(5.0 * heightGain).toFixed(1)}`);
     }
-    
+
     // 8c. FELL OFF STAIRS (immediate action outcome)
     if (currentStep < 0 && prevStepOn >= 0) {
       // This action made us FALL!
       totalReward -= 3.0;  // Moderate penalty (increased from 2.0)
       console.log(`❌ ACTION RESULT: Fell off stairs! -3.0`);
     }
-    
+
     // 8d. MOVED TO LOWER STEP (immediate action outcome)
     if (currentStep >= 0 && prevStepOn >= 0 && currentStep < prevStepOn) {
       // This action moved us DOWN!
@@ -842,7 +853,7 @@ export class ClimbingEnvironment {
       totalReward -= 3.0 * heightLoss;  // -3 per step lost (increased from 2.0)
       console.log(`❌ ACTION RESULT: Moved down ${heightLoss} step(s)! -${(3.0 * heightLoss).toFixed(1)}`);
     }
-    
+
     // === 9. SMALL EPISODE-LEVEL BONUS (very low weight) ===
     // Track highest step reached for small bonus
     if (currentStep > this.highestStepReached && currentStep >= 0) {
@@ -852,41 +863,41 @@ export class ClimbingEnvironment {
       this.stepsVisited.add(currentStep);
       console.log(`📈 Episode milestone: Step ${currentStep} (+${episodeBonus} bonus)`);
     }
-    
+
     // Reset jump tracking
     this.jumpedThisStep = false;
-    
+
     // === 4. BEING ON STAIRS: Baseline (0) ===
     // Just being on stairs = 0 reward
     // This is expected, not rewarded
-    
+
     // === 10. TERMINAL FAILURES ===
-    
+
     // 10a. Fell to death (moderate penalty)
     if (agentPos.y < this.config.fallThreshold) {
       totalReward -= 5.0;  // Moderate penalty (reduced from -10)
       console.log('💀 FELL TO DEATH! Penalty: -5.0');
       return totalReward;
     }
-    
+
     // 10b. Out of bounds (moderate penalty)
     if (this.isOutOfBounds()) {
       totalReward -= 8.0;  // Moderate penalty (reduced from -50!)
       console.log('🚫 OUT OF BOUNDS! Penalty: -8.0');
       return totalReward;
     }
-    
+
     // === 11. CLAMP FINAL REWARD ===
     totalReward = Math.max(-10, Math.min(100, totalReward));  // Allow full goal reward
-    
+
     // === 8. DEBUG LOGGING (every 100 steps) ===
     if (this.currentStep % 100 === 0 && this.currentStep > 0) {
       console.log(`📊 Step ${this.currentStep}: Reward=${totalReward.toFixed(2)}, Pos=(${agentPos.x.toFixed(1)}, ${agentPos.y.toFixed(1)}, ${agentPos.z.toFixed(1)}), OnStep=${currentStep}`);
     }
-    
+
     return totalReward;
   }
-  
+
   /**
    * Helper method to get body ID from the physics engine's body tracking
    * @param {CANNON.Body} body - The body to find ID for
@@ -902,7 +913,7 @@ export class ClimbingEnvironment {
     }
     return null;
   }
-  
+
   /**
    * Check if the current episode should terminate
    * @returns {boolean} True if episode should end
@@ -911,15 +922,15 @@ export class ClimbingEnvironment {
     if (!this.agentBody) {
       return true;
     }
-    
+
     const agentPos = this.physicsEngine.getBodyPosition(this.agentBody);
     const currentStep = this.detectCurrentStep();
-    
+
     // SUCCESS: Reached goal platform!
     if (currentStep === 10) {
       return true;
     }
-    
+
     // ABSOLUTE FAILURE: Buffer expired on ground
     if (currentStep < 0) {
       const buffer = this.safetyBuffer !== undefined ? this.safetyBuffer : 200;
@@ -927,25 +938,25 @@ export class ClimbingEnvironment {
         return true;  // Episode ends immediately!
       }
     }
-    
+
     // ABSOLUTE FAILURE: Fell to death
     if (agentPos.y < this.config.fallThreshold) {
       return true;
     }
-    
+
     // ABSOLUTE FAILURE: Out of bounds
     if (this.isOutOfBounds()) {
       return true;
     }
-    
+
     // TIMEOUT: Max steps reached
     if (this.currentStep >= this.config.maxSteps) {
       return true;
     }
-    
+
     return false;
   }
-  
+
   /**
    * Execute one environment step
    * @param {number} action - Action integer (0-5)
@@ -961,15 +972,15 @@ export class ClimbingEnvironment {
         info: { error: 'Agent not initialized' }
       };
     }
-    
+
     // Get previous state before taking action
     const prevState = this.getState();
-    
+
     // Map action integer to force vector based on action constants
     const actionForces = this.config.actionForces;
     let forceVector = { x: 0, y: 0, z: 0 };
     let useImpulse = false;
-    
+
     switch (action) {
       case this.ACTION_SPACE.FORWARD:
         forceVector = { x: 0, y: 0, z: -actionForces.move };
@@ -1008,37 +1019,37 @@ export class ClimbingEnvironment {
         console.warn('Invalid action:', action);
         break;
     }
-    
+
     // Apply force or impulse to agent body via physics engine
     if (useImpulse) {
       this.physicsEngine.applyImpulse(this.agentBody, forceVector);
     } else {
       this.physicsEngine.applyForce(this.agentBody, forceVector);
     }
-    
+
     // Step physics simulation forward by one timestep
     this.physicsEngine.step();
-    
+
     // Get new state after physics step
     const newState = this.getState();
-    
+
     // Calculate reward using calculateReward()
     const reward = this.calculateReward(prevState, action, newState);
-    
+
     // Check termination conditions (fallen, goal reached, max steps)
     const done = this.isTerminal();
-    
+
     // Increment step counter
     this.currentStep++;
-    
+
     // Update total reward
     this.totalReward += reward;
-    
+
     // Decrement jump cooldown
     if (this.jumpCooldown > 0) {
       this.jumpCooldown--;
     }
-    
+
     // Create info object with additional debug information
     const agentPos = this.physicsEngine.getBodyPosition(this.agentBody);
     const info = {
@@ -1048,7 +1059,7 @@ export class ClimbingEnvironment {
       action: action,
       actionName: Object.keys(this.ACTION_SPACE)[action] || 'UNKNOWN'
     };
-    
+
     // Record trajectory step if enabled
     if (this.recordTrajectories) {
       this.currentTrajectory.push({
@@ -1060,7 +1071,7 @@ export class ClimbingEnvironment {
         totalReward: this.totalReward,
         timestamp: Date.now()
       });
-      
+
       // If episode is done, save the trajectory
       if (done) {
         const currentStep = this.detectCurrentStep();
@@ -1073,14 +1084,14 @@ export class ClimbingEnvironment {
           highestStep: this.highestStepReached,
           duration: Date.now() - this.episodeStartTime
         });
-        
+
         // Keep only the last N trajectories
         if (this.trajectoryHistory.length > this.maxTrajectories) {
           this.trajectoryHistory.shift();
         }
       }
     }
-    
+
     // Add termination reason to info if episode is done
     if (done) {
       const currentStep = this.detectCurrentStep();
@@ -1097,7 +1108,7 @@ export class ClimbingEnvironment {
         info.terminationReason = 'buffer_expired';
       }
     }
-    
+
     // Return {state, reward, done, info} object
     return {
       state: newState,

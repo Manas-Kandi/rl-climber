@@ -644,6 +644,21 @@ export class DQNAgent {
     }
     
     try {
+      // If using file:// protocol, create directory first
+      if (path.startsWith('file://')) {
+        const fs = await import('fs');
+        const pathModule = await import('path');
+        
+        // Extract file path from file:// URL
+        const filePath = path.replace('file://', '');
+        const dirPath = pathModule.dirname(filePath);
+        
+        // Create directory recursively
+        if (!fs.existsSync(dirPath)) {
+          fs.mkdirSync(dirPath, { recursive: true });
+        }
+      }
+      
       // Save the main Q-network
       await this.qNetwork.save(path);
       

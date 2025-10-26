@@ -1,13 +1,19 @@
 /**
  * ModelManager handles persistent model storage, versioning, and automatic loading
  * Ensures progressive learning across training sessions
+ * Works in both browser (localStorage) and Node.js (file system)
  */
 export class ModelManager {
     constructor(agent, config = {}) {
         this.agent = agent;
+        
+        // Detect if running in Node.js or browser
+        this.isNode = typeof process !== 'undefined' && process.versions && process.versions.node;
+        
         this.config = {
-            modelBasePath: 'localstorage://climbing-model',
+            modelBasePath: this.isNode ? 'file://./training-data/models/climbing-model' : 'localstorage://climbing-model',
             metadataKey: 'climbing-model-metadata',
+            metadataPath: './training-data/models/metadata.json',
             autoSave: true,
             saveInterval: 10, // Save every N episodes
             ...config
@@ -48,16 +54,31 @@ export class ModelManager {
     }
     
     /**
-     * Load metadata from localStorage
+     * Load metadata from storage (localStorage or file system)
      */
     async loadMetadata() {
         try {
-            const metadataStr = localStorage.getItem(this.config.metadataKey);
-            if (metadataStr) {
-                this.metadata = JSON.parse(metadataStr);
-                return true;
+            if (this.isNode) {
+                // Node.js: Load from file system
+                const fs = await import('fs');
+                const path = await import('path');
+                
+                const metadataPath = this.config.metadataPath;
+                if (fs.existsSync(metadataPath)) {
+                    const metadataStr = fs.readFileSync(metadataPath, 'utf8');
+                    this.metadata = JSON.parse(metadataStr);
+                    return true;
+                }
+                return false;
+            } else {
+                // Browser: Load from localStorage
+                const metadataStr = localStorage.getItem(this.config.metadataKey);
+                if (metadataStr) {
+                    this.metadata = JSON.parse(metadataStr);
+                    return true;
+                }
+                return false;
             }
-            return false;
         } catch (error) {
             console.error('Error loading metadata:', error);
             return false;
@@ -65,11 +86,28 @@ export class ModelManager {
     }
     
     /**
-     * Save metadata to localStorage
+     * Save metadata to storage (localStorage or file system)
      */
     async saveMetadata() {
         try {
-            localStorage.setItem(this.config.metadataKey, JSON.stringify(this.metadata));
+            if (this.isNode) {
+                // Node.js: Save to file system
+                const fs = await import('fs');
+                const path = await import('path');
+                
+                const metadataPath = this.config.metadataPath;
+                const metadataDir = path.dirname(metadataPath);
+                
+                // Create directory if it doesn't exist
+                if (!fs.existsSync(metadataDir)) {
+                    fs.mkdirSync(metadataDir, { recursive: true });
+                }
+                
+                fs.writeFileSync(metadataPath, JSON.stringify(this.metadata, null, 2));
+            } else {
+                // Browser: Save to localStorage
+                localStorage.setItem(this.config.metadataKey, JSON.stringify(this.metadata));
+            }
         } catch (error) {
             console.error('Error saving metadata:', error);
             throw error;

@@ -1,0 +1,5530 @@
+{
+  "version": "1.0",
+  "lastUpdated": "2025-10-26T18:46:59.179Z",
+  "totalTrajectories": 789,
+  "trajectories": [
+    {
+      "episode": 1,
+      "filename": "episode_1_1761504240911.json",
+      "reward": -16.099999999999994,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:00.911Z"
+    },
+    {
+      "episode": 2,
+      "filename": "episode_2_1761504241080.json",
+      "reward": -0.4999999999999911,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:01.080Z"
+    },
+    {
+      "episode": 3,
+      "filename": "episode_3_1761504241235.json",
+      "reward": 2.599999999999959,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:01.235Z"
+    },
+    {
+      "episode": 4,
+      "filename": "episode_4_1761504241387.json",
+      "reward": -20.800000000000008,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:01.387Z"
+    },
+    {
+      "episode": 5,
+      "filename": "episode_5_1761504241536.json",
+      "reward": -2.799999999999992,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:01.536Z"
+    },
+    {
+      "episode": 6,
+      "filename": "episode_6_1761504241686.json",
+      "reward": -7.799999999999981,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:01.686Z"
+    },
+    {
+      "episode": 7,
+      "filename": "episode_7_1761504241826.json",
+      "reward": 2.599999999999959,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:01.826Z"
+    },
+    {
+      "episode": 8,
+      "filename": "episode_8_1761504241969.json",
+      "reward": 7.7999999999999705,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:01.969Z"
+    },
+    {
+      "episode": 9,
+      "filename": "episode_9_1761504242107.json",
+      "reward": -17.89999999999999,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:02.107Z"
+    },
+    {
+      "episode": 10,
+      "filename": "episode_10_1761504242298.json",
+      "reward": -32.29999999999995,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:02.298Z"
+    },
+    {
+      "episode": 11,
+      "filename": "episode_11_1761504242400.json",
+      "reward": 9.800000000000013,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:02.400Z"
+    },
+    {
+      "episode": 12,
+      "filename": "episode_12_1761504242538.json",
+      "reward": -10.699999999999978,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:02.538Z"
+    },
+    {
+      "episode": 13,
+      "filename": "episode_13_1761504242679.json",
+      "reward": 26.699999999999946,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:02.679Z"
+    },
+    {
+      "episode": 14,
+      "filename": "episode_14_1761504242819.json",
+      "reward": -14.599999999999989,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:02.819Z"
+    },
+    {
+      "episode": 15,
+      "filename": "episode_15_1761504242959.json",
+      "reward": -14.800000000000004,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:02.959Z"
+    },
+    {
+      "episode": 16,
+      "filename": "episode_16_1761504243100.json",
+      "reward": -8.399999999999984,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:03.100Z"
+    },
+    {
+      "episode": 17,
+      "filename": "episode_17_1761504243200.json",
+      "reward": -7.099999999999991,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:03.200Z"
+    },
+    {
+      "episode": 18,
+      "filename": "episode_18_1761504243337.json",
+      "reward": -10.099999999999977,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:03.337Z"
+    },
+    {
+      "episode": 19,
+      "filename": "episode_19_1761504243473.json",
+      "reward": -9.399999999999977,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:03.473Z"
+    },
+    {
+      "episode": 20,
+      "filename": "episode_20_1761504243614.json",
+      "reward": -10.900000000000002,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:03.614Z"
+    },
+    {
+      "episode": 21,
+      "filename": "episode_21_1761504243752.json",
+      "reward": 9.799999999999997,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:03.752Z"
+    },
+    {
+      "episode": 22,
+      "filename": "episode_22_1761504243852.json",
+      "reward": -7.099999999999991,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:03.852Z"
+    },
+    {
+      "episode": 23,
+      "filename": "episode_23_1761504243986.json",
+      "reward": -10.399999999999977,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:03.986Z"
+    },
+    {
+      "episode": 24,
+      "filename": "episode_24_1761504244125.json",
+      "reward": -5.799999999999986,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:04.125Z"
+    },
+    {
+      "episode": 25,
+      "filename": "episode_25_1761504244225.json",
+      "reward": -7.099999999999991,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:04.225Z"
+    },
+    {
+      "episode": 26,
+      "filename": "episode_26_1761504244364.json",
+      "reward": -10.299999999999983,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:04.364Z"
+    },
+    {
+      "episode": 27,
+      "filename": "episode_27_1761504244464.json",
+      "reward": -7.099999999999991,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:04.464Z"
+    },
+    {
+      "episode": 28,
+      "filename": "episode_28_1761504244600.json",
+      "reward": -11.299999999999983,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:04.600Z"
+    },
+    {
+      "episode": 29,
+      "filename": "episode_29_1761504244735.json",
+      "reward": -16.099999999999994,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:04.735Z"
+    },
+    {
+      "episode": 30,
+      "filename": "episode_30_1761504244835.json",
+      "reward": 8.500000000000012,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:04.835Z"
+    },
+    {
+      "episode": 31,
+      "filename": "episode_31_1761504244934.json",
+      "reward": -4.49999999999999,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:04.934Z"
+    },
+    {
+      "episode": 32,
+      "filename": "episode_32_1761504245074.json",
+      "reward": 8.800000000000027,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:05.074Z"
+    },
+    {
+      "episode": 33,
+      "filename": "episode_33_1761504245213.json",
+      "reward": -14.599999999999989,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:05.213Z"
+    },
+    {
+      "episode": 34,
+      "filename": "episode_34_1761504245349.json",
+      "reward": -10.699999999999978,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:05.349Z"
+    },
+    {
+      "episode": 35,
+      "filename": "episode_35_1761504245449.json",
+      "reward": -7.099999999999991,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:05.449Z"
+    },
+    {
+      "episode": 36,
+      "filename": "episode_36_1761504245584.json",
+      "reward": -15.099999999999984,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:05.584Z"
+    },
+    {
+      "episode": 37,
+      "filename": "episode_37_1761504245682.json",
+      "reward": -7.099999999999991,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:05.682Z"
+    },
+    {
+      "episode": 38,
+      "filename": "episode_38_1761504245816.json",
+      "reward": -15.399999999999983,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:05.816Z"
+    },
+    {
+      "episode": 39,
+      "filename": "episode_39_1761504245957.json",
+      "reward": -10.699999999999978,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:05.957Z"
+    },
+    {
+      "episode": 40,
+      "filename": "episode_40_1761504246054.json",
+      "reward": 9.800000000000013,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:06.054Z"
+    },
+    {
+      "episode": 41,
+      "filename": "episode_41_1761504246188.json",
+      "reward": 5.99999999999997,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:06.188Z"
+    },
+    {
+      "episode": 42,
+      "filename": "episode_42_1761504246285.json",
+      "reward": -7.099999999999991,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:06.285Z"
+    },
+    {
+      "episode": 43,
+      "filename": "episode_43_1761504246416.json",
+      "reward": -11.299999999999976,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:06.416Z"
+    },
+    {
+      "episode": 44,
+      "filename": "episode_44_1761504246516.json",
+      "reward": -7.099999999999991,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:06.516Z"
+    },
+    {
+      "episode": 45,
+      "filename": "episode_45_1761504246649.json",
+      "reward": 11.200000000000026,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:06.649Z"
+    },
+    {
+      "episode": 46,
+      "filename": "episode_46_1761504246783.json",
+      "reward": -30.89999999999997,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:06.783Z"
+    },
+    {
+      "episode": 47,
+      "filename": "episode_47_1761504246920.json",
+      "reward": -12.599999999999998,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:06.920Z"
+    },
+    {
+      "episode": 48,
+      "filename": "episode_48_1761504247054.json",
+      "reward": -14.299999999999983,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:07.054Z"
+    },
+    {
+      "episode": 49,
+      "filename": "episode_49_1761504247191.json",
+      "reward": -14.499999999999982,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:07.191Z"
+    },
+    {
+      "episode": 50,
+      "filename": "episode_50_1761504247326.json",
+      "reward": -29.299999999999976,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:07.326Z"
+    },
+    {
+      "episode": 51,
+      "filename": "episode_51_1761504247463.json",
+      "reward": -16.900000000000006,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:07.463Z"
+    },
+    {
+      "episode": 52,
+      "filename": "episode_52_1761504247597.json",
+      "reward": -30.89999999999997,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:07.597Z"
+    },
+    {
+      "episode": 53,
+      "filename": "episode_53_1761504247729.json",
+      "reward": -18.89999999999999,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:07.729Z"
+    },
+    {
+      "episode": 54,
+      "filename": "episode_54_1761504247864.json",
+      "reward": -15.399999999999983,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:07.864Z"
+    },
+    {
+      "episode": 55,
+      "filename": "episode_55_1761504248001.json",
+      "reward": -22.300000000000004,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:08.001Z"
+    },
+    {
+      "episode": 56,
+      "filename": "episode_56_1761504248134.json",
+      "reward": -19.300000000000004,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:08.134Z"
+    },
+    {
+      "episode": 57,
+      "filename": "episode_57_1761504248270.json",
+      "reward": -22.6,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:08.270Z"
+    },
+    {
+      "episode": 58,
+      "filename": "episode_58_1761504248404.json",
+      "reward": -17.1,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:08.404Z"
+    },
+    {
+      "episode": 59,
+      "filename": "episode_59_1761504248544.json",
+      "reward": -17.500000000000007,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:08.544Z"
+    },
+    {
+      "episode": 60,
+      "filename": "episode_60_1761504248679.json",
+      "reward": -26.99999999999998,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:08.679Z"
+    },
+    {
+      "episode": 61,
+      "filename": "episode_61_1761504248815.json",
+      "reward": -22.300000000000004,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:08.815Z"
+    },
+    {
+      "episode": 62,
+      "filename": "episode_62_1761504248953.json",
+      "reward": -30.89999999999997,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:08.953Z"
+    },
+    {
+      "episode": 63,
+      "filename": "episode_63_1761504249089.json",
+      "reward": -12.7,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:09.089Z"
+    },
+    {
+      "episode": 64,
+      "filename": "episode_64_1761504249224.json",
+      "reward": -9.699999999999985,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:09.224Z"
+    },
+    {
+      "episode": 65,
+      "filename": "episode_65_1761504249357.json",
+      "reward": -14.299999999999988,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:09.357Z"
+    },
+    {
+      "episode": 66,
+      "filename": "episode_66_1761504249492.json",
+      "reward": -0.900000000000027,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:09.492Z"
+    },
+    {
+      "episode": 67,
+      "filename": "episode_67_1761504249678.json",
+      "reward": -0.8999999999999897,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:09.678Z"
+    },
+    {
+      "episode": 68,
+      "filename": "episode_68_1761504249813.json",
+      "reward": -19.20000000000001,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:09.813Z"
+    },
+    {
+      "episode": 69,
+      "filename": "episode_69_1761504249910.json",
+      "reward": -7.099999999999991,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:09.910Z"
+    },
+    {
+      "episode": 70,
+      "filename": "episode_70_1761504250044.json",
+      "reward": -20.60000000000001,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:10.044Z"
+    },
+    {
+      "episode": 71,
+      "filename": "episode_71_1761504250182.json",
+      "reward": -17.500000000000007,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:10.182Z"
+    },
+    {
+      "episode": 72,
+      "filename": "episode_72_1761504250315.json",
+      "reward": -31.09999999999998,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:10.315Z"
+    },
+    {
+      "episode": 73,
+      "filename": "episode_73_1761504250443.json",
+      "reward": -29.499999999999986,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:10.443Z"
+    },
+    {
+      "episode": 74,
+      "filename": "episode_74_1761504250576.json",
+      "reward": -33.49999999999997,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:10.576Z"
+    },
+    {
+      "episode": 75,
+      "filename": "episode_75_1761504250711.json",
+      "reward": -30.89999999999997,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:10.711Z"
+    },
+    {
+      "episode": 76,
+      "filename": "episode_76_1761504250843.json",
+      "reward": -32.299999999999976,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:10.843Z"
+    },
+    {
+      "episode": 77,
+      "filename": "episode_77_1761504250978.json",
+      "reward": -30.89999999999997,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:10.978Z"
+    },
+    {
+      "episode": 78,
+      "filename": "episode_78_1761504251110.json",
+      "reward": -23.300000000000004,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:11.111Z"
+    },
+    {
+      "episode": 79,
+      "filename": "episode_79_1761504251243.json",
+      "reward": -30.89999999999997,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:11.243Z"
+    },
+    {
+      "episode": 80,
+      "filename": "episode_80_1761504251379.json",
+      "reward": -30.89999999999997,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:11.379Z"
+    },
+    {
+      "episode": 81,
+      "filename": "episode_81_1761504251515.json",
+      "reward": 0.7999999999999918,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:11.515Z"
+    },
+    {
+      "episode": 82,
+      "filename": "episode_82_1761504251651.json",
+      "reward": -16.100000000000005,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:11.651Z"
+    },
+    {
+      "episode": 83,
+      "filename": "episode_83_1761504251783.json",
+      "reward": -30.89999999999997,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:11.784Z"
+    },
+    {
+      "episode": 84,
+      "filename": "episode_84_1761504251918.json",
+      "reward": -6.999999999999989,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:11.918Z"
+    },
+    {
+      "episode": 85,
+      "filename": "episode_85_1761504252056.json",
+      "reward": -18.800000000000008,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:12.056Z"
+    },
+    {
+      "episode": 86,
+      "filename": "episode_86_1761504252187.json",
+      "reward": -20.800000000000008,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:12.187Z"
+    },
+    {
+      "episode": 87,
+      "filename": "episode_87_1761504252322.json",
+      "reward": -20.90000000000001,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:12.322Z"
+    },
+    {
+      "episode": 88,
+      "filename": "episode_88_1761504252456.json",
+      "reward": -16.400000000000006,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:12.456Z"
+    },
+    {
+      "episode": 89,
+      "filename": "episode_89_1761504252592.json",
+      "reward": -0.5999999999999925,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:12.592Z"
+    },
+    {
+      "episode": 90,
+      "filename": "episode_90_1761504252726.json",
+      "reward": -4.099999999999991,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:12.726Z"
+    },
+    {
+      "episode": 91,
+      "filename": "episode_91_1761504252862.json",
+      "reward": 0.7999999999999918,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:12.862Z"
+    },
+    {
+      "episode": 92,
+      "filename": "episode_92_1761504252998.json",
+      "reward": -7.7999999999999945,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:12.998Z"
+    },
+    {
+      "episode": 93,
+      "filename": "episode_93_1761504253137.json",
+      "reward": -13.799999999999995,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:13.137Z"
+    },
+    {
+      "episode": 94,
+      "filename": "episode_94_1761504253271.json",
+      "reward": -23.6,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:13.271Z"
+    },
+    {
+      "episode": 95,
+      "filename": "episode_95_1761504253405.json",
+      "reward": 9.899999999999993,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:13.405Z"
+    },
+    {
+      "episode": 96,
+      "filename": "episode_96_1761504253540.json",
+      "reward": 17.59999999999996,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:13.540Z"
+    },
+    {
+      "episode": 97,
+      "filename": "episode_97_1761504253677.json",
+      "reward": 13.80000000000001,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:13.677Z"
+    },
+    {
+      "episode": 98,
+      "filename": "episode_98_1761504253814.json",
+      "reward": -11.900000000000002,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:13.814Z"
+    },
+    {
+      "episode": 99,
+      "filename": "episode_99_1761504253948.json",
+      "reward": -2.200000000000023,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:13.948Z"
+    },
+    {
+      "episode": 100,
+      "filename": "episode_100_1761504254084.json",
+      "reward": -14.500000000000002,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:14.084Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504254220.json",
+      "reward": -13.600000000000001,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:14.220Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504254353.json",
+      "reward": -12.399999999999977,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:14.353Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504254486.json",
+      "reward": -16.8,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:14.486Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504254618.json",
+      "reward": 1.0000000000000249,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:14.618Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504254752.json",
+      "reward": 2.000000000000016,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:14.752Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504254885.json",
+      "reward": 6.600000000000012,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:14.885Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504255019.json",
+      "reward": -14.399999999999999,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:15.020Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504255154.json",
+      "reward": 20.599999999999973,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:15.154Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504255288.json",
+      "reward": -19.400000000000006,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:15.288Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504255423.json",
+      "reward": 7.599999999999971,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:15.423Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504255558.json",
+      "reward": 11.200000000000026,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:15.558Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504255694.json",
+      "reward": 18.999999999999986,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:15.694Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504255830.json",
+      "reward": -26.99999999999998,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:15.830Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504255966.json",
+      "reward": -11.899999999999993,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:15.966Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504256103.json",
+      "reward": -29.899999999999977,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:16.103Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504256237.json",
+      "reward": -29.899999999999977,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:16.237Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504256374.json",
+      "reward": 4.600000000000003,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:16.374Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504256510.json",
+      "reward": -29.899999999999977,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:16.510Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504256645.json",
+      "reward": -28.299999999999976,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:16.645Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504256778.json",
+      "reward": -16.999999999999986,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:16.778Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504256914.json",
+      "reward": -20.89999999999999,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:16.914Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504257052.json",
+      "reward": -3.8999999999999972,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:17.052Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504257191.json",
+      "reward": -29.899999999999977,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:17.191Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504257326.json",
+      "reward": -17.69999999999999,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:17.326Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504257461.json",
+      "reward": -17.79999999999999,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:17.461Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504257597.json",
+      "reward": -30.89999999999997,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:17.597Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504257735.json",
+      "reward": -19.5,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:17.735Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504257869.json",
+      "reward": -10.599999999999977,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:17.869Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504258007.json",
+      "reward": 12.799999999999981,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:18.007Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504258143.json",
+      "reward": -14.500000000000002,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:18.143Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504258243.json",
+      "reward": -3.1999999999999917,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:18.243Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504258379.json",
+      "reward": -30.89999999999997,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:18.379Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504258521.json",
+      "reward": 3.100000000000005,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:18.521Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504258660.json",
+      "reward": 17.99999999999997,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:18.660Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504258793.json",
+      "reward": -10.699999999999976,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:18.793Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504258928.json",
+      "reward": 6.500000000000018,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:18.928Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504259065.json",
+      "reward": 22.89999999999997,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:19.065Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504259202.json",
+      "reward": -22.400000000000006,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:19.202Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504259338.json",
+      "reward": -19.29999999999999,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:19.338Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504259475.json",
+      "reward": -10.399999999999991,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:19.475Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504259612.json",
+      "reward": 4.700000000000001,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:19.612Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504259745.json",
+      "reward": -11.099999999999977,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:19.745Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504259882.json",
+      "reward": -29.899999999999977,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:19.882Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504260016.json",
+      "reward": -0.7999999999999994,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:20.016Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504260155.json",
+      "reward": -10.299999999999976,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:20.155Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504260291.json",
+      "reward": 14.099999999999985,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:20.291Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504260427.json",
+      "reward": -30.89999999999997,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:20.427Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504260616.json",
+      "reward": -44.499999999999915,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:20.616Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504260751.json",
+      "reward": 7.2000000000000135,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:20.751Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504260884.json",
+      "reward": 11.700000000000024,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:20.884Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504261019.json",
+      "reward": -5.199999999999995,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:21.019Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504261154.json",
+      "reward": 3.300000000000014,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:21.154Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504261283.json",
+      "reward": 5.999999999999963,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:21.283Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504261416.json",
+      "reward": -30.89999999999997,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:21.416Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504261549.json",
+      "reward": 12.399999999999983,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:21.549Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504261683.json",
+      "reward": -9.099999999999982,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:21.683Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504261823.json",
+      "reward": 28.09999999999996,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:21.823Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504261956.json",
+      "reward": -14.500000000000002,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:21.956Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504262090.json",
+      "reward": -1.799999999999995,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:22.090Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504262222.json",
+      "reward": -12.5,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:22.222Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504262356.json",
+      "reward": 12.799999999999981,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:22.356Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504262490.json",
+      "reward": -9.79999999999998,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:22.490Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504262624.json",
+      "reward": 35.89999999999994,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:22.624Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504262761.json",
+      "reward": -13.500000000000004,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:22.761Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504262894.json",
+      "reward": 5.899999999999968,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:22.894Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504263029.json",
+      "reward": -30.89999999999997,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:23.029Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504263161.json",
+      "reward": -7.099999999999987,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:23.161Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504263297.json",
+      "reward": 9.099999999999978,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:23.297Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504263437.json",
+      "reward": 20.199999999999967,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:23.437Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504263572.json",
+      "reward": 16.89999999999997,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:23.572Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504263703.json",
+      "reward": -10.599999999999977,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:23.703Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504263837.json",
+      "reward": 16.299999999999983,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:23.837Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504263970.json",
+      "reward": -6.699999999999999,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:23.970Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504264104.json",
+      "reward": -1.4999999999999774,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:24.104Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504264237.json",
+      "reward": 12.799999999999981,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:24.237Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504264371.json",
+      "reward": 30.699999999999946,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:24.371Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504264504.json",
+      "reward": -16.000000000000004,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:24.504Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504264636.json",
+      "reward": -11.799999999999986,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:24.636Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504264768.json",
+      "reward": -15.300000000000004,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:24.768Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504264899.json",
+      "reward": -8.19999999999998,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:24.899Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504265033.json",
+      "reward": 4.999999999999991,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:25.033Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504265171.json",
+      "reward": -11.499999999999986,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:25.171Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504265303.json",
+      "reward": -14.099999999999994,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:25.303Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504265439.json",
+      "reward": 0.49999999999997513,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:25.439Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504265583.json",
+      "reward": -7.599999999999979,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:25.583Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504265684.json",
+      "reward": 8.500000000000012,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:25.684Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504265817.json",
+      "reward": -14.700000000000001,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:25.817Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504265957.json",
+      "reward": -3.099999999999994,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:25.958Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504266097.json",
+      "reward": -9.899999999999984,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:26.097Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504266233.json",
+      "reward": -7.099999999999987,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:26.233Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504266373.json",
+      "reward": -8.99999999999999,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:26.373Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504266510.json",
+      "reward": -12.599999999999987,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:26.510Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504266643.json",
+      "reward": -10.299999999999986,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:26.643Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504266794.json",
+      "reward": -13.799999999999994,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:26.794Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504267034.json",
+      "reward": -8.899999999999983,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:27.034Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504267227.json",
+      "reward": -6.8999999999999915,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:27.227Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504267416.json",
+      "reward": -13.99999999999999,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:27.416Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504267554.json",
+      "reward": -14.799999999999992,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:27.554Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504267692.json",
+      "reward": -16.300000000000004,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:27.692Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504267831.json",
+      "reward": -10.299999999999994,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:27.831Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504267967.json",
+      "reward": -16.200000000000003,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:27.967Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504268104.json",
+      "reward": -10.299999999999994,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:28.104Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504268239.json",
+      "reward": -4.999999999999986,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:28.239Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504268374.json",
+      "reward": -14.499999999999998,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:28.374Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504268506.json",
+      "reward": -14.399999999999999,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:28.506Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504268645.json",
+      "reward": -12.299999999999986,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:28.645Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504268779.json",
+      "reward": -10.299999999999994,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:28.779Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504268919.json",
+      "reward": -10.29999999999999,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:28.919Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504269053.json",
+      "reward": -13.199999999999989,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:29.053Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504269192.json",
+      "reward": -12.099999999999987,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:29.192Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504269327.json",
+      "reward": -13.49999999999999,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:29.327Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504269464.json",
+      "reward": 3.4000000000000012,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:29.464Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504269600.json",
+      "reward": -14.099999999999996,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:29.600Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504269737.json",
+      "reward": -8.999999999999986,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:29.737Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504269869.json",
+      "reward": 9.999999999999988,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:29.869Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504270009.json",
+      "reward": -13.899999999999995,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:30.009Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504270144.json",
+      "reward": -10.09999999999998,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:30.144Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504270279.json",
+      "reward": -8.999999999999995,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:30.279Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504270417.json",
+      "reward": 13.799999999999988,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:30.417Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504270553.json",
+      "reward": 13.800000000000013,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:30.553Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504270689.json",
+      "reward": -12.5,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:30.689Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504270822.json",
+      "reward": -9.999999999999982,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:30.822Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504270955.json",
+      "reward": -4.999999999999986,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:30.955Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504271090.json",
+      "reward": -11.199999999999996,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:31.090Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504271224.json",
+      "reward": -15.000000000000005,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:31.224Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504271359.json",
+      "reward": -12.899999999999988,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:31.359Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504271492.json",
+      "reward": -7.599999999999979,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:31.492Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504271647.json",
+      "reward": -13.299999999999988,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:31.647Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504271782.json",
+      "reward": -11.999999999999986,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:31.782Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504271917.json",
+      "reward": -1.2000000000000082,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:31.917Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504272061.json",
+      "reward": -16.000000000000007,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:32.061Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504272197.json",
+      "reward": -14.099999999999996,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:32.197Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504272328.json",
+      "reward": -7.699999999999979,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:32.328Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504272469.json",
+      "reward": -13.999999999999995,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:32.469Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504272606.json",
+      "reward": -14.499999999999998,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:32.606Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504272741.json",
+      "reward": -7.599999999999991,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:32.741Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504272879.json",
+      "reward": -10.29999999999999,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:32.879Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504273015.json",
+      "reward": -13.799999999999992,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:33.015Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504273199.json",
+      "reward": -9.399999999999974,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:33.199Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504273332.json",
+      "reward": -8.09999999999998,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:33.332Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504273467.json",
+      "reward": -11.199999999999987,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:33.467Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504273602.json",
+      "reward": -14.700000000000001,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:33.602Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504273739.json",
+      "reward": -14.099999999999994,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:33.739Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504273879.json",
+      "reward": -7.49999999999999,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:33.879Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504274013.json",
+      "reward": -4.999999999999986,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:34.013Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504274158.json",
+      "reward": -15.399999999999999,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:34.158Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504274292.json",
+      "reward": -11.799999999999986,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:34.292Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504274430.json",
+      "reward": -12.399999999999988,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:34.430Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504274565.json",
+      "reward": -13.49999999999999,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:34.565Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504274699.json",
+      "reward": -7.699999999999979,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:34.699Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504274834.json",
+      "reward": -12.999999999999988,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:34.834Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504274968.json",
+      "reward": -7.79999999999998,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:34.968Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504275105.json",
+      "reward": -4.999999999999986,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:35.105Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504275241.json",
+      "reward": -8.19999999999999,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:35.241Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504275379.json",
+      "reward": -13.899999999999988,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:35.379Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504275513.json",
+      "reward": -12.5,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:35.513Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504275648.json",
+      "reward": -12.299999999999986,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:35.648Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504275782.json",
+      "reward": -7.699999999999979,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:35.782Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504275924.json",
+      "reward": -14.199999999999996,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:35.924Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504276023.json",
+      "reward": -7.099999999999991,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:36.023Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504276159.json",
+      "reward": -7.099999999999987,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:36.159Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504276295.json",
+      "reward": -14.900000000000004,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:36.295Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504276431.json",
+      "reward": -12.499999999999986,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:36.431Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504276567.json",
+      "reward": -11.199999999999992,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:36.567Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504276707.json",
+      "reward": -11.799999999999983,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:36.707Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504276843.json",
+      "reward": -15,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:36.843Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504276975.json",
+      "reward": -7.79999999999998,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:36.975Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504277112.json",
+      "reward": -3.6999999999999913,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:37.112Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504277246.json",
+      "reward": -11.799999999999986,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:37.246Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504277380.json",
+      "reward": -8.799999999999983,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:37.380Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504277569.json",
+      "reward": 21.69999999999999,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:37.569Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504277710.json",
+      "reward": -7.099999999999987,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:37.710Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504277847.json",
+      "reward": 3.399999999999963,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:37.847Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504277986.json",
+      "reward": -12.899999999999988,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:37.986Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504278126.json",
+      "reward": -10.699999999999978,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:38.126Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504278261.json",
+      "reward": -4.999999999999986,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:38.261Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504278395.json",
+      "reward": -12.299999999999999,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:38.395Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504278531.json",
+      "reward": -1.3000000000000185,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:38.531Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504278667.json",
+      "reward": -9.699999999999982,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:38.667Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504278812.json",
+      "reward": -8.49999999999998,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:38.812Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504278949.json",
+      "reward": -9.699999999999992,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:38.949Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504279089.json",
+      "reward": -12.199999999999985,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:39.089Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504279228.json",
+      "reward": -16.900000000000006,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:39.228Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504279364.json",
+      "reward": -10.599999999999977,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:39.364Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504279498.json",
+      "reward": -7.899999999999979,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:39.498Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504279632.json",
+      "reward": -4.999999999999986,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:39.632Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504279774.json",
+      "reward": -10.399999999999984,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:39.774Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504279910.json",
+      "reward": -2.599999999999986,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:39.910Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504280043.json",
+      "reward": 21.59999999999995,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:40.043Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504280180.json",
+      "reward": -21.499999999999993,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:40.180Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504280370.json",
+      "reward": -7.099999999999991,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:40.370Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504280478.json",
+      "reward": -7.099999999999991,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:40.478Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504280793.json",
+      "reward": -24.69999999999999,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:40.793Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504280898.json",
+      "reward": -8.299999999999992,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:40.898Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504281002.json",
+      "reward": -7.699999999999991,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:41.002Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504281136.json",
+      "reward": -7.099999999999991,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:41.136Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504281260.json",
+      "reward": -7.099999999999991,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:41.260Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504281399.json",
+      "reward": -22.39999999999999,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:41.399Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504281539.json",
+      "reward": -23.6,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:41.539Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504281678.json",
+      "reward": -12.399999999999995,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:41.678Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504281815.json",
+      "reward": -13.99999999999998,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:41.815Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504281961.json",
+      "reward": 3.300000000000014,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:41.961Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504282099.json",
+      "reward": -28.299999999999976,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:42.099Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504282237.json",
+      "reward": -22.69999999999999,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:42.237Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504282373.json",
+      "reward": 0.7999999999999883,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:42.373Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504282509.json",
+      "reward": -12.499999999999986,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:42.509Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504282653.json",
+      "reward": -24.4,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:42.653Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504282791.json",
+      "reward": -18.5,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:42.791Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504282930.json",
+      "reward": -16.300000000000004,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:42.930Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504283110.json",
+      "reward": -32.99999999999997,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:43.110Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504283249.json",
+      "reward": -28.299999999999976,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:43.249Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504283388.json",
+      "reward": -30.89999999999997,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:43.388Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504283525.json",
+      "reward": -13.99999999999999,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:43.525Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504283664.json",
+      "reward": -8.399999999999983,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:43.664Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504283803.json",
+      "reward": -28.59999999999998,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:43.803Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504283940.json",
+      "reward": 10.199999999999983,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:43.940Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504284079.json",
+      "reward": 29.699999999999953,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:44.079Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504284215.json",
+      "reward": 11.69999999999998,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:44.215Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504284353.json",
+      "reward": 17.599999999999987,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:44.353Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504284490.json",
+      "reward": 2.599999999999959,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:44.490Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504284589.json",
+      "reward": 16.30000000000001,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:44.589Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504284725.json",
+      "reward": 11.200000000000026,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:44.725Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504284862.json",
+      "reward": 11.199999999999994,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:44.862Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504285003.json",
+      "reward": -12.599999999999987,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:45.003Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504285143.json",
+      "reward": 2.7000000000000046,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:45.143Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504285297.json",
+      "reward": -10.699999999999983,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:45.297Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504285447.json",
+      "reward": -11.699999999999985,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:45.447Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504285653.json",
+      "reward": -12.899999999999988,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:45.653Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504285831.json",
+      "reward": -11.199999999999992,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:45.831Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504285975.json",
+      "reward": -13.699999999999992,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:45.975Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504286216.json",
+      "reward": 9.199999999999994,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:46.216Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504286449.json",
+      "reward": -4.999999999999986,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:46.449Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504286588.json",
+      "reward": 20.199999999999974,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:46.588Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504286726.json",
+      "reward": 16.899999999999963,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:46.726Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504286859.json",
+      "reward": 2.0999999999999694,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:46.859Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504286997.json",
+      "reward": -15.300000000000004,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:46.997Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504287133.json",
+      "reward": -12.3,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:47.133Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504287269.json",
+      "reward": -8.99999999999999,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:47.269Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504287412.json",
+      "reward": 4.999999999999963,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:47.412Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504287548.json",
+      "reward": 7.700000000000028,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:47.548Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504287686.json",
+      "reward": -12.799999999999978,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:47.686Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504287829.json",
+      "reward": -6.599999999999975,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:47.829Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504288063.json",
+      "reward": -13.19999999999999,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:48.063Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504288204.json",
+      "reward": 9.100000000000028,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:48.204Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504288347.json",
+      "reward": 8.900000000000027,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:48.347Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504288451.json",
+      "reward": -7.099999999999991,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:48.451Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504288627.json",
+      "reward": -7.8999999999999755,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:48.627Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504288773.json",
+      "reward": -1.2999999999999763,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:48.773Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504288911.json",
+      "reward": -7.699999999999979,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:48.912Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504289012.json",
+      "reward": -7.099999999999991,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:49.012Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504289151.json",
+      "reward": 21.599999999999973,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:49.151Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504289295.json",
+      "reward": -19.700000000000003,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:49.295Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504289438.json",
+      "reward": 4.399999999999965,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:49.438Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504289538.json",
+      "reward": 2.000000000000009,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:49.538Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504289676.json",
+      "reward": 3.2999999999999794,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:49.676Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504289953.json",
+      "reward": 11.099999999999985,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:49.953Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504290093.json",
+      "reward": 7.29999999999996,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:50.093Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504290237.json",
+      "reward": -15.19999999999999,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:50.237Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504290393.json",
+      "reward": -11.299999999999983,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:50.393Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504290530.json",
+      "reward": -10.499999999999975,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:50.530Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504290671.json",
+      "reward": 16.29999999999996,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:50.671Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504290809.json",
+      "reward": 8.59999999999997,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:50.809Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504290949.json",
+      "reward": 25.49999999999997,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:50.949Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504291089.json",
+      "reward": -14.700000000000001,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:51.089Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504291281.json",
+      "reward": -13.89999999999997,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:51.281Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504291434.json",
+      "reward": -8.49999999999998,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:51.434Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504291596.json",
+      "reward": -13.4,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:51.596Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504291802.json",
+      "reward": -4.199999999999975,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:51.802Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504291979.json",
+      "reward": 13.799999999999967,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:51.979Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504292118.json",
+      "reward": -5.499999999999975,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:52.118Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504292320.json",
+      "reward": -35.49999999999994,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:52.320Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504292429.json",
+      "reward": -7.099999999999991,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:52.429Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504292625.json",
+      "reward": 8.89999999999997,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:52.625Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504292725.json",
+      "reward": -7.099999999999991,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:52.725Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504292825.json",
+      "reward": -7.099999999999991,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:52.825Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504292964.json",
+      "reward": -29.299999999999976,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:52.964Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504293067.json",
+      "reward": -7.099999999999991,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:53.067Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504293207.json",
+      "reward": -0.5000000000000124,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:53.207Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504293341.json",
+      "reward": -13.999999999999982,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:53.341Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504293447.json",
+      "reward": -7.099999999999991,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:53.447Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504293549.json",
+      "reward": -7.099999999999991,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:53.549Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504293651.json",
+      "reward": -3.1999999999999917,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:53.651Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504293790.json",
+      "reward": 6.299999999999962,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:53.790Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504293924.json",
+      "reward": -9.199999999999978,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:53.925Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504294062.json",
+      "reward": -0.599999999999989,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:54.062Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504294162.json",
+      "reward": -7.099999999999991,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:54.162Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504294300.json",
+      "reward": 3.3000000000000176,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:54.300Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504294435.json",
+      "reward": 7.900000000000027,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:54.435Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504294571.json",
+      "reward": 1.4000000000000066,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:54.571Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504294709.json",
+      "reward": 22.79999999999996,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:54.709Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504294844.json",
+      "reward": -2.7999999999999883,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:54.844Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504294987.json",
+      "reward": 31.99999999999995,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:54.987Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504295129.json",
+      "reward": -7.699999999999979,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:55.129Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504295268.json",
+      "reward": 15.100000000000007,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:55.268Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504295404.json",
+      "reward": -8.199999999999974,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:55.405Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504295542.json",
+      "reward": 17.69999999999998,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:55.542Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504295683.json",
+      "reward": -3.3999999999999964,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:55.683Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504295826.json",
+      "reward": -7.699999999999994,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:55.826Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504295965.json",
+      "reward": -10.599999999999977,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:55.965Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504296100.json",
+      "reward": 2.600000000000022,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:56.100Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504296209.json",
+      "reward": 5.900000000000011,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:56.209Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504296347.json",
+      "reward": -16.399999999999984,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:56.347Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504296487.json",
+      "reward": 12.500000000000016,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:56.487Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504296625.json",
+      "reward": -20.099999999999994,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:56.625Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504296764.json",
+      "reward": -28.299999999999976,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:56.764Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504296916.json",
+      "reward": -29.899999999999977,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:56.916Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504297067.json",
+      "reward": -7.099999999999991,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:57.067Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504297215.json",
+      "reward": 4.600000000000003,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:57.215Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504297446.json",
+      "reward": -14.700000000000005,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:57.446Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504297665.json",
+      "reward": 15.599999999999978,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:57.665Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504297810.json",
+      "reward": -17.599999999999987,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:57.810Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504297959.json",
+      "reward": -14.899999999999991,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:57.959Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504298431.json",
+      "reward": -10.599999999999977,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:58.431Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504298632.json",
+      "reward": -3.7999999999999927,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:58.632Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504298772.json",
+      "reward": -10.599999999999977,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:58.772Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504298921.json",
+      "reward": 11.900000000000025,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:58.921Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504299031.json",
+      "reward": -7.099999999999991,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:59.031Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504299177.json",
+      "reward": -12.199999999999992,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:59.177Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504299328.json",
+      "reward": 2.0999999999999996,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:59.328Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504299485.json",
+      "reward": 6.299999999999962,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:59.485Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504299586.json",
+      "reward": -7.099999999999991,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:59.586Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504299726.json",
+      "reward": -9.599999999999998,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:59.726Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504299830.json",
+      "reward": -7.099999999999991,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:59.830Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504299970.json",
+      "reward": -29.899999999999977,
+      "success": false,
+      "savedAt": "2025-10-26T18:44:59.970Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504300110.json",
+      "reward": -25.69999999999998,
+      "success": false,
+      "savedAt": "2025-10-26T18:45:00.110Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504300254.json",
+      "reward": -11.599999999999977,
+      "success": false,
+      "savedAt": "2025-10-26T18:45:00.254Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504300396.json",
+      "reward": 24.199999999999946,
+      "success": false,
+      "savedAt": "2025-10-26T18:45:00.396Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504300540.json",
+      "reward": 17.599999999999973,
+      "success": false,
+      "savedAt": "2025-10-26T18:45:00.540Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504300683.json",
+      "reward": -0.4999999999999769,
+      "success": false,
+      "savedAt": "2025-10-26T18:45:00.683Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504300835.json",
+      "reward": -11.199999999999996,
+      "success": false,
+      "savedAt": "2025-10-26T18:45:00.835Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504300979.json",
+      "reward": -13.49999999999999,
+      "success": false,
+      "savedAt": "2025-10-26T18:45:00.979Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504301120.json",
+      "reward": -15.600000000000005,
+      "success": false,
+      "savedAt": "2025-10-26T18:45:01.120Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504301267.json",
+      "reward": -4.999999999999986,
+      "success": false,
+      "savedAt": "2025-10-26T18:45:01.267Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504301410.json",
+      "reward": -8.999999999999996,
+      "success": false,
+      "savedAt": "2025-10-26T18:45:01.410Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504301514.json",
+      "reward": 0.7000000000000082,
+      "success": false,
+      "savedAt": "2025-10-26T18:45:01.514Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504301656.json",
+      "reward": -12.999999999999988,
+      "success": false,
+      "savedAt": "2025-10-26T18:45:01.656Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504301797.json",
+      "reward": -8.299999999999981,
+      "success": false,
+      "savedAt": "2025-10-26T18:45:01.797Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504301901.json",
+      "reward": 11.100000000000014,
+      "success": false,
+      "savedAt": "2025-10-26T18:45:01.901Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504302054.json",
+      "reward": -7.4999999999999885,
+      "success": false,
+      "savedAt": "2025-10-26T18:45:02.054Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504302198.json",
+      "reward": -0.5000000000000142,
+      "success": false,
+      "savedAt": "2025-10-26T18:45:02.198Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504302386.json",
+      "reward": 13.299999999999992,
+      "success": false,
+      "savedAt": "2025-10-26T18:45:02.386Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504302528.json",
+      "reward": -1.899999999999987,
+      "success": false,
+      "savedAt": "2025-10-26T18:45:02.528Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504302661.json",
+      "reward": 9.100000000000028,
+      "success": false,
+      "savedAt": "2025-10-26T18:45:02.661Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504302799.json",
+      "reward": -2.499999999999995,
+      "success": false,
+      "savedAt": "2025-10-26T18:45:02.799Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504302939.json",
+      "reward": -12.5,
+      "success": false,
+      "savedAt": "2025-10-26T18:45:02.939Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504303096.json",
+      "reward": 2.0999999999999996,
+      "success": false,
+      "savedAt": "2025-10-26T18:45:03.096Z"
+    },
+    {
+      "episode": 1,
+      "filename": "episode_1_1761504366283.json",
+      "reward": 12.399999999999983,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:06.283Z"
+    },
+    {
+      "episode": 2,
+      "filename": "episode_2_1761504366448.json",
+      "reward": -10.299999999999976,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:06.448Z"
+    },
+    {
+      "episode": 3,
+      "filename": "episode_3_1761504366606.json",
+      "reward": -28.299999999999976,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:06.606Z"
+    },
+    {
+      "episode": 4,
+      "filename": "episode_4_1761504366759.json",
+      "reward": 32.59999999999995,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:06.759Z"
+    },
+    {
+      "episode": 5,
+      "filename": "episode_5_1761504366915.json",
+      "reward": 5.900000000000018,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:06.916Z"
+    },
+    {
+      "episode": 6,
+      "filename": "episode_6_1761504367030.json",
+      "reward": -7.099999999999991,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:07.030Z"
+    },
+    {
+      "episode": 7,
+      "filename": "episode_7_1761504367236.json",
+      "reward": -7.099999999999991,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:07.236Z"
+    },
+    {
+      "episode": 8,
+      "filename": "episode_8_1761504367390.json",
+      "reward": -17.29999999999999,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:07.390Z"
+    },
+    {
+      "episode": 9,
+      "filename": "episode_9_1761504367515.json",
+      "reward": -7.099999999999991,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:07.515Z"
+    },
+    {
+      "episode": 10,
+      "filename": "episode_10_1761504367641.json",
+      "reward": -7.099999999999991,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:07.641Z"
+    },
+    {
+      "episode": 11,
+      "filename": "episode_11_1761504367788.json",
+      "reward": -29.899999999999977,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:07.788Z"
+    },
+    {
+      "episode": 12,
+      "filename": "episode_12_1761504367938.json",
+      "reward": -30.89999999999997,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:07.938Z"
+    },
+    {
+      "episode": 13,
+      "filename": "episode_13_1761504368081.json",
+      "reward": -20.199999999999992,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:08.081Z"
+    },
+    {
+      "episode": 14,
+      "filename": "episode_14_1761504368185.json",
+      "reward": -7.099999999999991,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:08.185Z"
+    },
+    {
+      "episode": 15,
+      "filename": "episode_15_1761504368287.json",
+      "reward": -7.099999999999991,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:08.287Z"
+    },
+    {
+      "episode": 16,
+      "filename": "episode_16_1761504368432.json",
+      "reward": -30.89999999999997,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:08.432Z"
+    },
+    {
+      "episode": 17,
+      "filename": "episode_17_1761504368578.json",
+      "reward": -16.299999999999983,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:08.579Z"
+    },
+    {
+      "episode": 18,
+      "filename": "episode_18_1761504368681.json",
+      "reward": -7.099999999999991,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:08.681Z"
+    },
+    {
+      "episode": 19,
+      "filename": "episode_19_1761504368824.json",
+      "reward": -17.599999999999987,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:08.824Z"
+    },
+    {
+      "episode": 20,
+      "filename": "episode_20_1761504368969.json",
+      "reward": -22.6,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:08.969Z"
+    },
+    {
+      "episode": 21,
+      "filename": "episode_21_1761504369109.json",
+      "reward": -18.5,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:09.109Z"
+    },
+    {
+      "episode": 22,
+      "filename": "episode_22_1761504369256.json",
+      "reward": -12.699999999999978,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:09.256Z"
+    },
+    {
+      "episode": 23,
+      "filename": "episode_23_1761504369397.json",
+      "reward": -1.7000000000000184,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:09.397Z"
+    },
+    {
+      "episode": 24,
+      "filename": "episode_24_1761504369533.json",
+      "reward": -10.699999999999976,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:09.533Z"
+    },
+    {
+      "episode": 25,
+      "filename": "episode_25_1761504369639.json",
+      "reward": -7.099999999999991,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:09.639Z"
+    },
+    {
+      "episode": 26,
+      "filename": "episode_26_1761504369780.json",
+      "reward": -16.499999999999986,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:09.780Z"
+    },
+    {
+      "episode": 27,
+      "filename": "episode_27_1761504369880.json",
+      "reward": -7.099999999999991,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:09.880Z"
+    },
+    {
+      "episode": 28,
+      "filename": "episode_28_1761504370086.json",
+      "reward": -29.299999999999976,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:10.086Z"
+    },
+    {
+      "episode": 29,
+      "filename": "episode_29_1761504370225.json",
+      "reward": -28.299999999999976,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:10.225Z"
+    },
+    {
+      "episode": 30,
+      "filename": "episode_30_1761504370366.json",
+      "reward": -28.299999999999976,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:10.366Z"
+    },
+    {
+      "episode": 31,
+      "filename": "episode_31_1761504370507.json",
+      "reward": -10.699999999999978,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:10.507Z"
+    },
+    {
+      "episode": 32,
+      "filename": "episode_32_1761504370610.json",
+      "reward": -7.099999999999991,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:10.610Z"
+    },
+    {
+      "episode": 33,
+      "filename": "episode_33_1761504370710.json",
+      "reward": -7.099999999999991,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:10.710Z"
+    },
+    {
+      "episode": 34,
+      "filename": "episode_34_1761504370850.json",
+      "reward": -19.89999999999999,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:10.850Z"
+    },
+    {
+      "episode": 35,
+      "filename": "episode_35_1761504370990.json",
+      "reward": -1.8999999999999906,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:10.990Z"
+    },
+    {
+      "episode": 36,
+      "filename": "episode_36_1761504371135.json",
+      "reward": -28.299999999999976,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:11.135Z"
+    },
+    {
+      "episode": 37,
+      "filename": "episode_37_1761504371236.json",
+      "reward": -5.79999999999999,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:11.236Z"
+    },
+    {
+      "episode": 38,
+      "filename": "episode_38_1761504371377.json",
+      "reward": -7.099999999999991,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:11.377Z"
+    },
+    {
+      "episode": 39,
+      "filename": "episode_39_1761504371478.json",
+      "reward": -7.099999999999991,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:11.478Z"
+    },
+    {
+      "episode": 40,
+      "filename": "episode_40_1761504371620.json",
+      "reward": -10.699999999999978,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:11.620Z"
+    },
+    {
+      "episode": 41,
+      "filename": "episode_41_1761504371761.json",
+      "reward": -16.400000000000006,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:11.761Z"
+    },
+    {
+      "episode": 42,
+      "filename": "episode_42_1761504371863.json",
+      "reward": -7.099999999999991,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:11.863Z"
+    },
+    {
+      "episode": 43,
+      "filename": "episode_43_1761504372000.json",
+      "reward": 3.700000000000002,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:12.000Z"
+    },
+    {
+      "episode": 44,
+      "filename": "episode_44_1761504372105.json",
+      "reward": -7.099999999999991,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:12.105Z"
+    },
+    {
+      "episode": 45,
+      "filename": "episode_45_1761504372205.json",
+      "reward": -7.099999999999991,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:12.205Z"
+    },
+    {
+      "episode": 46,
+      "filename": "episode_46_1761504372344.json",
+      "reward": -21.799999999999997,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:12.344Z"
+    },
+    {
+      "episode": 47,
+      "filename": "episode_47_1761504372482.json",
+      "reward": -19.099999999999994,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:12.482Z"
+    },
+    {
+      "episode": 48,
+      "filename": "episode_48_1761504372619.json",
+      "reward": -31.49999999999998,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:12.619Z"
+    },
+    {
+      "episode": 49,
+      "filename": "episode_49_1761504372759.json",
+      "reward": -10.499999999999975,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:12.759Z"
+    },
+    {
+      "episode": 50,
+      "filename": "episode_50_1761504372897.json",
+      "reward": -13.200000000000003,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:12.897Z"
+    },
+    {
+      "episode": 51,
+      "filename": "episode_51_1761504373001.json",
+      "reward": -7.099999999999991,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:13.001Z"
+    },
+    {
+      "episode": 52,
+      "filename": "episode_52_1761504373147.json",
+      "reward": -16.4,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:13.147Z"
+    },
+    {
+      "episode": 53,
+      "filename": "episode_53_1761504373339.json",
+      "reward": -30.399999999999956,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:13.339Z"
+    },
+    {
+      "episode": 54,
+      "filename": "episode_54_1761504373534.json",
+      "reward": -1.4999999999999991,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:13.534Z"
+    },
+    {
+      "episode": 55,
+      "filename": "episode_55_1761504373695.json",
+      "reward": -22.999999999999993,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:13.695Z"
+    },
+    {
+      "episode": 56,
+      "filename": "episode_56_1761504373835.json",
+      "reward": 11.099999999999985,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:13.835Z"
+    },
+    {
+      "episode": 57,
+      "filename": "episode_57_1761504373974.json",
+      "reward": -8.299999999999978,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:13.975Z"
+    },
+    {
+      "episode": 58,
+      "filename": "episode_58_1761504374118.json",
+      "reward": 19.299999999999976,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:14.118Z"
+    },
+    {
+      "episode": 59,
+      "filename": "episode_59_1761504374254.json",
+      "reward": -10.29999999999999,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:14.254Z"
+    },
+    {
+      "episode": 60,
+      "filename": "episode_60_1761504374393.json",
+      "reward": -12.699999999999987,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:14.393Z"
+    },
+    {
+      "episode": 61,
+      "filename": "episode_61_1761504374530.json",
+      "reward": -7.79999999999998,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:14.530Z"
+    },
+    {
+      "episode": 62,
+      "filename": "episode_62_1761504374670.json",
+      "reward": -14.499999999999998,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:14.670Z"
+    },
+    {
+      "episode": 63,
+      "filename": "episode_63_1761504374808.json",
+      "reward": -7.099999999999987,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:14.808Z"
+    },
+    {
+      "episode": 64,
+      "filename": "episode_64_1761504374940.json",
+      "reward": -8.199999999999982,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:14.940Z"
+    },
+    {
+      "episode": 65,
+      "filename": "episode_65_1761504375079.json",
+      "reward": -10.29999999999999,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:15.079Z"
+    },
+    {
+      "episode": 66,
+      "filename": "episode_66_1761504375218.json",
+      "reward": -9.699999999999982,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:15.218Z"
+    },
+    {
+      "episode": 67,
+      "filename": "episode_67_1761504375317.json",
+      "reward": -7.099999999999991,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:15.317Z"
+    },
+    {
+      "episode": 68,
+      "filename": "episode_68_1761504375452.json",
+      "reward": -8.999999999999988,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:15.452Z"
+    },
+    {
+      "episode": 69,
+      "filename": "episode_69_1761504375605.json",
+      "reward": -7.099999999999987,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:15.605Z"
+    },
+    {
+      "episode": 70,
+      "filename": "episode_70_1761504375754.json",
+      "reward": -7.699999999999979,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:15.754Z"
+    },
+    {
+      "episode": 71,
+      "filename": "episode_71_1761504375905.json",
+      "reward": -6.3999999999999915,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:15.906Z"
+    },
+    {
+      "episode": 72,
+      "filename": "episode_72_1761504376091.json",
+      "reward": -13.099999999999987,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:16.094Z"
+    },
+    {
+      "episode": 73,
+      "filename": "episode_73_1761504376243.json",
+      "reward": -7.79999999999998,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:16.243Z"
+    },
+    {
+      "episode": 74,
+      "filename": "episode_74_1761504376383.json",
+      "reward": 12.799999999999988,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:16.384Z"
+    },
+    {
+      "episode": 75,
+      "filename": "episode_75_1761504376529.json",
+      "reward": -16.000000000000007,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:16.529Z"
+    },
+    {
+      "episode": 76,
+      "filename": "episode_76_1761504376666.json",
+      "reward": 3.700000000000026,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:16.666Z"
+    },
+    {
+      "episode": 77,
+      "filename": "episode_77_1761504376868.json",
+      "reward": -10.299999999999976,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:16.868Z"
+    },
+    {
+      "episode": 78,
+      "filename": "episode_78_1761504376971.json",
+      "reward": 12.400000000000015,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:16.971Z"
+    },
+    {
+      "episode": 79,
+      "filename": "episode_79_1761504377079.json",
+      "reward": -3.1999999999999917,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:17.079Z"
+    },
+    {
+      "episode": 80,
+      "filename": "episode_80_1761504377220.json",
+      "reward": -13.199999999999989,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:17.220Z"
+    },
+    {
+      "episode": 81,
+      "filename": "episode_81_1761504377363.json",
+      "reward": 13.69999999999998,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:17.363Z"
+    },
+    {
+      "episode": 82,
+      "filename": "episode_82_1761504377509.json",
+      "reward": -13.39999999999999,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:17.509Z"
+    },
+    {
+      "episode": 83,
+      "filename": "episode_83_1761504377657.json",
+      "reward": -12.499999999999996,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:17.657Z"
+    },
+    {
+      "episode": 84,
+      "filename": "episode_84_1761504377797.json",
+      "reward": -12.399999999999986,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:17.797Z"
+    },
+    {
+      "episode": 85,
+      "filename": "episode_85_1761504377935.json",
+      "reward": -7.79999999999998,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:17.935Z"
+    },
+    {
+      "episode": 86,
+      "filename": "episode_86_1761504378078.json",
+      "reward": -5.099999999999992,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:18.078Z"
+    },
+    {
+      "episode": 87,
+      "filename": "episode_87_1761504378227.json",
+      "reward": -12.899999999999988,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:18.227Z"
+    },
+    {
+      "episode": 88,
+      "filename": "episode_88_1761504378368.json",
+      "reward": -15,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:18.368Z"
+    },
+    {
+      "episode": 89,
+      "filename": "episode_89_1761504378506.json",
+      "reward": -10.299999999999997,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:18.506Z"
+    },
+    {
+      "episode": 90,
+      "filename": "episode_90_1761504378645.json",
+      "reward": 5.999999999999963,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:18.645Z"
+    },
+    {
+      "episode": 91,
+      "filename": "episode_91_1761504378787.json",
+      "reward": 18.99999999999998,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:18.787Z"
+    },
+    {
+      "episode": 92,
+      "filename": "episode_92_1761504378928.json",
+      "reward": -8.299999999999978,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:18.928Z"
+    },
+    {
+      "episode": 93,
+      "filename": "episode_93_1761504379067.json",
+      "reward": -10.699999999999978,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:19.067Z"
+    },
+    {
+      "episode": 94,
+      "filename": "episode_94_1761504379204.json",
+      "reward": 9.900000000000025,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:19.204Z"
+    },
+    {
+      "episode": 95,
+      "filename": "episode_95_1761504379410.json",
+      "reward": -9.999999999999982,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:19.410Z"
+    },
+    {
+      "episode": 96,
+      "filename": "episode_96_1761504379548.json",
+      "reward": -14.399999999999997,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:19.548Z"
+    },
+    {
+      "episode": 97,
+      "filename": "episode_97_1761504379763.json",
+      "reward": -28.599999999999945,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:19.763Z"
+    },
+    {
+      "episode": 98,
+      "filename": "episode_98_1761504379905.json",
+      "reward": -7.099999999999987,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:19.905Z"
+    },
+    {
+      "episode": 99,
+      "filename": "episode_99_1761504380058.json",
+      "reward": -15.300000000000004,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:20.058Z"
+    },
+    {
+      "episode": 100,
+      "filename": "episode_100_1761504380200.json",
+      "reward": 21.49999999999997,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:20.200Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504380340.json",
+      "reward": -12.5,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:20.340Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504380487.json",
+      "reward": -13.799999999999994,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:20.487Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504380625.json",
+      "reward": 2.69999999999996,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:20.625Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504380762.json",
+      "reward": -7.899999999999979,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:20.762Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504380898.json",
+      "reward": 13.699999999999987,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:20.898Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504381041.json",
+      "reward": -15.700000000000003,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:21.041Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504381180.json",
+      "reward": -8.99999999999999,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:21.180Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504381320.json",
+      "reward": -7.79999999999998,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:21.320Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504381460.json",
+      "reward": -13.600000000000001,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:21.460Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504381603.json",
+      "reward": -6.699999999999986,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:21.603Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504381742.json",
+      "reward": -13.799999999999999,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:21.742Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504381889.json",
+      "reward": -15,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:21.889Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504382030.json",
+      "reward": -7.099999999999987,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:22.030Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504382235.json",
+      "reward": -2.499999999999997,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:22.235Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504382372.json",
+      "reward": -9.800000000000004,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:22.372Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504382510.json",
+      "reward": -10.399999999999984,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:22.510Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504382614.json",
+      "reward": -7.099999999999991,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:22.614Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504382769.json",
+      "reward": 5.999999999999977,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:22.769Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504382933.json",
+      "reward": 21.800000000000004,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:22.933Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504383073.json",
+      "reward": -10.999999999999982,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:23.073Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504383219.json",
+      "reward": 11.699999999999987,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:23.219Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504383371.json",
+      "reward": -18.79999999999999,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:23.371Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504383543.json",
+      "reward": -23.300000000000004,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:23.543Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504383748.json",
+      "reward": -18.199999999999996,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:23.748Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504383895.json",
+      "reward": -18,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:23.895Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504384056.json",
+      "reward": -8.49999999999998,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:24.056Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504384190.json",
+      "reward": -10.999999999999993,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:24.191Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504384328.json",
+      "reward": -7.599999999999991,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:24.328Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504384428.json",
+      "reward": 15.000000000000009,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:24.428Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504384562.json",
+      "reward": -18.900000000000002,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:24.562Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504384695.json",
+      "reward": -10.299999999999976,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:24.695Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504384831.json",
+      "reward": -14.800000000000006,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:24.831Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504384972.json",
+      "reward": -14.500000000000002,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:24.972Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504385112.json",
+      "reward": -13.299999999999999,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:25.112Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504385249.json",
+      "reward": -17.200000000000003,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:25.249Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504385389.json",
+      "reward": -8.999999999999975,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:25.389Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504385579.json",
+      "reward": -10.599999999999977,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:25.579Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504385717.json",
+      "reward": -19.60000000000001,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:25.717Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504385855.json",
+      "reward": 4.699999999999994,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:25.856Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504386003.json",
+      "reward": -6.699999999999988,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:26.003Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504386145.json",
+      "reward": -18.799999999999997,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:26.145Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504386285.json",
+      "reward": -5.799999999999987,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:26.285Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504386419.json",
+      "reward": -10.399999999999977,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:26.419Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504386518.json",
+      "reward": 16.30000000000001,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:26.518Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504386658.json",
+      "reward": -16.100000000000005,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:26.658Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504386794.json",
+      "reward": -1.0999999999999996,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:26.794Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504386933.json",
+      "reward": 9.900000000000011,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:26.933Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504387078.json",
+      "reward": 17.999999999999993,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:27.078Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504387221.json",
+      "reward": 5.400000000000016,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:27.221Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504387357.json",
+      "reward": -16.900000000000006,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:27.357Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504387466.json",
+      "reward": -7.099999999999991,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:27.466Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504387606.json",
+      "reward": -3.7999999999999927,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:27.606Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504387752.json",
+      "reward": -10.299999999999997,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:27.752Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504387893.json",
+      "reward": -8.999999999999991,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:27.893Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504388031.json",
+      "reward": -7.79999999999998,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:28.031Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504388174.json",
+      "reward": -14.500000000000002,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:28.174Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504388372.json",
+      "reward": -7.899999999999979,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:28.372Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504388508.json",
+      "reward": -4.999999999999986,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:28.508Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504388645.json",
+      "reward": -9.09999999999998,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:28.645Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504388745.json",
+      "reward": -7.099999999999991,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:28.745Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504388888.json",
+      "reward": -30.89999999999997,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:28.888Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504389025.json",
+      "reward": -15.100000000000003,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:29.025Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504389163.json",
+      "reward": -9.999999999999982,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:29.163Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504389309.json",
+      "reward": -7.599999999999979,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:29.309Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504389468.json",
+      "reward": -12.999999999999979,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:29.468Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504389664.json",
+      "reward": -11.599999999999977,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:29.664Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504389831.json",
+      "reward": 8.500000000000016,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:29.831Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504389974.json",
+      "reward": 14.100000000000003,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:29.974Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504390117.json",
+      "reward": 14.300000000000006,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:30.117Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504390254.json",
+      "reward": 12.400000000000015,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:30.254Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504390394.json",
+      "reward": -12.800000000000002,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:30.394Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504390537.json",
+      "reward": -18.500000000000007,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:30.537Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504390681.json",
+      "reward": -6.699999999999987,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:30.681Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504390816.json",
+      "reward": -14.499999999999982,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:30.816Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504390952.json",
+      "reward": -12.999999999999979,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:30.952Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504391145.json",
+      "reward": -28.299999999999976,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:31.145Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504391282.json",
+      "reward": -17.4,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:31.283Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504391430.json",
+      "reward": -28.299999999999976,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:31.430Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504391581.json",
+      "reward": -30.69999999999998,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:31.581Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504391784.json",
+      "reward": -19.399999999999995,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:31.784Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504391948.json",
+      "reward": -30.89999999999997,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:31.948Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504392065.json",
+      "reward": -7.099999999999991,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:32.065Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504392238.json",
+      "reward": -22,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:32.238Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504392375.json",
+      "reward": -24.4,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:32.375Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504392484.json",
+      "reward": -7.099999999999991,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:32.484Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504392623.json",
+      "reward": -23.200000000000003,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:32.623Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504392773.json",
+      "reward": -26.99999999999998,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:32.773Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504392927.json",
+      "reward": -23.499999999999993,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:32.927Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504393033.json",
+      "reward": -7.099999999999991,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:33.033Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504393179.json",
+      "reward": -13.399999999999988,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:33.179Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504393337.json",
+      "reward": -19.39999999999999,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:33.337Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504393482.json",
+      "reward": -31.49999999999998,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:33.482Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504393632.json",
+      "reward": -10.5,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:33.632Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504393862.json",
+      "reward": -26.99999999999998,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:33.862Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504394010.json",
+      "reward": -20.800000000000004,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:34.010Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504394150.json",
+      "reward": -15.399999999999983,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:34.150Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504394295.json",
+      "reward": -16.299999999999983,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:34.295Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504394406.json",
+      "reward": -7.099999999999991,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:34.406Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504394554.json",
+      "reward": -29.299999999999976,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:34.554Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504394701.json",
+      "reward": -11.299999999999976,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:34.701Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504394844.json",
+      "reward": 4.700000000000001,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:34.844Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504394988.json",
+      "reward": -15.600000000000001,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:34.988Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504395095.json",
+      "reward": -4.49999999999999,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:35.095Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504395265.json",
+      "reward": -16.300000000000004,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:35.265Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504395420.json",
+      "reward": -31.899999999999977,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:35.420Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504395577.json",
+      "reward": -18.799999999999997,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:35.577Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504395827.json",
+      "reward": -29.299999999999976,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:35.827Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504395971.json",
+      "reward": -30.899999999999977,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:35.971Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504396154.json",
+      "reward": -21.399999999999995,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:36.154Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504396435.json",
+      "reward": -25.799999999999983,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:36.435Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504396595.json",
+      "reward": -19.800000000000004,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:36.595Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504396809.json",
+      "reward": -19.89999999999999,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:36.809Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504397084.json",
+      "reward": -16.399999999999984,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:37.084Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504397239.json",
+      "reward": -26.99999999999998,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:37.239Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504397383.json",
+      "reward": -16.300000000000004,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:37.383Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504397524.json",
+      "reward": -29.899999999999977,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:37.524Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504397687.json",
+      "reward": -1.2999999999999883,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:37.687Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504397899.json",
+      "reward": 27.299999999999955,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:37.899Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504398058.json",
+      "reward": -6.199999999999995,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:38.058Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504398214.json",
+      "reward": -22.300000000000004,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:38.214Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504398435.json",
+      "reward": -8.299999999999986,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:38.435Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504398631.json",
+      "reward": -16.100000000000005,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:38.631Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504398781.json",
+      "reward": 3.6000000000000245,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:38.781Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504398993.json",
+      "reward": -28.299999999999976,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:38.994Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504399169.json",
+      "reward": -30.899999999999977,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:39.169Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504399456.json",
+      "reward": 5.000000000000002,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:39.456Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504399624.json",
+      "reward": -25.799999999999983,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:39.624Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504399880.json",
+      "reward": -20.800000000000004,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:39.880Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504400111.json",
+      "reward": -17.599999999999994,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:40.112Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504400314.json",
+      "reward": 14.099999999999978,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:40.314Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504400470.json",
+      "reward": -21.199999999999996,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:40.470Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504400618.json",
+      "reward": -30.89999999999997,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:40.618Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504400760.json",
+      "reward": -22.10000000000001,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:40.760Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504400904.json",
+      "reward": -11.199999999999996,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:40.904Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504401046.json",
+      "reward": -16.39999999999999,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:41.046Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504401187.json",
+      "reward": -10.599999999999977,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:41.187Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504401430.json",
+      "reward": -29.899999999999977,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:41.430Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504401594.json",
+      "reward": -10.700000000000003,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:41.594Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504401891.json",
+      "reward": -14.299999999999981,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:41.891Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504402153.json",
+      "reward": 10.200000000000028,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:42.153Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504402327.json",
+      "reward": -17.4,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:42.327Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504402483.json",
+      "reward": -29.299999999999976,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:42.483Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504402666.json",
+      "reward": -14.399999999999983,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:42.666Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504402839.json",
+      "reward": -21.500000000000007,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:42.839Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504403062.json",
+      "reward": 7.8000000000000185,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:43.063Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504403215.json",
+      "reward": -9.699999999999996,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:43.215Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504403316.json",
+      "reward": -7.099999999999991,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:43.316Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504403500.json",
+      "reward": 20.299999999999983,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:43.500Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504403733.json",
+      "reward": -12.899999999999979,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:43.733Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504403845.json",
+      "reward": 8.500000000000012,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:43.845Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504404097.json",
+      "reward": -22.599999999999994,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:44.097Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504404341.json",
+      "reward": -11.599999999999987,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:44.341Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504404583.json",
+      "reward": 8.89999999999998,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:44.583Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504404830.json",
+      "reward": -19.70000000000001,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:44.830Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504404972.json",
+      "reward": -7.099999999999991,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:44.972Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504405330.json",
+      "reward": -15.199999999999998,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:45.330Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504405507.json",
+      "reward": 16.4,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:45.507Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504405673.json",
+      "reward": -7.099999999999991,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:45.673Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504405932.json",
+      "reward": 25.499999999999957,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:45.932Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504406150.json",
+      "reward": 7.299999999999969,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:46.150Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504406297.json",
+      "reward": -10.299999999999976,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:46.297Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504406455.json",
+      "reward": 8.899999999999977,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:46.455Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504406661.json",
+      "reward": -12.5,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:46.661Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504406821.json",
+      "reward": -12.500000000000002,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:46.821Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504407082.json",
+      "reward": -10.499999999999975,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:47.082Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504407263.json",
+      "reward": -4.999999999999986,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:47.263Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504407447.json",
+      "reward": -1.600000000000017,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:47.447Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504407603.json",
+      "reward": 12.499999999999991,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:47.603Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504407747.json",
+      "reward": 20.59999999999998,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:47.747Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504407885.json",
+      "reward": -19.60000000000001,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:47.885Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504408026.json",
+      "reward": -12.499999999999996,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:48.026Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504408163.json",
+      "reward": -16.100000000000005,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:48.163Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504408308.json",
+      "reward": 7.8000000000000185,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:48.308Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504408455.json",
+      "reward": 1.4000000000000004,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:48.455Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504408593.json",
+      "reward": 12.80000000000001,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:48.593Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504408727.json",
+      "reward": -10.399999999999977,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:48.727Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504408927.json",
+      "reward": -14.500000000000002,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:48.927Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504409066.json",
+      "reward": -12.899999999999988,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:49.066Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504409208.json",
+      "reward": 6.299999999999969,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:49.208Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504409342.json",
+      "reward": 4.599999999999962,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:49.342Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504409484.json",
+      "reward": -7.599999999999979,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:49.484Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504409622.json",
+      "reward": -7.599999999999979,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:49.622Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504409759.json",
+      "reward": -7.699999999999979,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:49.759Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504409914.json",
+      "reward": -14.399999999999997,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:49.914Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504410081.json",
+      "reward": -8.399999999999984,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:50.081Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504410352.json",
+      "reward": -7.699999999999979,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:50.352Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504410519.json",
+      "reward": -4.999999999999986,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:50.519Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504410668.json",
+      "reward": -9.399999999999975,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:50.668Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504410807.json",
+      "reward": -7.699999999999979,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:50.807Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504410949.json",
+      "reward": 7.900000000000027,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:50.949Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504411101.json",
+      "reward": -12.799999999999978,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:51.101Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504411242.json",
+      "reward": -13.600000000000001,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:51.242Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504411380.json",
+      "reward": -8.299999999999978,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:51.380Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504411522.json",
+      "reward": -3.7999999999999945,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:51.522Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504411675.json",
+      "reward": -15.400000000000006,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:51.675Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504411823.json",
+      "reward": -10.299999999999976,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:51.823Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504411976.json",
+      "reward": -7.099999999999987,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:51.976Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504412115.json",
+      "reward": -10.499999999999975,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:52.115Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504412265.json",
+      "reward": -8.399999999999984,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:52.265Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504412487.json",
+      "reward": 41.39999999999998,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:52.487Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504412627.json",
+      "reward": 1.7763568394002505e-15,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:52.627Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504412777.json",
+      "reward": -10.699999999999978,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:52.777Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504412979.json",
+      "reward": -24.999999999999964,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:52.980Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504413123.json",
+      "reward": -10.699999999999976,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:53.123Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504413264.json",
+      "reward": -5.199999999999985,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:53.264Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504413410.json",
+      "reward": 2.0000000000000027,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:53.410Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504413551.json",
+      "reward": -10.699999999999978,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:53.551Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504413691.json",
+      "reward": -10.599999999999977,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:53.691Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504413798.json",
+      "reward": -3.199999999999991,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:53.798Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504413942.json",
+      "reward": 0.20000000000001705,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:53.942Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504414082.json",
+      "reward": 10.20000000000002,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:54.082Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504414229.json",
+      "reward": -11.499999999999977,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:54.229Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504414385.json",
+      "reward": 7.299999999999972,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:54.385Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504414630.json",
+      "reward": 3.3999999999999577,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:54.630Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504414745.json",
+      "reward": -7.099999999999991,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:54.745Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504414928.json",
+      "reward": 8,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:54.928Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504415087.json",
+      "reward": -8.999999999999991,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:55.087Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504415242.json",
+      "reward": -8.29999999999999,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:55.242Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504415383.json",
+      "reward": -7.099999999999996,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:55.383Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504415523.json",
+      "reward": 1.0000000000000258,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:55.523Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504415710.json",
+      "reward": -12.500000000000004,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:55.710Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504415830.json",
+      "reward": -7.099999999999991,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:55.830Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504415978.json",
+      "reward": -12.499999999999979,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:55.978Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504416085.json",
+      "reward": -7.099999999999991,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:56.085Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504416244.json",
+      "reward": 2.39999999999997,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:56.244Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504416470.json",
+      "reward": -1.7999999999999905,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:56.470Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504416662.json",
+      "reward": 14.300000000000017,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:56.662Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504416821.json",
+      "reward": -15.400000000000002,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:56.821Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504416963.json",
+      "reward": -7.699999999999979,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:56.963Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504417104.json",
+      "reward": -10.399999999999977,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:57.104Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504417247.json",
+      "reward": -16.200000000000003,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:57.247Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504417390.json",
+      "reward": 11.499999999999998,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:57.390Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504417536.json",
+      "reward": -13.500000000000004,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:57.536Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504417675.json",
+      "reward": -10.499999999999975,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:57.675Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504417815.json",
+      "reward": 8.599999999999975,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:57.815Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504417959.json",
+      "reward": -11.2,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:57.959Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504418317.json",
+      "reward": 22.899999999999963,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:58.317Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504418464.json",
+      "reward": -10.299999999999976,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:58.464Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504418578.json",
+      "reward": 2.000000000000009,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:58.578Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504418715.json",
+      "reward": 7.800000000000027,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:58.715Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504418917.json",
+      "reward": 7.900000000000013,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:58.917Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504419016.json",
+      "reward": -4.499999999999989,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:59.016Z"
+    },
+    {
+      "episode": 101,
+      "filename": "episode_101_1761504419179.json",
+      "reward": -10.599999999999977,
+      "success": false,
+      "savedAt": "2025-10-26T18:46:59.179Z"
+    }
+  ]
+}
