@@ -13,6 +13,8 @@ import { TrainingOrchestrator } from './training/TrainingOrchestrator.js';
 import { ModelManager } from './training/ModelManager.js';
 import { UIController } from './ui/UIController.js';
 import { TrajectoryVisualizer } from './visualization/TrajectoryVisualizer.js';
+import { BrowserTrajectoryLoader } from './training/BrowserTrajectoryLoader.js';
+import { TimelineVisualizer } from './ui/TimelineVisualizer.js';
 import { LivePlayMode } from './interaction/LivePlayMode.js';
 import { SceneManager, SceneBuilder } from './scenes/index.js';
 import * as tf from '@tensorflow/tfjs';
@@ -44,6 +46,8 @@ class ClimbingGameApp {
         
         // New features
         this.trajectoryVisualizer = null;
+        this.trajectoryLoader = null;
+        this.timelineVisualizer = null;
         this.livePlayMode = null;
         this.sceneManager = null;
         this.sceneBuilder = null;
@@ -247,6 +251,19 @@ class ClimbingGameApp {
             // 7.5. Initialize new features
             console.log('📹 Initializing trajectory visualizer...');
             this.trajectoryVisualizer = new TrajectoryVisualizer(this.renderingEngine);
+            
+            console.log('📊 Initializing trajectory loader...');
+            this.trajectoryLoader = new BrowserTrajectoryLoader({
+                trajectoryPath: '/training-data/trajectories'
+            });
+            await this.trajectoryLoader.init();
+            
+            console.log('🎬 Initializing timeline visualizer...');
+            this.timelineVisualizer = new TimelineVisualizer(
+                this.renderingEngine,
+                this.trajectoryLoader
+            );
+            await this.timelineVisualizer.init();
             
             console.log('🎮 Initializing live play mode...');
             this.livePlayMode = new LivePlayMode(this.environment, this.agent, this.renderingEngine);
