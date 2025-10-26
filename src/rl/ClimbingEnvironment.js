@@ -743,8 +743,8 @@ export class ClimbingEnvironment {
 
     // 💀 FELL TO DEATH
     if (agentPos.y < this.config.fallThreshold) {
-      totalReward = -5.0;
-      console.log('💀 FELL TO DEATH! -5.0');
+      totalReward = -10.0;  // Increased penalty to prevent exploit
+      console.log('💀 FELL TO DEATH! -10.0');
       return totalReward;
     }
 
@@ -768,13 +768,13 @@ export class ClimbingEnvironment {
     }
 
     // 🎉 FIRST TIME ON STAIRS - BIG REWARD!
-    // Only give this reward once per episode (prevent exploit)
+    // Only give this reward once per episode AND must stay on stairs for 5 frames
     if (currentStep >= 0 && prevStepOn < 0) {
       // Check if this is truly the first time (not bouncing on/off)
-      if (!this.hasLandedOnStairs) {
+      if (!this.hasLandedOnStairs && this.timeOnCurrentStep >= 5) {
         totalReward += 15.0;
         this.hasLandedOnStairs = true;
-        console.log('🎉 LANDED ON STAIRS! +15.0');
+        console.log('🎉 LANDED ON STAIRS! +15.0 (stayed for 5 frames)');
       }
     }
 
@@ -796,8 +796,8 @@ export class ClimbingEnvironment {
 
     // 📉 FELL OFF STAIRS
     if (currentStep < 0 && prevStepOn >= 0) {
-      totalReward -= 8.0;
-      console.log('📉 FELL OFF STAIRS! -8.0');
+      totalReward -= 20.0;  // Increased penalty to prevent exploit
+      console.log('📉 FELL OFF STAIRS! -20.0');
     }
 
     // ⬇️ MOVED TO LOWER STEP

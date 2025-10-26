@@ -166,6 +166,13 @@ export class LivePlayMode {
         // Update current state
         this.currentState = result.state;
         
+        // Update rendering if available
+        if (this.renderingEngine && result.info.agentPosition) {
+            this.renderingEngine.updateAgentPosition(result.info.agentPosition);
+            this.renderingEngine.updateCamera(result.info.agentPosition);
+            this.renderingEngine.render();
+        }
+        
         // Update statistics
         this.updateSessionStats(action, result);
         
