@@ -50,6 +50,7 @@ export class ClimbingEnvironment {
     this.currentTrajectory = [];
     this.trajectoryHistory = [];
     this.maxTrajectories = 100; // Keep last 100 episodes
+    this.episodeCount = 0; // Track total episodes
 
     // Curriculum learning
     this.curriculumMode = false;
@@ -463,6 +464,9 @@ export class ClimbingEnvironment {
     this.safetyBuffer = 300;  // Start with 300 steps (increased from 200)
     this.hasReachedStairs = false;
 
+    // Increment episode counter
+    this.episodeCount++;
+
     // Start new trajectory recording if enabled
     if (this.recordTrajectories) {
       this.currentTrajectory = [];
@@ -708,7 +712,14 @@ export class ClimbingEnvironment {
     const currentStep = this.detectCurrentStep();
     const prevStepOn = this.currentStepOn;
 
-    // Track time on current step for decay rewards
+    // Initialize tracking variables
+    if (this.currentStepOn === undefined) {
+      this.currentStepOn = currentStep;
+      this.timeOnCurrentStep = 0;
+      this.highestStepReached = Math.max(-1, currentStep);
+    }
+
+    // Track time on current step
     if (this.currentStepOn === currentStep) {
       this.timeOnCurrentStep++;
     } else {
@@ -716,179 +727,124 @@ export class ClimbingEnvironment {
       this.currentStepOn = currentStep;
     }
 
-    // Track time on current position for stagnation detection
-    if (!this.lastPosition) {
-      this.lastPosition = { ...agentPos };
-      this.stagnationTimer = 0;
-    }
-
-    const positionChange = Math.sqrt(
-      Math.pow(agentPos.x - this.lastPosition.x, 2) +
-      Math.pow(agentPos.y - this.lastPosition.y, 2) +
-      Math.pow(agentPos.z - this.lastPosition.z, 2)
-    );
-
-    if (positionChange < 0.1) {
-      this.stagnationTimer++;
-    } else {
-      this.stagnationTimer = 0;
-      this.lastPosition = { ...agentPos };
-    }
-
     // ============================================================================
-    // ABSOLUTE FAILURE CHECKS - These end the episode immediately
+    // PRIORITY 1: TERMINAL CONDITIONS (Episode Enders)
     // ============================================================================
 
-    // === 1. SAFETY BUFFER SYSTEM ===
-    // Initialize buffer if not set
-    if (this.safetyBuffer === undefined) {
-      this.safetyBuffer = 300;  // Start with 300 steps (increased from 200)
-      this.hasReachedStairs = false;
-    }
-
-    // === 2. UPDATE BUFFER BASED ON POSITION ===
-    if (currentStep >= 0) {
-      // ON STAIRS: Infinite buffer!
-      this.safetyBuffer = Infinity;
-      this.hasReachedStairs = true;
-      // Only log occasionally to reduce spam
-      if (this.currentStep % 100 === 0) {
-        console.log('✅ ON STAIRS! Buffer = INFINITE');
-      }
-    } else if (currentStep < 0 && this.hasReachedStairs) {
-      // FELL OFF STAIRS: Reset buffer to 300 (increased from 200)
-      if (this.safetyBuffer === Infinity) {
-        this.safetyBuffer = 300;
-        console.log('⚠️ LEFT STAIRS! Buffer reset to 300 steps');
-      }
-      this.safetyBuffer--;  // Count down
-    } else {
-      // STILL AT START: Count down from initial 300 (increased from 200)
-      this.safetyBuffer--;
-    }
-
-    // === 3. FAILURE: Buffer ran out on ground ===
-    if (currentStep < 0 && this.safetyBuffer <= 0) {
-      totalReward = -10.0;  // Moderate penalty - encourages finding stairs
-      console.log('❌ BUFFER EXPIRED ON GROUND! Penalty: -10.0');
+    // 🏆 GOAL REACHED: ULTIMATE SUCCESS
+    if (currentStep === 10) {
+      totalReward = 100.0;
+      console.log('🏆🏆🏆 GOAL REACHED! +100 🏆🏆🏆');
       return totalReward;
     }
 
-    // === 4. BASELINE NEGATIVE: Small per-step penalty ===
-    // This makes "do nothing" worse than trying to climb
-    totalReward -= 0.1;  // Small time pressure
+    // 💀 FELL TO DEATH
+    if (agentPos.y < this.config.fallThreshold) {
+      totalReward = -5.0;
+      console.log('💀 FELL TO DEATH! -5.0');
+      return totalReward;
+    }
 
-    // === 5. ENCOURAGE MOVEMENT TOWARD STAIRS (when on ground) ===
+    // 🚫 OUT OF BOUNDS
+    if (this.isOutOfBounds()) {
+      totalReward = -5.0;
+      console.log('🚫 OUT OF BOUNDS! -5.0');
+      return totalReward;
+    }
+
+    // ============================================================================
+    // PRIORITY 2: STEP PROGRESSION (The Core Learning Signal)
+    // ============================================================================
+
+    // 🎯 CLIMBED TO A HIGHER STEP - HUGE REWARD!
+    if (currentStep > prevStepOn && currentStep >= 0 && prevStepOn >= 0) {
+      const stepsClimbed = currentStep - prevStepOn;
+      const climbReward = 20.0 * stepsClimbed;  // MASSIVE: +20 per step!
+      totalReward += climbReward;
+      console.log(`🎯 CLIMBED ${stepsClimbed} STEP(S)! +${climbReward.toFixed(1)}`);
+    }
+
+    // 🎉 FIRST TIME ON STAIRS - BIG REWARD!
+    if (currentStep >= 0 && prevStepOn < 0) {
+      totalReward += 15.0;
+      console.log('🎉 LANDED ON STAIRS! +15.0');
+    }
+
+    // 📈 NEW HIGHEST STEP - MILESTONE BONUS!
+    if (currentStep > this.highestStepReached && currentStep >= 0) {
+      const milestoneReward = 10.0;
+      totalReward += milestoneReward;
+      this.highestStepReached = currentStep;
+      console.log(`📈 NEW RECORD: Step ${currentStep}! +${milestoneReward}`);
+    }
+
+    // ============================================================================
+    // PRIORITY 3: NEGATIVE FEEDBACK (Discourage Bad Behavior)
+    // ============================================================================
+
+    // 📉 FELL OFF STAIRS
+    if (currentStep < 0 && prevStepOn >= 0) {
+      totalReward -= 8.0;
+      console.log('📉 FELL OFF STAIRS! -8.0');
+    }
+
+    // ⬇️ MOVED TO LOWER STEP
+    if (currentStep >= 0 && prevStepOn >= 0 && currentStep < prevStepOn) {
+      const stepsLost = prevStepOn - currentStep;
+      const lossReward = 5.0 * stepsLost;
+      totalReward -= lossReward;
+      console.log(`⬇️ MOVED DOWN ${stepsLost} STEP(S)! -${lossReward.toFixed(1)}`);
+    }
+
+    // ============================================================================
+    // PRIORITY 4: GUIDANCE SIGNALS (Help Find the Stairs)
+    // ============================================================================
+
+    // 🧭 MOVING TOWARD STAIRS (when on ground)
     if (currentStep < 0) {
       const distanceToStairs = Math.abs(agentPos.z - 0);  // Stairs start at z=0
       const prevDistanceToStairs = Math.abs(prevPos.z - 0);
 
       if (distanceToStairs < prevDistanceToStairs) {
-        totalReward += 1.0;  // Moving toward stairs! (increased from 0.5)
-      } else {
-        totalReward -= 0.3;  // Moving away from stairs (reduced from 0.5)
-      }
-
-      // Log buffer status occasionally
-      if (this.currentStep % 50 === 0) {
-        console.log(`📊 Buffer: ${this.safetyBuffer === Infinity ? 'INFINITE' : this.safetyBuffer} steps remaining`);
+        totalReward += 2.0;  // Good! Moving toward stairs
+      } else if (distanceToStairs > prevDistanceToStairs) {
+        totalReward -= 1.0;  // Bad! Moving away from stairs
       }
     }
 
-    // === 6. TRACK JUMP FOR LATER EVALUATION ===
-    if (action === this.ACTION_SPACE.JUMP) {
-      this.lastJumpStep = prevStepOn;
-      this.jumpedThisStep = true;
+    // ⏱️ TIME PRESSURE (Small penalty to encourage action)
+    totalReward -= 0.05;
+
+    // 🐌 STAGNATION PENALTY (Staying on same step too long)
+    if (currentStep >= 0 && this.timeOnCurrentStep > 50) {
+      const stagnationPenalty = Math.min(2.0, (this.timeOnCurrentStep - 50) * 0.02);
+      totalReward -= stagnationPenalty;
+      if (this.timeOnCurrentStep % 50 === 0) {
+        console.log(`🐌 STAGNATION: ${this.timeOnCurrentStep} steps on step ${currentStep}! -${stagnationPenalty.toFixed(2)}`);
+      }
     }
 
-    // === 7. GOAL REACHED: MAXIMUM REWARD ===
-    // Check if agent reached the goal platform (step 10)
-    const goalReached = currentStep === 10;
+    // ============================================================================
+    // PRIORITY 5: HEIGHT-BASED SHAPING (Encourage upward movement)
+    // ============================================================================
 
-    if (goalReached) {
-      totalReward += 100.0; // MASSIVE REWARD for reaching goal!
-      console.log('🏆🏆🏆 GOAL PLATFORM REACHED! +100 (ULTIMATE SUCCESS!) 🏆🏆🏆');
-      return totalReward; // Return immediately, no other rewards matter
+    // 📏 HEIGHT GAIN BONUS (Even small upward movement is good)
+    const heightChange = agentPos.y - prevPos.y;
+    if (heightChange > 0.1 && currentStep >= 0) {
+      const heightBonus = Math.min(1.0, heightChange * 0.5);
+      totalReward += heightBonus;
     }
 
-    // Check curriculum goal if enabled (intermediate goals)
-    if (this.curriculumMode && currentStep >= this.curriculumGoalStep) {
-      totalReward += 10.0;
-      console.log(`🎓 CURRICULUM GOAL REACHED! Step ${currentStep} >= ${this.curriculumGoalStep}! +10`);
-      return totalReward;
-    }
+    // ============================================================================
+    // FINAL: CLAMP AND RETURN
+    // ============================================================================
 
-    // === 8. ACTION-OUTCOME REWARDS: What did this action achieve? ===
+    // Clamp reward to reasonable range
+    totalReward = Math.max(-10, Math.min(100, totalReward));
 
-    // 8a. LANDED ON STAIRS (immediate action outcome)
-    if (currentStep >= 0 && prevStepOn < 0) {
-      // This action got us ON stairs!
-      totalReward += 10.0;  // BIG immediate reward (increased from 5.0)
-      console.log(`✅ ACTION RESULT: Landed on stairs! +10.0`);
-    }
-
-    // 8b. MOVED TO HIGHER STEP (immediate action outcome)
-    if (currentStep > prevStepOn && currentStep >= 0 && prevStepOn >= 0) {
-      // This action moved us UP!
-      const heightGain = currentStep - prevStepOn;
-      totalReward += 5.0 * heightGain;  // +5 per step climbed (increased from 3.0)
-      console.log(`✅ ACTION RESULT: Climbed ${heightGain} step(s)! +${(5.0 * heightGain).toFixed(1)}`);
-    }
-
-    // 8c. FELL OFF STAIRS (immediate action outcome)
-    if (currentStep < 0 && prevStepOn >= 0) {
-      // This action made us FALL!
-      totalReward -= 3.0;  // Moderate penalty (increased from 2.0)
-      console.log(`❌ ACTION RESULT: Fell off stairs! -3.0`);
-    }
-
-    // 8d. MOVED TO LOWER STEP (immediate action outcome)
-    if (currentStep >= 0 && prevStepOn >= 0 && currentStep < prevStepOn) {
-      // This action moved us DOWN!
-      const heightLoss = prevStepOn - currentStep;
-      totalReward -= 3.0 * heightLoss;  // -3 per step lost (increased from 2.0)
-      console.log(`❌ ACTION RESULT: Moved down ${heightLoss} step(s)! -${(3.0 * heightLoss).toFixed(1)}`);
-    }
-
-    // === 9. SMALL EPISODE-LEVEL BONUS (very low weight) ===
-    // Track highest step reached for small bonus
-    if (currentStep > this.highestStepReached && currentStep >= 0) {
-      const episodeBonus = 1.0;  // Small milestone bonus (increased from 0.5)
-      totalReward += episodeBonus;
-      this.highestStepReached = currentStep;
-      this.stepsVisited.add(currentStep);
-      console.log(`📈 Episode milestone: Step ${currentStep} (+${episodeBonus} bonus)`);
-    }
-
-    // Reset jump tracking
-    this.jumpedThisStep = false;
-
-    // === 4. BEING ON STAIRS: Baseline (0) ===
-    // Just being on stairs = 0 reward
-    // This is expected, not rewarded
-
-    // === 10. TERMINAL FAILURES ===
-
-    // 10a. Fell to death (moderate penalty)
-    if (agentPos.y < this.config.fallThreshold) {
-      totalReward -= 5.0;  // Moderate penalty (reduced from -10)
-      console.log('💀 FELL TO DEATH! Penalty: -5.0');
-      return totalReward;
-    }
-
-    // 10b. Out of bounds (moderate penalty)
-    if (this.isOutOfBounds()) {
-      totalReward -= 8.0;  // Moderate penalty (reduced from -50!)
-      console.log('🚫 OUT OF BOUNDS! Penalty: -8.0');
-      return totalReward;
-    }
-
-    // === 11. CLAMP FINAL REWARD ===
-    totalReward = Math.max(-10, Math.min(100, totalReward));  // Allow full goal reward
-
-    // === 8. DEBUG LOGGING (every 100 steps) ===
+    // Debug logging (reduced frequency)
     if (this.currentStep % 100 === 0 && this.currentStep > 0) {
-      console.log(`📊 Step ${this.currentStep}: Reward=${totalReward.toFixed(2)}, Pos=(${agentPos.x.toFixed(1)}, ${agentPos.y.toFixed(1)}, ${agentPos.z.toFixed(1)}), OnStep=${currentStep}`);
+      console.log(`📊 Step ${this.currentStep}: R=${totalReward.toFixed(2)}, OnStep=${currentStep}, Highest=${this.highestStepReached}, Y=${agentPos.y.toFixed(1)}`);
     }
 
     return totalReward;
@@ -1071,15 +1027,19 @@ export class ClimbingEnvironment {
       // If episode is done, save the trajectory
       if (done) {
         const currentStep = this.detectCurrentStep();
-        this.trajectoryHistory.push({
-          episode: this.trajectoryHistory.length + 1,
-          trajectory: [...this.currentTrajectory],
+        const trajectoryData = {
+          episode: this.episodeCount || this.trajectoryHistory.length + 1,
+          steps: [...this.currentTrajectory],
           success: currentStep === 10, // Success = reached goal platform
           totalReward: this.totalReward,
-          steps: this.currentStep,
+          stepCount: this.currentStep,
           highestStep: this.highestStepReached,
-          duration: Date.now() - this.episodeStartTime
-        });
+          duration: Date.now() - this.episodeStartTime,
+          finalPosition: { ...agentPos },
+          finalStep: currentStep
+        };
+
+        this.trajectoryHistory.push(trajectoryData);
 
         // Keep only the last N trajectories
         if (this.trajectoryHistory.length > this.maxTrajectories) {

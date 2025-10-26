@@ -353,13 +353,36 @@ export class UIController {
     }
     
     if (this.elements.modelEpisodes) {
-      this.elements.modelEpisodes.textContent = metadata.totalEpisodes;
+      this.elements.modelEpisodes.textContent = metadata.totalEpisodes.toLocaleString();
     }
     
     if (this.elements.modelBestReward) {
       const bestReward = metadata.bestReward === -Infinity ? 0 : metadata.bestReward;
       this.elements.modelBestReward.textContent = bestReward.toFixed(2);
     }
+    
+    // Log comprehensive training summary to console
+    console.log('\n📊 ═══════════════════════════════════════════════════════');
+    console.log('📊 TRAINING STATISTICS SUMMARY');
+    console.log('📊 ═══════════════════════════════════════════════════════');
+    console.log(`📦 Model Version: v${metadata.version}`);
+    console.log(`🎯 Total Episodes Trained: ${metadata.totalEpisodes.toLocaleString()}`);
+    console.log(`📈 Total Steps Taken: ${metadata.totalSteps.toLocaleString()}`);
+    console.log(`🏆 Best Reward Ever: ${metadata.bestReward === -Infinity ? 'N/A' : metadata.bestReward.toFixed(2)}`);
+    console.log(`📊 Current Avg Reward: ${metadata.avgReward.toFixed(2)}`);
+    console.log(`✅ Success Rate: ${(metadata.successRate * 100).toFixed(1)}%`);
+    console.log(`💾 Last Saved: ${metadata.lastSaved ? new Date(metadata.lastSaved).toLocaleString() : 'Never'}`);
+    console.log(`📚 Training History: ${metadata.trainingHistory.length} checkpoints`);
+    
+    if (metadata.trainingHistory.length > 0) {
+      console.log('\n📈 Recent Training Progress (Last 5 Checkpoints):');
+      const recent = metadata.trainingHistory.slice(-5);
+      recent.forEach((entry, idx) => {
+        console.log(`  ${idx + 1}. v${entry.version} - Episodes: ${entry.episodes}, Avg Reward: ${entry.avgReward.toFixed(2)}, Success: ${(entry.successRate * 100).toFixed(1)}%`);
+      });
+    }
+    
+    console.log('📊 ═══════════════════════════════════════════════════════\n');
   }
 
   /**

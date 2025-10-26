@@ -1,0 +1,1251 @@
+{
+  "episode": 494,
+  "steps": [
+    {
+      "step": 0,
+      "position": {
+        "x": 0,
+        "y": 1,
+        "z": 0
+      },
+      "action": null,
+      "reward": 0,
+      "timestamp": 1761507542745
+    },
+    {
+      "step": 1,
+      "position": {
+        "x": 0,
+        "y": 0.997275,
+        "z": -0.004166666666666667
+      },
+      "action": 0,
+      "actionName": "FORWARD",
+      "reward": 24.95,
+      "totalReward": 24.95,
+      "timestamp": 1761507542746
+    },
+    {
+      "step": 2,
+      "position": {
+        "x": 0,
+        "y": 0.9918254564145264,
+        "z": -0.012499302118461338
+      },
+      "action": 0,
+      "actionName": "FORWARD",
+      "reward": -0.05,
+      "totalReward": 24.9,
+      "timestamp": 1761507542746
+    },
+    {
+      "step": 3,
+      "position": {
+        "x": 0,
+        "y": 0.9836518255816596,
+        "z": -0.024997208590734624
+      },
+      "action": 0,
+      "actionName": "FORWARD",
+      "reward": -0.05,
+      "totalReward": 24.849999999999998,
+      "timestamp": 1761507542747
+    },
+    {
+      "step": 4,
+      "position": {
+        "x": 0,
+        "y": 1.07273781460612,
+        "z": -0.037493021769040166
+      },
+      "action": 4,
+      "actionName": "JUMP",
+      "reward": -0.05,
+      "totalReward": 24.799999999999997,
+      "timestamp": 1761507542747
+    },
+    {
+      "step": 5,
+      "position": {
+        "x": 0,
+        "y": 1.1590838824784777,
+        "z": -0.04582007533732039
+      },
+      "action": 1,
+      "actionName": "BACKWARD",
+      "reward": -0.05,
+      "totalReward": 24.749999999999996,
+      "timestamp": 1761507542748
+    },
+    {
+      "step": 6,
+      "position": {
+        "x": 0,
+        "y": 1.2426904881124266,
+        "z": -0.05414573419433099
+      },
+      "action": 4,
+      "actionName": "JUMP",
+      "reward": -0.05,
+      "totalReward": 24.699999999999996,
+      "timestamp": 1761507542748
+    },
+    {
+      "step": 7,
+      "position": {
+        "x": 0,
+        "y": 1.3235580903447957,
+        "z": -0.06663666524034101
+      },
+      "action": 0,
+      "actionName": "FORWARD",
+      "reward": -0.05,
+      "totalReward": 24.649999999999995,
+      "timestamp": 1761507542748
+    },
+    {
+      "step": 8,
+      "position": {
+        "x": 0,
+        "y": 1.401687147935563,
+        "z": -0.08329217082737506
+      },
+      "action": 0,
+      "actionName": "FORWARD",
+      "reward": -0.05,
+      "totalReward": 24.599999999999994,
+      "timestamp": 1761507542749
+    },
+    {
+      "step": 9,
+      "position": {
+        "x": 0,
+        "y": 1.4770781195678682,
+        "z": -0.09577822009097452
+      },
+      "action": 1,
+      "actionName": "BACKWARD",
+      "reward": -0.05,
+      "totalReward": 24.549999999999994,
+      "timestamp": 1761507542749
+    },
+    {
+      "step": 10,
+      "position": {
+        "x": 0,
+        "y": 1.549731463848025,
+        "z": -0.1124288447132554
+      },
+      "action": 0,
+      "actionName": "FORWARD",
+      "reward": -0.05,
+      "totalReward": 24.499999999999993,
+      "timestamp": 1761507542749
+    },
+    {
+      "step": 11,
+      "position": {
+        "x": 0,
+        "y": 1.6196476393055352,
+        "z": -0.13324334716295547
+      },
+      "action": 0,
+      "actionName": "FORWARD",
+      "reward": -0.05,
+      "totalReward": 24.449999999999992,
+      "timestamp": 1761507542750
+    },
+    {
+      "step": 12,
+      "position": {
+        "x": 0,
+        "y": 1.6868271043931,
+        "z": -0.15822103002564314
+      },
+      "action": 0,
+      "actionName": "FORWARD",
+      "reward": -0.05,
+      "totalReward": 24.39999999999999,
+      "timestamp": 1761507542750
+    },
+    {
+      "step": 13,
+      "position": {
+        "x": 0,
+        "y": 1.751270317486634,
+        "z": -0.18736119600369786
+      },
+      "action": 0,
+      "actionName": "FORWARD",
+      "reward": -0.05,
+      "totalReward": 24.34999999999999,
+      "timestamp": 1761507542751
+    },
+    {
+      "step": 14,
+      "position": {
+        "x": 0,
+        "y": 1.8129777368852775,
+        "z": -0.22066314791629052
+      },
+      "action": 0,
+      "actionName": "FORWARD",
+      "reward": -0.05,
+      "totalReward": 24.29999999999999,
+      "timestamp": 1761507542751
+    },
+    {
+      "step": 15,
+      "position": {
+        "x": 0,
+        "y": 1.8719498208114098,
+        "z": -0.258126188699364
+      },
+      "action": 0,
+      "actionName": "FORWARD",
+      "reward": -0.05,
+      "totalReward": 24.24999999999999,
+      "timestamp": 1761507542751
+    },
+    {
+      "step": 16,
+      "position": {
+        "x": 0,
+        "y": 1.9281870274106616,
+        "z": -0.2955829547389467
+      },
+      "action": 4,
+      "actionName": "JUMP",
+      "reward": -0.05,
+      "totalReward": 24.19999999999999,
+      "timestamp": 1761507542752
+    },
+    {
+      "step": 17,
+      "position": {
+        "x": 0.004166666666666667,
+        "y": 1.9816898147519282,
+        "z": -0.33303344708600535
+      },
+      "action": 3,
+      "actionName": "RIGHT",
+      "reward": -0.05,
+      "totalReward": 24.149999999999988,
+      "timestamp": 1761507542752
+    },
+    {
+      "step": 18,
+      "position": {
+        "x": 0.008332635451794669,
+        "y": 2.0324586408273824,
+        "z": -0.3746443334579972
+      },
+      "action": 0,
+      "actionName": "FORWARD",
+      "reward": -0.05,
+      "totalReward": 24.099999999999987,
+      "timestamp": 1761507542753
+    },
+    {
+      "step": 19,
+      "position": {
+        "x": 0.012497906472273284,
+        "y": 2.0804939635524864,
+        "z": -0.42041491702399814
+      },
+      "action": 0,
+      "actionName": "FORWARD",
+      "reward": -0.05,
+      "totalReward": 24.049999999999986,
+      "timestamp": 1761507542753
+    },
+    {
+      "step": 20,
+      "position": {
+        "x": 0.016662479844972208,
+        "y": 2.1257962407660065,
+        "z": -0.46617783440313076
+      },
+      "action": 4,
+      "actionName": "JUMP",
+      "reward": -0.05,
+      "totalReward": 23.999999999999986,
+      "timestamp": 1761507542754
+    },
+    {
+      "step": 21,
+      "position": {
+        "x": 0.020826355686741557,
+        "y": 2.168365930230024,
+        "z": -0.5160997535460835
+      },
+      "action": 0,
+      "actionName": "FORWARD",
+      "reward": -0.05,
+      "totalReward": 23.949999999999985,
+      "timestamp": 1761507542754
+    },
+    {
+      "step": 22,
+      "position": {
+        "x": 0.024989534114411887,
+        "y": 2.20820348962995,
+        "z": -0.5701799778551242
+      },
+      "action": 0,
+      "actionName": "FORWARD",
+      "reward": -9.05,
+      "totalReward": 14.899999999999984,
+      "timestamp": 1761507542755
+    },
+    {
+      "step": 23,
+      "position": {
+        "x": 0.029152015244794178,
+        "y": 2.2453093765745358,
+        "z": -0.6242511441825284
+      },
+      "action": 5,
+      "actionName": "GRAB",
+      "reward": -1.05,
+      "totalReward": 13.849999999999984,
+      "timestamp": 1761507542755
+    },
+    {
+      "step": 24,
+      "position": {
+        "x": 0.03331379919467985,
+        "y": 2.2796840485958874,
+        "z": -0.6783132540454316
+      },
+      "action": 4,
+      "actionName": "JUMP",
+      "reward": -1.05,
+      "totalReward": 12.799999999999983,
+      "timestamp": 1761507542756
+    },
+    {
+      "step": 25,
+      "position": {
+        "x": 0.03747488608084075,
+        "y": 2.3113279631494787,
+        "z": -0.7365329756273821
+      },
+      "action": 0,
+      "actionName": "FORWARD",
+      "reward": -1.05,
+      "totalReward": 11.749999999999982,
+      "timestamp": 1761507542756
+    },
+    {
+      "step": 26,
+      "position": {
+        "x": 0.04163527602002918,
+        "y": 2.3402415776141634,
+        "z": -0.7947429458968018
+      },
+      "action": 4,
+      "actionName": "JUMP",
+      "reward": -1.05,
+      "totalReward": 10.699999999999982,
+      "timestamp": 1761507542757
+    },
+    {
+      "step": 27,
+      "position": {
+        "x": 0.04579496912897788,
+        "y": 2.3664253492921876,
+        "z": -0.8571098331536201
+      },
+      "action": 0,
+      "actionName": "FORWARD",
+      "reward": -1.05,
+      "totalReward": 9.64999999999998,
+      "timestamp": 1761507542757
+    },
+    {
+      "step": 28,
+      "position": {
+        "x": 0.04995396552440005,
+        "y": 2.389879735409204,
+        "z": -0.915299607815954
+      },
+      "action": 1,
+      "actionName": "BACKWARD",
+      "reward": -1.05,
+      "totalReward": 8.59999999999998,
+      "timestamp": 1761507542758
+    },
+    {
+      "step": 29,
+      "position": {
+        "x": 0.054112265322989316,
+        "y": 2.410605193114283,
+        "z": -0.9776463028482804
+      },
+      "action": 0,
+      "actionName": "FORWARD",
+      "reward": -1.05,
+      "totalReward": 7.54999999999998,
+      "timestamp": 1761507542758
+    },
+    {
+      "step": 30,
+      "position": {
+        "x": 0.05826986864141979,
+        "y": 2.428602179479927,
+        "z": -1.0399825553348163
+      },
+      "action": 4,
+      "actionName": "JUMP",
+      "reward": 24.95,
+      "totalReward": 32.49999999999998,
+      "timestamp": 1761507542759
+    },
+    {
+      "step": 31,
+      "position": {
+        "x": 0.06242677559634602,
+        "y": 2.4438711515020826,
+        "z": -1.0981417003579337
+      },
+      "action": 1,
+      "actionName": "BACKWARD",
+      "reward": -0.05,
+      "totalReward": 32.44999999999998,
+      "timestamp": 1761507542759
+    },
+    {
+      "step": 32,
+      "position": {
+        "x": 0.06658298630440301,
+        "y": 2.456412566100153,
+        "z": -1.16045777088125
+      },
+      "action": 0,
+      "actionName": "FORWARD",
+      "reward": -0.05,
+      "totalReward": 32.399999999999984,
+      "timestamp": 1761507542760
+    },
+    {
+      "step": 33,
+      "position": {
+        "x": 0.07073850088220626,
+        "y": 2.466226880117011,
+        "z": -1.2185967373214563
+      },
+      "action": 1,
+      "actionName": "BACKWARD",
+      "reward": -0.05,
+      "totalReward": 32.34999999999999,
+      "timestamp": 1761507542760
+    },
+    {
+      "step": 34,
+      "position": {
+        "x": 0.07489331944635172,
+        "y": 2.4733145503190133,
+        "z": -1.2725592993082706
+      },
+      "action": 1,
+      "actionName": "BACKWARD",
+      "reward": -0.05,
+      "totalReward": 32.29999999999999,
+      "timestamp": 1761507542761
+    },
+    {
+      "step": 35,
+      "position": {
+        "x": 0.07488077544674913,
+        "y": 2.4776760333960106,
+        "z": -1.3265128230208953
+      },
+      "action": 2,
+      "actionName": "LEFT",
+      "reward": -0.05,
+      "totalReward": 32.24999999999999,
+      "timestamp": 1761507542761
+    },
+    {
+      "step": 36,
+      "position": {
+        "x": 0.07486823354816072,
+        "y": 2.479311785961363,
+        "z": -1.3804573099731654
+      },
+      "action": 4,
+      "actionName": "JUMP",
+      "reward": -0.05,
+      "totalReward": 32.199999999999996,
+      "timestamp": 1761507542762
+    },
+    {
+      "step": 37,
+      "position": {
+        "x": 0.07485569375023458,
+        "y": 2.4782222645519516,
+        "z": -1.4385594283453285
+      },
+      "action": 0,
+      "actionName": "FORWARD",
+      "reward": -0.05,
+      "totalReward": 32.15,
+      "timestamp": 1761507542762
+    },
+    {
+      "step": 38,
+      "position": {
+        "x": 0.07900982271928554,
+        "y": 2.474407925628191,
+        "z": -1.496651815102507
+      },
+      "action": 3,
+      "actionName": "RIGHT",
+      "reward": -0.05,
+      "totalReward": 32.1,
+      "timestamp": 1761507542762
+    },
+    {
+      "step": 39,
+      "position": {
+        "x": 0.07899658924008983,
+        "y": 2.467869225574042,
+        "z": -1.5547344718746645
+      },
+      "action": 2,
+      "actionName": "LEFT",
+      "reward": -0.05,
+      "totalReward": 32.050000000000004,
+      "timestamp": 1761507542763
+    },
+    {
+      "step": 40,
+      "position": {
+        "x": 0.07898335797739031,
+        "y": 2.4586066206970263,
+        "z": -1.616974066958158
+      },
+      "action": 0,
+      "actionName": "FORWARD",
+      "reward": -0.05,
+      "totalReward": 32.00000000000001,
+      "timestamp": 1761507542763
+    },
+    {
+      "step": 41,
+      "position": {
+        "x": 0.07897012893081574,
+        "y": 2.446620567228237,
+        "z": -1.6833699041008663
+      },
+      "action": 0,
+      "actionName": "FORWARD",
+      "reward": -0.05,
+      "totalReward": 31.950000000000006,
+      "timestamp": 1761507542764
+    },
+    {
+      "step": 42,
+      "position": {
+        "x": 0.07895690209999495,
+        "y": 2.4319115213223528,
+        "z": -1.7497546205006178
+      },
+      "action": 4,
+      "actionName": "JUMP",
+      "reward": -0.05,
+      "totalReward": 31.900000000000006,
+      "timestamp": 1761507542764
+    },
+    {
+      "step": 43,
+      "position": {
+        "x": 0.0789436774845568,
+        "y": 2.41447993905765,
+        "z": -1.8161282180200435
+      },
+      "action": 4,
+      "actionName": "JUMP",
+      "reward": -0.05,
+      "totalReward": 31.850000000000005,
+      "timestamp": 1761507542764
+    },
+    {
+      "step": 44,
+      "position": {
+        "x": 0.07893045508413025,
+        "y": 2.3943262764360154,
+        "z": -1.8866573651881287
+      },
+      "action": 0,
+      "actionName": "FORWARD",
+      "reward": -0.05,
+      "totalReward": 31.800000000000004,
+      "timestamp": 1761507542765
+    },
+    {
+      "step": 45,
+      "position": {
+        "x": 0.0789172348983443,
+        "y": 2.3714509893829603,
+        "z": -1.9613413659853414
+      },
+      "action": 0,
+      "actionName": "FORWARD",
+      "reward": -0.05,
+      "totalReward": 31.750000000000004,
+      "timestamp": 1761507542765
+    },
+    {
+      "step": 46,
+      "position": {
+        "x": 0.07473735026016134,
+        "y": 2.345854533747631,
+        "z": -2.0360128578420604
+      },
+      "action": 2,
+      "actionName": "LEFT",
+      "reward": -0.05,
+      "totalReward": 31.700000000000003,
+      "timestamp": 1761507542766
+    },
+    {
+      "step": 47,
+      "position": {
+        "x": 0.07055816571741584,
+        "y": 2.3175373653028246,
+        "z": -2.114838509520095
+      },
+      "action": 0,
+      "actionName": "FORWARD",
+      "reward": -0.05,
+      "totalReward": 31.650000000000002,
+      "timestamp": 1761507542766
+    },
+    {
+      "step": 48,
+      "position": {
+        "x": 0.06637968115284772,
+        "y": 2.2864999397449983,
+        "z": -2.19365095856603
+      },
+      "action": 4,
+      "actionName": "JUMP",
+      "reward": -0.05,
+      "totalReward": 31.6,
+      "timestamp": 1761507542767
+    },
+    {
+      "step": 49,
+      "position": {
+        "x": 0.06220189644921651,
+        "y": 2.252742712694285,
+        "z": -2.2682835405245294
+      },
+      "action": 1,
+      "actionName": "BACKWARD",
+      "reward": -0.05,
+      "totalReward": 31.55,
+      "timestamp": 1761507542769
+    },
+    {
+      "step": 50,
+      "position": {
+        "x": 0.05802481148930143,
+        "y": 2.216266139694505,
+        "z": -2.3470702888214237
+      },
+      "action": 0,
+      "actionName": "FORWARD",
+      "reward": -0.05,
+      "totalReward": 31.5,
+      "timestamp": 1761507542769
+    },
+    {
+      "step": 51,
+      "position": {
+        "x": 0.0538484261559013,
+        "y": 2.1770706762131784,
+        "z": -2.430010507668874
+      },
+      "action": 0,
+      "actionName": "FORWARD",
+      "reward": -0.05,
+      "totalReward": 31.45,
+      "timestamp": 1761507542770
+    },
+    {
+      "step": 52,
+      "position": {
+        "x": 0.04967274033183457,
+        "y": 2.135156777641539,
+        "z": -2.512936834728913
+      },
+      "action": 4,
+      "actionName": "JUMP",
+      "reward": -0.05,
+      "totalReward": 31.4,
+      "timestamp": 1761507542770
+    },
+    {
+      "step": 53,
+      "position": {
+        "x": 0.04966442056660599,
+        "y": 2.090524899294546,
+        "z": -2.5958492723282984
+      },
+      "action": 3,
+      "actionName": "RIGHT",
+      "reward": -0.05,
+      "totalReward": 31.349999999999998,
+      "timestamp": 1761507542771
+    },
+    {
+      "step": 54,
+      "position": {
+        "x": 0.049656102194867956,
+        "y": 2.0431754964108975,
+        "z": -2.6829144894600643
+      },
+      "action": 0,
+      "actionName": "FORWARD",
+      "reward": -0.05,
+      "totalReward": 31.299999999999997,
+      "timestamp": 1761507542771
+    },
+    {
+      "step": 55,
+      "position": {
+        "x": 0.05381445188305372,
+        "y": 1.9931090241530423,
+        "z": -2.769965123901983
+      },
+      "action": 3,
+      "actionName": "RIGHT",
+      "reward": -0.05,
+      "totalReward": 31.249999999999996,
+      "timestamp": 1761507542771
+    },
+    {
+      "step": 56,
+      "position": {
+        "x": 0.0579721050827246,
+        "y": 1.9403259376071937,
+        "z": -2.857001178096532
+      },
+      "action": 4,
+      "actionName": "JUMP",
+      "reward": -0.05,
+      "totalReward": 31.199999999999996,
+      "timestamp": 1761507542772
+    },
+    {
+      "step": 57,
+      "position": {
+        "x": 0.06212906191053655,
+        "y": 1.884826691783342,
+        "z": -2.9398559878191137
+      },
+      "action": 1,
+      "actionName": "BACKWARD",
+      "reward": -0.05,
+      "totalReward": 31.149999999999995,
+      "timestamp": 1761507542772
+    },
+    {
+      "step": 58,
+      "position": {
+        "x": 0.06628532248312598,
+        "y": 1.8266117416152674,
+        "z": -3.018530253392926
+      },
+      "action": 1,
+      "actionName": "BACKWARD",
+      "reward": 29.95,
+      "totalReward": 61.099999999999994,
+      "timestamp": 1761507542773
+    },
+    {
+      "step": 59,
+      "position": {
+        "x": 0.07044088691710977,
+        "y": 1.7656815419605518,
+        "z": -3.101358008357202
+      },
+      "action": 0,
+      "actionName": "FORWARD",
+      "reward": -9.05,
+      "totalReward": 52.05,
+      "timestamp": 1761507542773
+    },
+    {
+      "step": 60,
+      "position": {
+        "x": 0.07459575532908527,
+        "y": 1.702036547600593,
+        "z": -3.188338557037486
+      },
+      "action": 0,
+      "actionName": "FORWARD",
+      "reward": -1.05,
+      "totalReward": 51,
+      "timestamp": 1761507542773
+    },
+    {
+      "step": 61,
+      "position": {
+        "x": 0.07874992783563031,
+        "y": 1.635677213240616,
+        "z": -3.2753045372091747
+      },
+      "action": 4,
+      "actionName": "JUMP",
+      "reward": -1.05,
+      "totalReward": 49.95,
+      "timestamp": 1761507542774
+    },
+    {
+      "step": 62,
+      "position": {
+        "x": 0.08290340455330317,
+        "y": 1.5666039935096876,
+        "z": -3.3664226179790373
+      },
+      "action": 0,
+      "actionName": "FORWARD",
+      "reward": -1.05,
+      "totalReward": 48.900000000000006,
+      "timestamp": 1761507542774
+    },
+    {
+      "step": 63,
+      "position": {
+        "x": 0.08705618559864262,
+        "y": 1.494817342960727,
+        "z": -3.457525437238562
+      },
+      "action": 4,
+      "actionName": "JUMP",
+      "reward": -1.05,
+      "totalReward": 47.85000000000001,
+      "timestamp": 1761507542774
+    },
+    {
+      "step": 64,
+      "position": {
+        "x": 0.09120827108816791,
+        "y": 1.42031771607052,
+        "z": -3.55277966421059
+      },
+      "action": 0,
+      "actionName": "FORWARD",
+      "reward": -1.05,
+      "totalReward": 46.80000000000001,
+      "timestamp": 1761507542775
+    },
+    {
+      "step": 65,
+      "position": {
+        "x": 0.09119299447171211,
+        "y": 1.3431055672397316,
+        "z": -3.648017936902662
+      },
+      "action": 2,
+      "actionName": "LEFT",
+      "reward": -1.05,
+      "totalReward": 45.750000000000014,
+      "timestamp": 1761507542775
+    },
+    {
+      "step": 66,
+      "position": {
+        "x": 0.09117772041396079,
+        "y": 1.2631813507929184,
+        "z": -3.7474069246536517
+      },
+      "action": 0,
+      "actionName": "FORWARD",
+      "reward": -1.05,
+      "totalReward": 44.70000000000002,
+      "timestamp": 1761507542776
+    },
+    {
+      "step": 67,
+      "position": {
+        "x": 0.09116244891448536,
+        "y": 1.1805455209785412,
+        "z": -3.8426125989204474
+      },
+      "action": 1,
+      "actionName": "BACKWARD",
+      "reward": -1.05,
+      "totalReward": 43.65000000000002,
+      "timestamp": 1761507542776
+    },
+    {
+      "step": 68,
+      "position": {
+        "x": 0.09114717997285735,
+        "y": 1.0951985319689783,
+        "z": -3.9419689937061224
+      },
+      "action": 0,
+      "actionName": "FORWARD",
+      "reward": -1.05,
+      "totalReward": 42.60000000000002,
+      "timestamp": 1761507542776
+    },
+    {
+      "step": 69,
+      "position": {
+        "x": 0.09113191358864833,
+        "y": 1.0071408378605378,
+        "z": -4.045475413799983
+      },
+      "action": 0,
+      "actionName": "FORWARD",
+      "reward": -1.05,
+      "totalReward": 41.550000000000026,
+      "timestamp": 1761507542777
+    },
+    {
+      "step": 70,
+      "position": {
+        "x": 0.09111664976142997,
+        "y": 0.9163728926734707,
+        "z": -4.153131164107779
+      },
+      "action": 0,
+      "actionName": "FORWARD",
+      "reward": -1.05,
+      "totalReward": 40.50000000000003,
+      "timestamp": 1761507542777
+    },
+    {
+      "step": 71,
+      "position": {
+        "x": 0.09110138849077397,
+        "y": 0.8228951503519831,
+        "z": -4.264935549651681
+      },
+      "action": 0,
+      "actionName": "FORWARD",
+      "reward": -1.05,
+      "totalReward": 39.45000000000003,
+      "timestamp": 1761507542777
+    },
+    {
+      "step": 72,
+      "position": {
+        "x": 0.09108612977625215,
+        "y": 0.7267080647642497,
+        "z": -4.380887875570262
+      },
+      "action": 0,
+      "actionName": "FORWARD",
+      "reward": -1.05,
+      "totalReward": 38.400000000000034,
+      "timestamp": 1761507542778
+    },
+    {
+      "step": 73,
+      "position": {
+        "x": 0.0869042069507697,
+        "y": 0.6278120897024257,
+        "z": -4.496820780451814
+      },
+      "action": 2,
+      "actionName": "LEFT",
+      "reward": -1.05,
+      "totalReward": 37.35000000000004,
+      "timestamp": 1761507542778
+    },
+    {
+      "step": 74,
+      "position": {
+        "x": 0.08272298456210389,
+        "y": 0.5262076788826603,
+        "z": -4.612734267549196
+      },
+      "action": 4,
+      "actionName": "JUMP",
+      "reward": -1.05,
+      "totalReward": 36.30000000000004,
+      "timestamp": 1761507542779
+    },
+    {
+      "step": 75,
+      "position": {
+        "x": 0.07854246249293746,
+        "y": 0.4218952859451087,
+        "z": -4.73279500678139
+      },
+      "action": 0,
+      "actionName": "FORWARD",
+      "reward": -1.05,
+      "totalReward": 35.25000000000004,
+      "timestamp": 1761507542780
+    },
+    {
+      "step": 76,
+      "position": {
+        "x": 0.07019597395930614,
+        "y": 0.3148753644539455,
+        "z": -4.852835636851961
+      },
+      "action": 2,
+      "actionName": "LEFT",
+      "reward": -1.05,
+      "totalReward": 34.200000000000045,
+      "timestamp": 1761507542780
+    },
+    {
+      "step": 77,
+      "position": {
+        "x": 0.057684216725470625,
+        "y": 0.20514836789737695,
+        "z": -4.972856161129025
+      },
+      "action": 2,
+      "actionName": "LEFT",
+      "reward": -1.05,
+      "totalReward": 33.15000000000005,
+      "timestamp": 1761507542781
+    },
+    {
+      "step": 78,
+      "position": {
+        "x": 0.04517455510548864,
+        "y": 0.09271474968765396,
+        "z": -5.097023249646798
+      },
+      "action": 0,
+      "actionName": "FORWARD",
+      "reward": -1.05,
+      "totalReward": 32.10000000000005,
+      "timestamp": 1761507542781
+    },
+    {
+      "step": 79,
+      "position": {
+        "x": 0.03266698874836253,
+        "y": -0.02242503683891535,
+        "z": -5.22533620789073
+      },
+      "action": 0,
+      "actionName": "FORWARD",
+      "reward": -1.05,
+      "totalReward": 31.05000000000005,
+      "timestamp": 1761507542781
+    },
+    {
+      "step": 80,
+      "position": {
+        "x": 0.020161517303153447,
+        "y": -0.14027053842195286,
+        "z": -5.357794341462593
+      },
+      "action": 0,
+      "actionName": "FORWARD",
+      "reward": -1.05,
+      "totalReward": 30.00000000000005,
+      "timestamp": 1761507542782
+    },
+    {
+      "step": 81,
+      "position": {
+        "x": 0.007658140418981293,
+        "y": -0.26082130187699776,
+        "z": -5.494396956080466
+      },
+      "action": 0,
+      "actionName": "FORWARD",
+      "reward": -1.05,
+      "totalReward": 28.95000000000005,
+      "timestamp": 1761507542782
+    },
+    {
+      "step": 82,
+      "position": {
+        "x": -0.004843142254975242,
+        "y": -0.38407687409549374,
+        "z": -5.63097669091205
+      },
+      "action": 4,
+      "actionName": "JUMP",
+      "reward": -1.05,
+      "totalReward": 27.90000000000005,
+      "timestamp": 1761507542783
+    },
+    {
+      "step": 83,
+      "position": {
+        "x": -0.017342331069478717,
+        "y": -0.5100368020447765,
+        "z": -5.771700216456182
+      },
+      "action": 0,
+      "actionName": "FORWARD",
+      "reward": -1.05,
+      "totalReward": 26.850000000000048,
+      "timestamp": 1761507542783
+    },
+    {
+      "step": 84,
+      "position": {
+        "x": -0.029839426375232934,
+        "y": -0.6387006327680608,
+        "z": -5.9165668386628525
+      },
+      "action": 0,
+      "actionName": "FORWARD",
+      "reward": -1.05,
+      "totalReward": 25.800000000000047,
+      "timestamp": 1761507542784
+    },
+    {
+      "step": 85,
+      "position": {
+        "x": -0.04233442852288296,
+        "y": -0.7700679133844277,
+        "z": -6.057242530264967
+      },
+      "action": 1,
+      "actionName": "BACKWARD",
+      "reward": -1.05,
+      "totalReward": 24.750000000000046,
+      "timestamp": 1761507542784
+    },
+    {
+      "step": 86,
+      "position": {
+        "x": -0.05482733786301513,
+        "y": -0.9041381910888123,
+        "z": -6.197894659874735
+      },
+      "action": 4,
+      "actionName": "JUMP",
+      "reward": -1.05,
+      "totalReward": 23.700000000000045,
+      "timestamp": 1761507542784
+    },
+    {
+      "step": 87,
+      "position": {
+        "x": -0.06315148807949039,
+        "y": -1.0409110131519905,
+        "z": -6.338523231438593
+      },
+      "action": 3,
+      "actionName": "RIGHT",
+      "reward": -1.05,
+      "totalReward": 22.650000000000045,
+      "timestamp": 1761507542785
+    },
+    {
+      "step": 88,
+      "position": {
+        "x": -0.07564091073764964,
+        "y": -1.1803859269205668,
+        "z": -6.479128248902314
+      },
+      "action": 2,
+      "actionName": "LEFT",
+      "reward": -1.05,
+      "totalReward": 21.600000000000044,
+      "timestamp": 1761507542785
+    },
+    {
+      "step": 89,
+      "position": {
+        "x": -0.08812824152280849,
+        "y": -1.3225624798169608,
+        "z": -6.623876382877678
+      },
+      "action": 0,
+      "actionName": "FORWARD",
+      "reward": -1.05,
+      "totalReward": 20.550000000000043,
+      "timestamp": 1761507542786
+    },
+    {
+      "step": 90,
+      "position": {
+        "x": -0.10061348078533802,
+        "y": -1.4674402193393954,
+        "z": -6.7727669394275996
+      },
+      "action": 0,
+      "actionName": "FORWARD",
+      "reward": -1.05,
+      "totalReward": 19.500000000000043,
+      "timestamp": 1761507542786
+    },
+    {
+      "step": 91,
+      "position": {
+        "x": -0.11309662887555065,
+        "y": -1.615018693061884,
+        "z": -6.9216325580645535
+      },
+      "action": 4,
+      "actionName": "JUMP",
+      "reward": -1.05,
+      "totalReward": 18.450000000000042,
+      "timestamp": 1761507542786
+    },
+    {
+      "step": 92,
+      "position": {
+        "x": -0.1255776861437001,
+        "y": -1.7652974486342168,
+        "z": -7.066306576298763
+      },
+      "action": 1,
+      "actionName": "BACKWARD",
+      "reward": -1.05,
+      "totalReward": 17.40000000000004,
+      "timestamp": 1761507542787
+    },
+    {
+      "step": 93,
+      "position": {
+        "x": -0.13805665293998146,
+        "y": -1.9182760337819496,
+        "z": -7.2067896961879585
+      },
+      "action": 1,
+      "actionName": "BACKWARD",
+      "reward": -1.05,
+      "totalReward": 16.35000000000004,
+      "timestamp": 1761507542788
+    },
+    {
+      "step": 94,
+      "position": {
+        "x": -0.15053352961453112,
+        "y": -2.0739539963063898,
+        "z": -7.34308261967228
+      },
+      "action": 1,
+      "actionName": "BACKWARD",
+      "reward": -5,
+      "totalReward": 11.35000000000004,
+      "timestamp": 1761507542788
+    }
+  ],
+  "success": false,
+  "totalReward": 11.35000000000004,
+  "stepCount": 94,
+  "highestStep": 2,
+  "duration": 43,
+  "finalPosition": {
+    "x": -0.15053352961453112,
+    "y": -2.0739539963063898,
+    "z": -7.34308261967228
+  },
+  "finalStep": -1,
+  "savedAt": "2025-10-26T19:39:02.899Z",
+  "filename": "episode_494_1761507542899.json"
+}

@@ -69,8 +69,9 @@ export class TrajectoryVisualizer {
     createTrajectoryLine(trajectory, index, total, fadeOlder) {
         const points = [];
         
-        // Extract positions from trajectory
-        trajectory.trajectory.forEach(step => {
+        // Extract positions from trajectory (handle both old and new format)
+        const steps = trajectory.steps || trajectory.trajectory || [];
+        steps.forEach(step => {
             points.push(new THREE.Vector3(step.position.x, step.position.y, step.position.z));
         });
         
@@ -115,8 +116,11 @@ export class TrajectoryVisualizer {
      * @param {THREE.Color} color - Color for the markers
      */
     addTrajectoryMarkers(trajectory, color) {
-        const startPos = trajectory.trajectory[0].position;
-        const endPos = trajectory.trajectory[trajectory.trajectory.length - 1].position;
+        const steps = trajectory.steps || trajectory.trajectory || [];
+        if (steps.length === 0) return;
+        
+        const startPos = steps[0].position;
+        const endPos = steps[steps.length - 1].position;
         
         // Start marker (small sphere)
         const startGeometry = new THREE.SphereGeometry(0.1, 8, 6);
@@ -194,7 +198,8 @@ export class TrajectoryVisualizer {
         this.ghostAgent.userData = { type: 'ghost-agent' };
         
         // Position at start
-        const startPos = this.replayTrajectory.trajectory[0].position;
+        const steps = this.replayTrajectory.steps || this.replayTrajectory.trajectory || [];
+        const startPos = steps[0].position;
         this.ghostAgent.position.set(startPos.x, startPos.y, startPos.z);
         
         this.scene.add(this.ghostAgent);
@@ -217,12 +222,14 @@ export class TrajectoryVisualizer {
      * Main replay loop
      */
     replayLoop() {
-        if (!this.isReplaying || this.currentReplayIndex >= this.replayTrajectory.trajectory.length) {
+        const steps = this.replayTrajectory.steps || this.replayTrajectory.trajectory || [];
+        
+        if (!this.isReplaying || this.currentReplayIndex >= steps.length) {
             this.stopTrajectoryReplay();
             return;
         }
         
-        const step = this.replayTrajectory.trajectory[this.currentReplayIndex];
+        const step = steps[this.currentReplayIndex];
         
         // Update ghost agent position
         if (this.ghostAgent) {
@@ -231,7 +238,8 @@ export class TrajectoryVisualizer {
         
         // Update trail
         if (this.ghostTrail && this.currentReplayIndex > 0) {
-            const points = this.replayTrajectory.trajectory
+            const steps = this.replayTrajectory.steps || this.replayTrajectory.trajectory || [];
+            const points = steps
                 .slice(0, this.currentReplayIndex + 1)
                 .map(s => new THREE.Vector3(s.position.x, s.position.y, s.position.z));
             
@@ -328,7 +336,7 @@ export class TrajectoryVisualizer {
             trajectoryPoints: this.trajectoryPoints.length,
             isReplaying: this.isReplaying,
             replayProgress: this.isReplaying ? 
-                this.currentReplayIndex / this.replayTrajectory.trajectory.length : 0
+                this.currentReplayIndex / (this.replayTrajectory.steps || this.replayTrajectory.trajectory || []).length : 0
         };
     }
     
