@@ -257,6 +257,9 @@ export class PPOAgent {
         const advantagesTensor = tf.tensor1d(advantages);
         const returnsTensor = tf.tensor1d(returns);
         
+        // Gradient clipping threshold
+        const clipNorm = 0.5;
+        
         // Perform K epochs of minibatch updates
         for (let epoch = 0; epoch < epochs; epoch++) {
             // Get current metrics before training
@@ -316,7 +319,6 @@ export class PPOAgent {
                 
                 // Clip gradients and apply
                 const clippedActorGrads = {};
-                const clipNorm = 0.5;
                 for (const varName in actorGrads.grads) {
                     const grad = actorGrads.grads[varName];
                     const norm = tf.norm(grad).dataSync()[0];
