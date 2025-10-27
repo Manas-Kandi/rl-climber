@@ -1,8 +1,7 @@
 # 🎮 3D RL Climbing Game
 
 A minimalist web-based 3D climbing game where an AI agent learns to climb obstacles using reinforcement learning. Watch as the agent discovers climbing strategies through trial and error, all running entirely in your browser!
-
-![Game Screenshot](docs/screenshot.png)
+Do look through me, as I made this step by step! https://ludicrous-run-4f0.notion.site/Parkour-Reinforcement-Learning-Experimentation-2960686a2bb580eb9453d5eebd2cf15e
 *The agent learning to climb in real-time*
 
 ## ✨ Features
