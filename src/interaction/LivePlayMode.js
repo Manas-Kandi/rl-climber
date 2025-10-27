@@ -128,19 +128,29 @@ export class LivePlayMode {
             if (!this.isActive) return;
             
             try {
-                let action = null;
+                // Run multiple steps per frame for faster execution
+                const stepsPerFrame = this.mode === 'autonomous' ? 5 : 1;
                 
-                if (this.mode === 'autonomous') {
-                    // Let the agent decide
-                    const result = this.agent.selectAction(this.currentState, false); // Evaluation mode
-                    action = result.action; // Extract just the action number
-                } else if (this.mode === 'manual') {
-                    // Get action from user input
-                    action = this.getManualAction();
-                }
-                
-                if (action !== null) {
-                    this.executeAction(action);
+                for (let i = 0; i < stepsPerFrame; i++) {
+                    if (!this.isActive) break;
+                    
+                    let action = null;
+                    
+                    if (this.mode === 'autonomous') {
+                        // Let the agent decide
+                        const result = this.agent.selectAction(this.currentState, false); // Evaluation mode
+                        action = result.action; // Extract just the action number
+                    } else if (this.mode === 'manual') {
+                        // Get action from user input
+                        action = this.getManualAction();
+                    }
+                    
+                    if (action !== null) {
+                        this.executeAction(action);
+                    }
+                    
+                    // If episode ended, break the loop
+                    if (this.sessionStats.totalSteps === 0) break;
                 }
                 
                 // Continue the loop
